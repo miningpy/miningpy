@@ -10,7 +10,9 @@ from mining_utils.numpy_vtk import *
 import ezdxf
 
 
-# applies model calculations to pandas dataframe of block model as direct pandas method
+# applies model calculations to pandas dataframe of block model as a pandas method
+# extends the pandas API for mining engineering applications
+# inspiration of this methodology from: https://github.com/pmorissette/ffn
 
 
 def ijk(blockmodel:     pd.DataFrame,
@@ -511,7 +513,35 @@ def model_rotation(blockmodel: pd.DataFrame,
     :param yorigin: y origin of model - this is the corner of the bottom block (not the centroid)
     :param zorigin: z origin of model - this is the corner of the bottom block (not the centroid)
 
-    :return float of the rotation of a block model around each axis
+    :return tuple of the rotation of a block model around each axis (x,y,z)
+    """
+    pass
+
+
+def model_origin(blockmodel: pd.DataFrame,
+                   xcol: str = None,
+                   ycol: str = None,
+                   zcol: str = None,
+                   xsize: Union[int, float] = None,
+                   ysize: Union[int, float] = None,
+                   zsize: Union[int, float] = None,
+                   x_rotation: Union[int, float] = None,
+                   y_rotation: Union[int, float] = None,
+                   z_rotation: Union[int, float] = None) -> Tuple[float, float, float]:
+    """
+    calculate the rotation of a block model grid relative to its current xyz grid
+    rotation is calculated using the right hand rule
+    :param blockmodel: pandas.Dataframe of block model
+    :param xcol: name of the x centroid column added to the model
+    :param ycol: name of the y centroid column added to the model
+    :param zcol: name of the z centroid column added to the model
+    :param xsize: x dimension of regular parent blocks
+    :param ysize: y dimension of regular parent blocks
+    :param zsize: z dimension of regular parent blocks
+    :param x_rotation: rotation of blocks around x axis, -180 to 180 degrees
+    :param y_rotation: rotation of blocks around y axis, -180 to 180 degrees
+    :param z_rotation: rotation of blocks around z axis (xy plane), -180 to 180 degrees
+    :return tuple of the origin of a block model for each axis (x,y,z)
     """
     pass
 
@@ -896,28 +926,33 @@ def blocks2dxf(blockmodel:              pd.DataFrame,
         with mesh.edit_data() as mesh_data:
             mesh_data.vertices = block_corners
             mesh_data.faces = block_faces
-            # mesh_data.optimize(precision=6)
 
     dwg.saveas(path)
     return
 
-# adding all functions to pandas API
 
-PandasObject.ijk = ijk
-PandasObject.xyz = xyz
-PandasObject.rotate_grid = rotate_grid
-PandasObject.group_weighted_average = group_weighted_average
-PandasObject.vulcan_csv = vulcan_csv
-PandasObject.vulcan_bdf = vulcan_bdf
-PandasObject.vulcan_bmf = vulcan_bmf
-PandasObject.geometric_reblock = geometric_reblock
-PandasObject.whittle_mod = whittle_mod
-PandasObject.model_rotation = model_rotation
-PandasObject.check_regular = check_regular
-PandasObject.attribute_reblock = attribute_reblock
-PandasObject.check_internal_blocks_missing = check_internal_blocks_missing
-PandasObject.blocks2vtk = blocks2vtk
-PandasObject.blocks2dxf = blocks2dxf
+def extend_pandas():
+    '''
+    Extends pandas' PandasObject (Series, Series,
+    DataFrame) with some functions defined in this file.
+    '''
+
+    PandasObject.ijk = ijk
+    PandasObject.xyz = xyz
+    PandasObject.rotate_grid = rotate_grid
+    PandasObject.group_weighted_average = group_weighted_average
+    PandasObject.vulcan_csv = vulcan_csv
+    PandasObject.vulcan_bdf = vulcan_bdf
+    PandasObject.vulcan_bmf = vulcan_bmf
+    PandasObject.geometric_reblock = geometric_reblock
+    PandasObject.whittle_mod = whittle_mod
+    PandasObject.model_rotation = model_rotation
+    PandasObject.model_origin = model_origin
+    PandasObject.check_regular = check_regular
+    PandasObject.attribute_reblock = attribute_reblock
+    PandasObject.check_internal_blocks_missing = check_internal_blocks_missing
+    PandasObject.blocks2vtk = blocks2vtk
+    PandasObject.blocks2dxf = blocks2dxf
 
 
 
