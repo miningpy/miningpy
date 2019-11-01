@@ -451,7 +451,7 @@ def vulcan_bdf(blockmodel: pd.DataFrame):
     create a Vulcan block definition file of a block model
     :param blockmodel: pandas.Dataframe of block model
 
-    :return .txt file of Vulcan bdf file
+    :return Vulcan bdf file
     """
     pass
 
@@ -461,7 +461,7 @@ def vulcan_bmf(blockmodel: pd.DataFrame):
     create a Vulcan block model file of a block model
     :param blockmodel: pandas.Dataframe of block model
 
-    :return .txt file of Vulcan bmf file
+    :return Vulcan bmf file
     """
     pass
 
@@ -529,8 +529,8 @@ def model_origin(blockmodel: pd.DataFrame,
                    y_rotation: Union[int, float] = None,
                    z_rotation: Union[int, float] = None) -> Tuple[float, float, float]:
     """
-    calculate the rotation of a block model grid relative to its current xyz grid
-    rotation is calculated using the right hand rule
+    calculate the origin of a block model grid relative to its current xyz grid
+    origin is the corner of the block with min xyz coordinates
     :param blockmodel: pandas.Dataframe of block model
     :param xcol: name of the x centroid column added to the model
     :param ycol: name of the y centroid column added to the model
@@ -543,7 +543,21 @@ def model_origin(blockmodel: pd.DataFrame,
     :param z_rotation: rotation of blocks around z axis (xy plane), -180 to 180 degrees
     :return tuple of the origin of a block model for each axis (x,y,z)
     """
-    pass
+    return
+
+
+def model_block_size(blockmodel:     pd.DataFrame,
+                    xcol:           str = None,
+                    ycol:           str = None,
+                    zcol:           str = None,
+                    xorigin:        Union[int, float] = None,
+                    yorigin:        Union[int, float] = None,
+                    zorigin:        Union[int, float] = None,
+                    x_rotation:     Union[int, float] = 0,
+                    y_rotation:     Union[int, float] = 0,
+                    z_rotation:     Union[int, float] = 0,
+                    inplace:        bool = False) -> Tuple[float, float, float]:
+
 
 
 def check_regular(blockmodel: pd.DataFrame):
@@ -551,9 +565,9 @@ def check_regular(blockmodel: pd.DataFrame):
     check if the blocks in a block model are actually on a regular grid (including a rotated grid)
     :param blockmodel: pandas.Dataframe of block model
 
-    :return boolean of whether block model is regular or not
+    :return boolean of whether block model is regular or not. True if regular.
     """
-    pass
+    return
 
 
 def check_internal_blocks_missing(blockmodel: pd.DataFrame):
@@ -563,7 +577,7 @@ def check_internal_blocks_missing(blockmodel: pd.DataFrame):
 
     :return boolean of whether block model contains missing internal blocks
     """
-    pass
+    return
 
 
 def attribute_reblock(blockmodel: pd.DataFrame):
@@ -576,7 +590,7 @@ def attribute_reblock(blockmodel: pd.DataFrame):
 
     :return pandas.DataFrame of block model with binned attributes & tonnes for each bench
     """
-    pass
+    return
 
 
 def blocks2vtk(blockmodel: pd.DataFrame,
@@ -931,10 +945,57 @@ def blocks2dxf(blockmodel:              pd.DataFrame,
     return
 
 
+def index_3D_to_1D(blockmodel:     pd.DataFrame,
+                indexing:       int = 1,
+                xcol:           str = None,
+                ycol:           str = None,
+                zcol:           str = None,
+                xorigin:        Union[int, float] = None,
+                yorigin:        Union[int, float] = None,
+                zorigin:        Union[int, float] = None,
+                xsize:          Union[int, float] = None,
+                ysize:          Union[int, float] = None,
+                zsize:          Union[int, float] = None,
+                x_rotation:     Union[int, float] = 0,
+                y_rotation:     Union[int, float] = 0,
+                z_rotation:     Union[int, float] = 0,
+                idxcol:         str = 'idx',
+                inplace:        bool = False) -> pd.DataFrame:
+    """
+    Convert 3D array of xyz block centroids to 1D index that is reversible.
+    :param blockmodel: pandas dataframe of block model
+    :param indexing: controls whether origin block has coordinates 0,0,0 or 1,1,1
+    :param xcol: x column in model
+    :param ycol: y column in model
+    :param zcol: z column in model
+    :param xorigin: x origin of model - this is the corner of the bottom block (not the centroid)
+    :param yorigin: y origin of model - this is the corner of the bottom block (not the centroid)
+    :param zorigin: z origin of model - this is the corner of the bottom block (not the centroid)
+    :param xsize: x dimension of regular parent blocks
+    :param ysize: y dimension of regular parent blocks
+    :param zsize: z dimension of regular parent blocks
+    :param x_rotation: rotation of block model grid around x axis, -180 to 180 degrees
+    :param y_rotation: rotation of block model grid around y axis, -180 to 180 degrees
+    :param z_rotation: rotation of block model grid around z axis (xy plane), -180 to 180 degrees
+    :param idxcol: name of the 1D index column added to the model
+    :param inplace: whether to do calculation inplace on pandas.DataFrame
+
+    :return pandas.DataFrame of indexed block model
+    """
+
+    return
+
+
+def index_1D_to_3D():
+    return
+
+
+
+
 def extend_pandas():
     '''
-    Extends pandas' PandasObject (Series, Series,
-    DataFrame) with some functions defined in this file.
+    Extends pandas' PandasObject (Series,
+    DataFrame) with functions defined in this file.
     '''
 
     PandasObject.ijk = ijk
