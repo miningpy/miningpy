@@ -443,7 +443,7 @@ def vulcan_csv(blockmodel: pd.DataFrame,
                             'float64': 'Double (Real * 8)',
                             'object': 'Name (Translation Table)'}
 
-    pass
+    return
 
 
 def vulcan_bdf(blockmodel: pd.DataFrame):
@@ -453,7 +453,7 @@ def vulcan_bdf(blockmodel: pd.DataFrame):
 
     :return Vulcan bdf file
     """
-    pass
+    return
 
 
 def vulcan_bmf(blockmodel: pd.DataFrame):
@@ -487,6 +487,10 @@ def whittle_mod(blockmodel: pd.DataFrame):
     :return Whittle .MOD text file
     """
     pass
+
+
+def whittle_par():
+    return
 
 
 def model_rotation(blockmodel: pd.DataFrame,
@@ -945,6 +949,10 @@ def blocks2dxf(blockmodel:              pd.DataFrame,
     return
 
 
+def face_position_dxf():
+    return
+
+
 def index_3D_to_1D(blockmodel:     pd.DataFrame,
                 indexing:       int = 1,
                 xcol:           str = None,
@@ -989,6 +997,13 @@ def index_3D_to_1D(blockmodel:     pd.DataFrame,
 def index_1D_to_3D():
     return
 
+
+def table_to_4D_array():
+    return
+
+
+def table_to_1D_array():
+    return
 
 
 
