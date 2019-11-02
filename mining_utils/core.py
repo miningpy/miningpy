@@ -82,7 +82,7 @@ def ijk(blockmodel:     pd.DataFrame,
         else:
             raise Exception('Rotation is limited to between -180 and +180 degrees')
 
-    if x_rotation == 0 or y_rotation == 0 or z_rotation == 0:
+    if x_rotation == 0 and y_rotation == 0 and z_rotation == 0:
         pass
     else:
         blockmodel.rotate_grid(
@@ -219,7 +219,7 @@ def xyz(blockmodel:     pd.DataFrame,
     else:
         raise ValueError('XYZ FAILED - XYZ method not accepted')
 
-    if x_rotation == 0 or y_rotation == 0 or z_rotation == 0:
+    if x_rotation == 0 and y_rotation == 0 and z_rotation == 0:
         pass
     else:
         blockmodel.rotate_grid(
@@ -561,10 +561,10 @@ def model_block_size(blockmodel:     pd.DataFrame,
                     y_rotation:     Union[int, float] = 0,
                     z_rotation:     Union[int, float] = 0,
                     inplace:        bool = False) -> Tuple[float, float, float]:
+    return
 
 
-
-def check_regular(blockmodel: pd.DataFrame):
+def check_regular(blockmodel: pd.DataFrame) -> None:
     """
     check if the blocks in a block model are actually on a regular grid (including a rotated grid)
     :param blockmodel: pandas.Dataframe of block model
@@ -988,8 +988,42 @@ def index_3D_to_1D(blockmodel:     pd.DataFrame,
     :param idxcol: name of the 1D index column added to the model
     :param inplace: whether to do calculation inplace on pandas.DataFrame
 
-    :return pandas.DataFrame of indexed block model
+    :return pandas.DataFrame of 1D indexed block model
     """
+
+    if inplace:
+        blockmodel = blockmodel
+    if not inplace:
+        blockmodel = blockmodel.copy()
+
+    indexing_accepted = [0, 1]
+
+    # check input indexing
+    if indexing in indexing_accepted:
+        pass
+    else:
+        raise ValueError('IJK FAILED - indexing value not accepted - only 1 or 0 can be used')
+
+    if x_rotation == 0 and y_rotation == 0 and z_rotation == 0:
+        pass
+    else:
+        blockmodel.rotate_grid(
+            xcol=xcol,
+            ycol=ycol,
+            zcol=zcol,
+            xorigin=xorigin,
+            yorigin=yorigin,
+            zorigin=zorigin,
+            x_rotation=x_rotation,
+            y_rotation=y_rotation,
+            z_rotation=z_rotation,
+            inplace=True)
+
+    # check inplace for return
+    if inplace:
+        return
+    if not inplace:
+        return blockmodel
 
     return
 
@@ -1030,6 +1064,12 @@ def extend_pandas():
     PandasObject.blocks2vtk = blocks2vtk
     PandasObject.blocks2dxf = blocks2dxf
 
+    PandasObject.face_position_dxf = face_position_dxf
 
+
+    PandasObject.index_3D_to_1D = index_3D_to_1D
+    PandasObject.index_1D_to_3D = index_1D_to_3D
+    PandasObject.table_to_4D_array = table_to_4D_array
+    PandasObject.table_to_1D_array = table_to_1D_array
 
 
