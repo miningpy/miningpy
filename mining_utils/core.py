@@ -82,37 +82,35 @@ def ijk(blockmodel:     pd.DataFrame,
         else:
             raise Exception('Rotation is limited to between -180 and +180 degrees')
 
-    if x_rotation == 0 and y_rotation == 0 and z_rotation == 0:
-        pass
+    if x_rotation == 0:
+        bm_xcol = blockmodel[xcol]
     else:
-        blockmodel.rotate_grid(
-            xcol=xcol,
-            ycol=ycol,
-            zcol=zcol,
-            xorigin=xorigin,
-            yorigin=yorigin,
-            zorigin=zorigin,
-            x_rotation=x_rotation,
-            y_rotation=y_rotation,
-            z_rotation=z_rotation,
-            inplace=True)
-
+        bm_xcol = blockmodel.rotate_grid(xcol=xcol,ycol=ycol,zcol=zcol,xorigin=xorigin,yorigin=yorigin,zorigin=zorigin,x_rotation=x_rotation,y_rotation=y_rotation,z_rotation=z_rotation,return_full_model=False,inplace=True)['x']
+    if y_rotation == 0:
+        bm_ycol = blockmodel[ycol]
+    else:
+        bm_ycol = blockmodel.rotate_grid(xcol=xcol,ycol=ycol,zcol=zcol,xorigin=xorigin,yorigin=yorigin,zorigin=zorigin,x_rotation=x_rotation,y_rotation=y_rotation,z_rotation=z_rotation,return_full_model=False,inplace=True)['y']
+    if z_rotation == 0:
+        bm_zcol = blockmodel[zcol]
+    else:
+        bm_zcol = blockmodel.rotate_grid(xcol=xcol,ycol=ycol,zcol=zcol,xorigin=xorigin,yorigin=yorigin,zorigin=zorigin,x_rotation=x_rotation,y_rotation=y_rotation,z_rotation=z_rotation,return_full_model=False,inplace=True)['z']
+    
     if method in methods_accepted:
         if 'i' in method:
             try:
-                blockmodel[icol] = (np.rint((blockmodel[xcol] - xsize/2 - xorigin) / xsize) + indexing).astype(int)
+                blockmodel[icol] = (np.rint((bm_xcol - xsize/2 - xorigin) / xsize) + indexing).astype(int)
             except ValueError:
                 raise ValueError('IJK FAILED - either xcol, xorigin or xsize not defined properly')
 
         if 'j' in method:
             try:
-                blockmodel[jcol] = (np.rint((blockmodel[ycol] - ysize/2 - yorigin) / ysize) + indexing).astype(int)
+                blockmodel[jcol] = (np.rint((bm_ycol - ysize/2 - yorigin) / ysize) + indexing).astype(int)
             except ValueError:
                 raise ValueError('IJK FAILED - either ycol, yorigin or ysize not defined properly')
 
         if 'k' in method:
             try:
-                blockmodel[kcol] = (np.rint((blockmodel[zcol] - zsize / 2 - zorigin) / zsize) + indexing).astype(int)
+                blockmodel[kcol] = (np.rint((bm_zcol - zsize / 2 - zorigin) / zsize) + indexing).astype(int)
             except ValueError:
                 raise ValueError('IJK FAILED - either zcol, zorigin or zsize not defined properly')
 
@@ -140,9 +138,9 @@ def xyz(blockmodel:     pd.DataFrame,
         x_rotation:     Union[int, float] = 0,
         y_rotation:     Union[int, float] = 0,
         z_rotation:     Union[int, float] = 0,
-        xcol:           str = 'xc',
-        ycol:           str = 'yc',
-        zcol:           str = 'zc',
+        xcol:           str = 'x',
+        ycol:           str = 'y',
+        zcol:           str = 'z',
         inplace:        bool = False) -> pd.DataFrame:
     """
     Calculate xyz cartesian cooridinates of blocks from their ijk indexes
@@ -166,7 +164,7 @@ def xyz(blockmodel:     pd.DataFrame,
     :param zcol: name of the z centroid column added to the model
     :param inplace: whether to do calculation inplace on pandas.DataFrame
 
-    :return pandas.DataFrame of rotated block model
+    :return pandas.DataFrame of block model
     """
 
     if inplace:
@@ -200,19 +198,19 @@ def xyz(blockmodel:     pd.DataFrame,
     if method in methods_accepted:
         if 'x' in method:
             try:
-                blockmodel[xcol] = ((blockmodel[icol] - indexing) * xsize) + xorigin + (xsize/2)
+                bm_xcol = ((blockmodel[icol] - indexing) * xsize) + xorigin + (xsize/2)
             except ValueError:
                 raise ValueError('XYZ FAILED - either icol, xorigin or xsize not defined properly')
 
         if 'y' in method:
             try:
-                blockmodel[ycol] = ((blockmodel[jcol] - indexing) * ysize) + yorigin + (ysize/2)
+                bm_ycol = ((blockmodel[jcol] - indexing) * ysize) + yorigin + (ysize/2)
             except ValueError:
                 raise ValueError('XYZ FAILED - either jcol, yorigin or ysize not defined properly')
 
         if 'z' in method:
             try:
-                blockmodel[zcol] = ((blockmodel[kcol] - indexing) * zsize) + zorigin + (zsize/2)
+                bm_zcol = ((blockmodel[kcol] - indexing) * zsize) + zorigin + (zsize/2)
             except ValueError:
                 raise ValueError('XYZ FAILED - either kcol, zorigin or zsize not defined properly')
 
@@ -220,7 +218,9 @@ def xyz(blockmodel:     pd.DataFrame,
         raise ValueError('XYZ FAILED - XYZ method not accepted')
 
     if x_rotation == 0 and y_rotation == 0 and z_rotation == 0:
-        pass
+        blockmodel[xcol] = bm_xcol
+        blockmodel[ycol] = bm_ycol
+        blockmodel[zcol] = bm_zcol
     else:
         blockmodel.rotate_grid(
             xcol=xcol,
@@ -241,17 +241,18 @@ def xyz(blockmodel:     pd.DataFrame,
         return blockmodel
 
 
-def rotate_grid(blockmodel:   pd.DataFrame,
-                xcol:         str = None,
-                ycol:         str = None,
-                zcol:         str = None,
-                xorigin:      Union[int, float] = None,
-                yorigin:      Union[int, float] = None,
-                zorigin:      Union[int, float] = None,
-                x_rotation:   Union[int, float] = 0,
-                y_rotation:   Union[int, float] = 0,
-                z_rotation:   Union[int, float] = 0,
-                inplace:      bool = False) -> pd.DataFrame:
+def rotate_grid(blockmodel:         pd.DataFrame,
+                xcol:               str = None,
+                ycol:               str = None,
+                zcol:               str = None,
+                xorigin:            Union[int, float] = None,
+                yorigin:            Union[int, float] = None,
+                zorigin:            Union[int, float] = None,
+                x_rotation:         Union[int, float] = 0,
+                y_rotation:         Union[int, float] = 0,
+                z_rotation:         Union[int, float] = 0,
+                return_full_model:  bool = True,
+                inplace:            bool = False) -> pd.DataFrame:
     """
     Rotate block model relative to cartesian grid
     This method uses a rotation matrix method
@@ -338,7 +339,14 @@ def rotate_grid(blockmodel:   pd.DataFrame,
     if inplace:
         return
     if not inplace:
-        return blockmodel
+        if return_full_model:
+                return blockmodel
+        if not return_full_model:
+                return {
+                    'x':blockmodel[xcol],
+                    'y':blockmodel[ycol],
+                    'z':blockmodel[zcol],
+                }
 
 
 def group_weighted_average(blockmodel:   pd.DataFrame,
