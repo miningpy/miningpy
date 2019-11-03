@@ -217,23 +217,19 @@ def xyz(blockmodel:     pd.DataFrame,
     else:
         raise ValueError('XYZ FAILED - XYZ method not accepted')
 
-    if x_rotation == 0 and y_rotation == 0 and z_rotation == 0:
+    if x_rotation == 0:
         blockmodel[xcol] = bm_xcol
+    else:
+        blockmodel[xcol] = blockmodel.rotate_grid(xcol=xcol,ycol=ycol,zcol=zcol,xorigin=xorigin,yorigin=yorigin,zorigin=zorigin,x_rotation=x_rotation,y_rotation=y_rotation,z_rotation=z_rotation,return_full_model=False,inplace=True)['x']
+    if y_rotation == 0:
         blockmodel[ycol] = bm_ycol
+    else:
+        blockmodel[ycol] = blockmodel.rotate_grid(xcol=xcol,ycol=ycol,zcol=zcol,xorigin=xorigin,yorigin=yorigin,zorigin=zorigin,x_rotation=x_rotation,y_rotation=y_rotation,z_rotation=z_rotation,return_full_model=False,inplace=True)['y']
+    if z_rotation == 0:
         blockmodel[zcol] = bm_zcol
     else:
-        blockmodel.rotate_grid(
-            xcol=xcol,
-            ycol=ycol,
-            zcol=zcol,
-            xorigin=xorigin,
-            yorigin=yorigin,
-            zorigin=zorigin,
-            x_rotation=x_rotation,
-            y_rotation=y_rotation,
-            z_rotation=z_rotation,
-            inplace=True)
-
+        blockmodel[zcol] = blockmodel.rotate_grid(xcol=xcol,ycol=ycol,zcol=zcol,xorigin=xorigin,yorigin=yorigin,zorigin=zorigin,x_rotation=x_rotation,y_rotation=y_rotation,z_rotation=z_rotation,return_full_model=False,inplace=True)['z']
+    
     # check inplace for return
     if inplace:
         return
@@ -533,13 +529,7 @@ def model_rotation(blockmodel: pd.DataFrame,
 def model_origin(blockmodel: pd.DataFrame,
                    xcol: str = None,
                    ycol: str = None,
-                   zcol: str = None,
-                   xsize: Union[int, float] = None,
-                   ysize: Union[int, float] = None,
-                   zsize: Union[int, float] = None,
-                   x_rotation: Union[int, float] = None,
-                   y_rotation: Union[int, float] = None,
-                   z_rotation: Union[int, float] = None) -> Tuple[float, float, float]:
+                   zcol: str = None) -> Tuple[float, float, float]:
     """
     calculate the origin of a block model grid relative to its current xyz grid
     origin is the corner of the block with min xyz coordinates
@@ -547,15 +537,14 @@ def model_origin(blockmodel: pd.DataFrame,
     :param xcol: name of the x centroid column added to the model
     :param ycol: name of the y centroid column added to the model
     :param zcol: name of the z centroid column added to the model
-    :param xsize: x dimension of regular parent blocks
-    :param ysize: y dimension of regular parent blocks
-    :param zsize: z dimension of regular parent blocks
-    :param x_rotation: rotation of blocks around x axis, -180 to 180 degrees
-    :param y_rotation: rotation of blocks around y axis, -180 to 180 degrees
-    :param z_rotation: rotation of blocks around z axis (xy plane), -180 to 180 degrees
     :return tuple of the origin of a block model for each axis (x,y,z)
     """
-    return
+
+    xorigin = blockmodel[xcol].min()
+    yorigin = blockmodel[ycol].min()
+    zorigin = blockmodel[zcol].min()
+
+    return (xorigin, yorigin, zorigin)
 
 
 def model_block_size(blockmodel:     pd.DataFrame,
