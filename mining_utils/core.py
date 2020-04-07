@@ -660,9 +660,20 @@ def blocks2vtk(blockmodel: pd.DataFrame,
     nc = x.shape[0]
 
     # prepare block model vector dimensions columns as numpy arrays
-    dx = np.ones(nc) * float(xsize)
-    dy = np.ones(nc) * float(ysize)
-    dz = np.ones(nc) * float(zsize)
+    if isinstance(xsize, int) or isinstance(xsize, float):
+        dx = np.ones(nc) * float(xsize)
+    if isinstance(xsize, str):
+        dx = blockmodel[xsize].values  # numpy 1D array
+
+    if isinstance(ysize, int) or isinstance(ysize, float):
+        dy = np.ones(nc) * float(ysize)
+    if isinstance(ysize, str):
+        dy = blockmodel[ysize].values  # numpy 1D array
+
+    if isinstance(zsize, int) or isinstance(zsize, float):
+        dz = np.ones(nc) * float(zsize)
+    if isinstance(zsize, str):
+        dz = blockmodel[zsize].values  # numpy 1D array
 
     var = []
     varname = []
