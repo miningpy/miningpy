@@ -821,6 +821,7 @@ def blocks2dxf(blockmodel:              pd.DataFrame,
                path:                    str = None,
                dxf_split:               str = None,
                delete_internal_points:  bool = False,
+               facetype:                str = '3DFACE',
                xcol:                    str = None,
                ycol:                    str = None,
                zcol:                    str = None,
@@ -840,6 +841,10 @@ def blocks2dxf(blockmodel:              pd.DataFrame,
     :param delete_internal_points: True/False to delete internal points.
                                    i.e. just have the dxf skin of the blocks = True (only outer shell)
                                    have all the faces of all the blocks = False (inner meshes)
+    :param facetype:    type of face for the blocks:
+                        3DFACE will create standard dxf faces which are understood by most software
+                        MESH is a newer type which requires less space but might not work well
+                        None will create no face (could be useful when we add line drawing functionality in the function)
     :param xcol: name of the x centroid column added to the model
     :param ycol: name of the y centroid column added to the model
     :param zcol: name of the z centroid column added to the model
@@ -914,7 +919,15 @@ def blocks2dxf(blockmodel:              pd.DataFrame,
         [0, 3, 7, 4]]
 
     # create dxf object to fill
-    dwg = ezdxf.new('AC1015')  # mesh requires the DXF 2000 or newer format
+    dwg = ezdxf.new('AC1024')  # mesh requires the DXF 2000 or newer format
+    #AC1009 = AutoCAD R12
+    #AC1015 = AutoCAD R2000
+    #AC1018 = AutoCAD R2004
+    #AC1021 = AutoCAD R2007
+    #AC1024 = AutoCAD R2010
+    #AC1027 = AutoCAD R2013
+    #AC1032 = AutoCAD R2018
+
     msp = dwg.modelspace()
 
     # create vertex (points)
@@ -945,13 +958,28 @@ def blocks2dxf(blockmodel:              pd.DataFrame,
         block_corners[:,1] += y[i]
         block_corners[:,2] += z[i]
 
-        block_corners = block_corners.tolist()
+        # Creates Faces for the block sides
+        if facetype == '3DFACE':
+            bc = block_corners
 
-        mesh = msp.add_mesh()
-        mesh.dxf.subdivision_levels = 0  # do not subdivide cube, 0 is the default value
-        with mesh.edit_data() as mesh_data:
-            mesh_data.vertices = block_corners
-            mesh_data.faces = block_faces
+            msp.add_3dface([bc[0],bc[1],bc[5],bc[4]])
+            msp.add_3dface([bc[1],bc[2],bc[6],bc[5]])
+            msp.add_3dface([bc[5],bc[4],bc[7],bc[6]])
+            msp.add_3dface([bc[7],bc[4],bc[0],bc[3]])
+            msp.add_3dface([bc[0],bc[1],bc[2],bc[3]])
+            msp.add_3dface([bc[3],bc[2],bc[6],bc[7]])
+
+        elif facetype == 'MESH':
+            block_corners = block_corners.tolist()
+            mesh = msp.add_mesh()
+            mesh.dxf.subdivision_levels = 0  # do not subdivide cube, 0 is the default value
+            with mesh.edit_data() as mesh_data:
+               mesh_data.vertices = block_corners
+               mesh_data.faces = block_faces
+
+        else:
+            print('No applicable facetype selected!')
+            pass
 
     dwg.saveas(path)
     return
