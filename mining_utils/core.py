@@ -783,7 +783,7 @@ def blocks2vtk(blockmodel: pd.DataFrame,
         if var[i].dtype == np.object:
             vtk_array = vtk.vtkStringArray()
             for idx in var[i]:
-                vtk_array.InsertNextValue(idx)
+                vtk_array.InsertNextValue(str(idx))
             vtk_array.SetName(varname[i])
         else:
             vtk_array = np_to_vtk(var[i], deep=0)
@@ -809,8 +809,8 @@ def blocks2vtk(blockmodel: pd.DataFrame,
     extractGrid.Update()
 
     # save results
-    writer = vtk.vtkXMLUnstructuredGridWriter();
-    writer.SetFileName(path);
+    writer = vtk.vtkXMLUnstructuredGridWriter()
+    writer.SetFileName(path)
     writer.SetInputData(extractGrid.GetOutput())
     writer.Write()
 
