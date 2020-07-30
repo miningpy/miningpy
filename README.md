@@ -1,1 +1,1 @@
-info about package
+tools for extending pandas API for mining engineering

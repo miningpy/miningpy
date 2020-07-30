@@ -1,12 +1,9 @@
 # import libraries
 import pandas as pd
-import numpy as np
 from math import sin, cos, pi
 from pandas.core.base import PandasObject
 from typing import Union, List, Tuple
-import vtk
-import vtk.util.numpy_support as vtknumpy
-from mining_utils.numpy_vtk import *
+from mining_utils.utilities.numpy_vtk import *
 import ezdxf
 
 
@@ -18,42 +15,22 @@ import ezdxf
 def ijk(blockmodel:     pd.DataFrame,
         method:         str = 'ijk',
         indexing:       int = 1,
-        xcol:           str = None,
-        ycol:           str = None,
-        zcol:           str = None,
-        xorigin:        Union[int, float] = None,
-        yorigin:        Union[int, float] = None,
-        zorigin:        Union[int, float] = None,
-        xsize:          Union[int, float] = None,
-        ysize:          Union[int, float] = None,
-        zsize:          Union[int, float] = None,
-        x_rotation:     Union[int, float] = 0,
-        y_rotation:     Union[int, float] = 0,
-        z_rotation:     Union[int, float] = 0,
-        icol:           str = 'i',
-        jcol:           str = 'j',
-        kcol:           str = 'k',
+        xyz_cols:       Tuple[str, str, str] = None,
+        origin:         Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+        dims:           Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+        rotation:       Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
+        ijk_cols:       Tuple[str, str, str] = ('i', 'j', 'k'),
         inplace:        bool = False) -> pd.DataFrame:
     """
     Calculate block ijk indexes from their xyz cartesian coordinates
     :param blockmodel: pandas dataframe of block model
     :param method: can be used to only calculate i, or j, or k
     :param indexing: controls whether origin block has coordinates 0,0,0 or 1,1,1
-    :param xcol: x column in model
-    :param ycol: y column in model
-    :param zcol: z column in model
-    :param xorigin: x origin of model - this is the corner of the bottom block (not the centroid)
-    :param yorigin: y origin of model - this is the corner of the bottom block (not the centroid)
-    :param zorigin: z origin of model - this is the corner of the bottom block (not the centroid)
-    :param xsize: x dimension of regular parent blocks
-    :param ysize: y dimension of regular parent blocks
-    :param zsize: z dimension of regular parent blocks
-    :param x_rotation: rotation of block model grid around x axis, -180 to 180 degrees
-    :param y_rotation: rotation of block model grid around y axis, -180 to 180 degrees
-    :param z_rotation: rotation of block model grid around z axis (xy plane), -180 to 180 degrees
-    :param icol: name of the i column added to the model
-    :param jcol: name of the j column added to the model
-    :param kcol: name of the k column added to the model
+    :param xyz_cols: names of x,y,z columns in model
+    :param origin: x,y,z origin of model - this is the corner of the bottom block (not the centroid)
+    :param dims: x,y,z dimension of regular parent blocks
+    :param rotation: rotation of block model grid around x,y,z axis, -180 to 180 degrees
+    :param ijk_cols: name of the i,j,k columns added to the model
     :param inplace: whether to do calculation inplace on pandas.DataFrame
 
     :return pandas.DataFrame of indexed block model
@@ -73,27 +50,62 @@ def ijk(blockmodel:     pd.DataFrame,
     else:
         raise ValueError('IJK FAILED - indexing value not accepted - only 1 or 0 can be used')
 
-    rotations = [x_rotation, y_rotation, z_rotation]
+    # definitions for simplicity
+    xcol, ycol, zcol = xyz_cols[0], xyz_cols[1], xyz_cols[2]
+    xorigin, yorigin, zorigin = origin[0], origin[1], origin[2]
+    xsize, ysize, zsize = dims[0], dims[1], dims[2]
+    x_rotation, y_rotation, z_rotation = rotation[0], rotation[1], rotation[2]
+    icol, jcol, kcol = ijk_cols[0], ijk_cols[1], ijk_cols[2]
 
     # check rotation is within parameters
-    for rotation in rotations:
-        if -180 <= rotation <= 180:
+    for rot in rotation:
+        if -180 <= rot <= 180:
             pass
         else:
             raise Exception('Rotation is limited to between -180 and +180 degrees')
 
-    if x_rotation == 0:
+    if x_rotation == 0:  # x rotation
         bm_xcol = blockmodel[xcol]
     else:
-        bm_xcol = blockmodel.rotate_grid(xcol=xcol,ycol=ycol,zcol=zcol,xorigin=xorigin,yorigin=yorigin,zorigin=zorigin,x_rotation=x_rotation,y_rotation=y_rotation,z_rotation=z_rotation,return_full_model=False,inplace=True)['x']
+        bm_xcol = blockmodel.rotate_grid(xcol=xcol,
+                                         ycol=ycol,
+                                         zcol=zcol,
+                                         xorigin=xorigin,
+                                         yorigin=yorigin,
+                                         zorigin=zorigin,
+                                         x_rotation=x_rotation,
+                                         y_rotation=y_rotation,
+                                         z_rotation=z_rotation,
+                                         return_full_model=False,
+                                         inplace=True)['x']
     if y_rotation == 0:
         bm_ycol = blockmodel[ycol]
     else:
-        bm_ycol = blockmodel.rotate_grid(xcol=xcol,ycol=ycol,zcol=zcol,xorigin=xorigin,yorigin=yorigin,zorigin=zorigin,x_rotation=x_rotation,y_rotation=y_rotation,z_rotation=z_rotation,return_full_model=False,inplace=True)['y']
+        bm_ycol = blockmodel.rotate_grid(xcol=xcol,
+                                         ycol=ycol,
+                                         zcol=zcol,
+                                         xorigin=xorigin,
+                                         yorigin=yorigin,
+                                         zorigin=zorigin,
+                                         x_rotation=x_rotation,
+                                         y_rotation=y_rotation,
+                                         z_rotation=z_rotation,
+                                         return_full_model=False,
+                                         inplace=True)['y']
     if z_rotation == 0:
         bm_zcol = blockmodel[zcol]
     else:
-        bm_zcol = blockmodel.rotate_grid(xcol=xcol,ycol=ycol,zcol=zcol,xorigin=xorigin,yorigin=yorigin,zorigin=zorigin,x_rotation=x_rotation,y_rotation=y_rotation,z_rotation=z_rotation,return_full_model=False,inplace=True)['z']
+        bm_zcol = blockmodel.rotate_grid(xcol=xcol,
+                                         ycol=ycol,
+                                         zcol=zcol,
+                                         xorigin=xorigin,
+                                         yorigin=yorigin,
+                                         zorigin=zorigin,
+                                         x_rotation=x_rotation,
+                                         y_rotation=y_rotation,
+                                         z_rotation=z_rotation,
+                                         return_full_model=False,
+                                         inplace=True)['z']
     
     if method in methods_accepted:
         if 'i' in method:
@@ -115,8 +127,6 @@ def ijk(blockmodel:     pd.DataFrame,
                 raise ValueError('IJK FAILED - either zcol, zorigin or zsize not defined properly')
 
         # check inplace for return
-        if inplace:
-            return
         if not inplace:
             return blockmodel
     else:
@@ -126,42 +136,23 @@ def ijk(blockmodel:     pd.DataFrame,
 def xyz(blockmodel:     pd.DataFrame,
         method:         str = 'xyz',
         indexing:       int = 1,
-        icol:           str = 'i',
-        jcol:           str = 'j',
-        kcol:           str = 'k',
-        xorigin:        Union[int, float] = None,
-        yorigin:        Union[int, float] = None,
-        zorigin:        Union[int, float] = None,
-        xsize:          Union[int, float] = None,
-        ysize:          Union[int, float] = None,
-        zsize:          Union[int, float] = None,
-        x_rotation:     Union[int, float] = 0,
-        y_rotation:     Union[int, float] = 0,
-        z_rotation:     Union[int, float] = 0,
-        xcol:           str = 'x',
-        ycol:           str = 'y',
-        zcol:           str = 'z',
+        ijk_cols:       Tuple[str, str, str] = ('i', 'j', 'k'),
+        origin:         Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+        dims:           Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+        rotation:       Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
+        xyz_cols:       Tuple[str, str, str] = ('x', 'y', 'z'),
         inplace:        bool = False) -> pd.DataFrame:
     """
     Calculate xyz cartesian cooridinates of blocks from their ijk indexes
     :param blockmodel: pandas dataframe of block model
     :param method: can be used to only calculate x, y or z
-    :param indexing: controls whether origin block has coordinates 0,0,0 or 1,1,1
-    :param icol: i column in model
-    :param jcol: j column in model
-    :param kcol: k column in model
-    :param xorigin: x origin of model - this is the corner of the bottom block (not the centroid)
-    :param yorigin: y origin of model - this is the corner of the bottom block (not the centroid)
-    :param zorigin: z origin of model - this is the corner of the bottom block (not the centroid)
-    :param xsize: x dimension of regular parent blocks
-    :param ysize: y dimension of regular parent blocks
-    :param zsize: z dimension of regular parent blocks
-    :param x_rotation: rotation of block model grid around x axis, -180 to 180 degrees
-    :param y_rotation: rotation of block model grid around y axis, -180 to 180 degrees
-    :param z_rotation: rotation of block model grid around z axis (xy plane), -180 to 180 degrees
-    :param xcol: name of the x centroid column added to the model
-    :param ycol: name of the y centroid column added to the model
-    :param zcol: name of the z centroid column added to the model
+    :param indexing: controls whether origin block has coordinates 0,0,0 or 1,1,1 (zero-indexed or one-indexed)
+    :param ijk_cols: name of the i,j,k columns added to the model
+    :param origin: x,y,z origin of model - this is the corner of the bottom block (not the centroid)
+    :param dims: x,y,z dimension of regular parent blocks
+    :param rotation: rotation of block model grid around x,y,z axis, -180 to 180 degrees
+    :param xyz_cols: names of x,y,z centroid columns in model
+
     :param inplace: whether to do calculation inplace on pandas.DataFrame
 
     :return pandas.DataFrame of block model
@@ -181,11 +172,16 @@ def xyz(blockmodel:     pd.DataFrame,
     else:
         raise ValueError('XYZ FAILED - indexing value not accepted - only 1 or 0 can be used')
 
-    rotations = [x_rotation, y_rotation, z_rotation]
+    # definitions for simplicity
+    icol, jcol, kcol = ijk_cols[0], ijk_cols[1], ijk_cols[2]
+    xorigin, yorigin, zorigin = origin[0], origin[1], origin[2]
+    xsize, ysize, zsize = dims[0], dims[1], dims[2]
+    x_rotation, y_rotation, z_rotation = rotation[0], rotation[1], rotation[2]
+    xcol, ycol, zcol = xyz_cols[0], xyz_cols[1], xyz_cols[2]
 
     # check rotation is within parameters
-    for rotation in rotations:
-        if -180 <= rotation <= 180:
+    for rot in rotation:
+        if -180 <= rot <= 180:
             pass
         else:
             raise Exception('Rotation is limited to between -180 and +180 degrees')
@@ -220,59 +216,77 @@ def xyz(blockmodel:     pd.DataFrame,
     if x_rotation == 0:
         blockmodel[xcol] = bm_xcol
     else:
-        blockmodel[xcol] = blockmodel.rotate_grid(xcol=xcol,ycol=ycol,zcol=zcol,xorigin=xorigin,yorigin=yorigin,zorigin=zorigin,x_rotation=x_rotation,y_rotation=y_rotation,z_rotation=z_rotation,return_full_model=False,inplace=True)['x']
+        blockmodel[xcol] = blockmodel.rotate_grid(xcol=xcol,
+                                                  ycol=ycol,
+                                                  zcol=zcol,
+                                                  xorigin=xorigin,
+                                                  yorigin=yorigin,
+                                                  zorigin=zorigin,
+                                                  x_rotation=x_rotation,
+                                                  y_rotation=y_rotation,
+                                                  z_rotation=z_rotation,
+                                                  return_full_model=False,
+                                                  inplace=True)['x']
     if y_rotation == 0:
         blockmodel[ycol] = bm_ycol
     else:
-        blockmodel[ycol] = blockmodel.rotate_grid(xcol=xcol,ycol=ycol,zcol=zcol,xorigin=xorigin,yorigin=yorigin,zorigin=zorigin,x_rotation=x_rotation,y_rotation=y_rotation,z_rotation=z_rotation,return_full_model=False,inplace=True)['y']
+        blockmodel[ycol] = blockmodel.rotate_grid(xcol=xcol,
+                                                  ycol=ycol,
+                                                  zcol=zcol,
+                                                  xorigin=xorigin,
+                                                  yorigin=yorigin,
+                                                  zorigin=zorigin,
+                                                  x_rotation=x_rotation,
+                                                  y_rotation=y_rotation,
+                                                  z_rotation=z_rotation,
+                                                  return_full_model=False,
+                                                  inplace=True)['y']
     if z_rotation == 0:
         blockmodel[zcol] = bm_zcol
     else:
-        blockmodel[zcol] = blockmodel.rotate_grid(xcol=xcol,ycol=ycol,zcol=zcol,xorigin=xorigin,yorigin=yorigin,zorigin=zorigin,x_rotation=x_rotation,y_rotation=y_rotation,z_rotation=z_rotation,return_full_model=False,inplace=True)['z']
+        blockmodel[zcol] = blockmodel.rotate_grid(xcol=xcol,
+                                                  ycol=ycol,
+                                                  zcol=zcol,
+                                                  xorigin=xorigin,
+                                                  yorigin=yorigin,
+                                                  zorigin=zorigin,
+                                                  x_rotation=x_rotation,
+                                                  y_rotation=y_rotation,
+                                                  z_rotation=z_rotation,
+                                                  return_full_model=False,
+                                                  inplace=True)['z']
     
     # check inplace for return
-    if inplace:
-        return
     if not inplace:
         return blockmodel
 
 
 def rotate_grid(blockmodel:         pd.DataFrame,
-                xcol:               str = None,
-                ycol:               str = None,
-                zcol:               str = None,
-                xorigin:            Union[int, float] = None,
-                yorigin:            Union[int, float] = None,
-                zorigin:            Union[int, float] = None,
-                x_rotation:         Union[int, float] = 0,
-                y_rotation:         Union[int, float] = 0,
-                z_rotation:         Union[int, float] = 0,
+                xyz_cols:           Tuple[str, str, str] = ('x', 'y', 'z'),
+                origin:             Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+                rotation:           Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
                 return_full_model:  bool = True,
-                inplace:            bool = False) -> pd.DataFrame:
+                inplace:            bool = False) -> Union[pd.DataFrame, dict]:
     """
     Rotate block model relative to cartesian grid
     This method uses a rotation matrix method
     Rotation is done using the right hand rule
     :param blockmodel: pandas dataframe of block model
-    :param xcol: name of the x centroid column added to the model
-    :param ycol: name of the y centroid column added to the model
-    :param zcol: name of the z centroid column added to the model
-    :param xorigin: x origin of model - this is the corner of the bottom block (not the centroid)
-    :param yorigin: y origin of model - this is the corner of the bottom block (not the centroid)
-    :param zorigin: z origin of model - this is the corner of the bottom block (not the centroid)
-    :param x_rotation: rotation of block model grid around x axis, -180 to 180 degrees
-    :param y_rotation: rotation of block model grid around y axis, -180 to 180 degrees
-    :param z_rotation: rotation of block model grid around z axis (xy plane), -180 to 180 degrees
+    :param xyz_cols: names of x,y,z centroid columns in model
+    :param origin: x,y,z origin of model - this is the corner of the bottom block (not the centroid)
+    :param rotation: rotation of block model grid around x,y,z axis, -180 to 180 degrees
+    :param return_full_model: boolean of whether to return the full block model or just a dict of the rotated x,y,z coordinates
     :param inplace: whether to do calculation inplace on pandas.DataFrame
 
-    :return pandas.DataFrame of rotated block model
+    :return pandas.DataFrame of rotated block model or dict of rotated x,y,z coordinates
     """
-
-    rotations = [x_rotation, y_rotation, z_rotation]
+    xcol, ycol, zcol = xyz_cols[0], xyz_cols[1], xyz_cols[2]
+    xorigin, yorigin, zorigin = origin[0], origin[1], origin[2]
+    x_rotation, y_rotation, z_rotation = rotation[0], rotation[1], rotation[2]
 
     # check rotation is within parameters
-    for rotation in rotations:
-        if -180 <= rotation <= 180:
+    for rot in rotation:
+        if -180 <= rot <= 180:
             pass
         else:
             raise Exception('Rotation is limited to between -180 and +180 degrees')
@@ -332,17 +346,13 @@ def rotate_grid(blockmodel:         pd.DataFrame,
     del xrot, yrot, zrot
 
     # check inplace for return
-    if inplace:
-        return
     if not inplace:
         if return_full_model:
-                return blockmodel
+            return blockmodel
         if not return_full_model:
-                return {
-                    'x':blockmodel[xcol],
-                    'y':blockmodel[ycol],
-                    'z':blockmodel[zcol],
-                }
+            return {'x': blockmodel[xcol],
+                    'y': blockmodel[ycol],
+                    'z': blockmodel[zcol]}
 
 
 def group_weighted_average(blockmodel:   pd.DataFrame,
@@ -391,8 +401,6 @@ def group_weighted_average(blockmodel:   pd.DataFrame,
     blockmodel = pd.concat(dfs, axis=1) if len(dfs) > 1 else dfs[0]
 
     # check inplace for return
-    if inplace:
-        return
     if not inplace:
         return blockmodel
 
@@ -405,6 +413,8 @@ def vulcan_csv(blockmodel: pd.DataFrame,
                xsize: Union[int, float] = None,
                ysize: Union[int, float] = None,
                zsize: Union[int, float] = None,
+               csv: str = True,
+               csv_name: str = None,
                inplace: bool = False) -> None:
     """
     transform pandas.Dataframe block model into Vulcan import CSV format
@@ -416,7 +426,10 @@ def vulcan_csv(blockmodel: pd.DataFrame,
     :param xsize: x dimension of regular parent blocks
     :param ysize: y dimension of regular parent blocks
     :param zsize: z dimension of regular parent blocks
+    :param csv: boolean to write vulcan block model to csv
+    :param csv_name: name for boolean to write vulcan block model to csv
     :param inplace: whether to do calculation on dataframe in place
+
 
     :return pandas.DataFrame of block model in Vulcan import CSV format
     """
@@ -434,12 +447,12 @@ def vulcan_csv(blockmodel: pd.DataFrame,
     blockmodel['volume'] = xsize * ysize * zsize
 
     # order fields correctly for Vulcan
-    vulcan_fields = [xcol, ycol, zcol, xsize, ysize, zsize, 'volume']
+    vulcan_fields = [xcol, ycol, zcol, 'dim_x', 'dim_y', 'dim_z', 'volume']
     blockmodel.set_index(vulcan_fields, inplace=True)
     blockmodel.reset_index(inplace=True)
 
     # Export model to Vulcan formatted CSV (use this to create the bdf file)
-    vulcan_variables = pd.DataFrame({'Variable': list(mod_flat_vulcan.columns.values), 'Data Type': list(mod_flat_vulcan.dtypes)})
+    vulcan_variables = pd.DataFrame({'Variable': list(blockmodel.columns.values), 'Data Type': list(blockmodel.dtypes)})
     vulcan_variables['Default Value'] = -99.0
     vulcan_header = vulcan_variables.copy()
 
@@ -447,27 +460,219 @@ def vulcan_csv(blockmodel: pd.DataFrame,
                             'float64': 'Double (Real * 8)',
                             'object': 'Name (Translation Table)'}
 
-    return
+    for pandas,vulcan in pandas_vulcan_dtypes.items():
+        mask = vulcan_header['Data Type'] == pandas
+        vulcan_header.loc[mask, 'Data Type'] = vulcan
+
+    vulcan_variables.to_csv('vulcan_variables.csv', index=False)
+
+    # rename column headers to vulcan format
+    blockmodel.rename(columns={'x': 'centroid_x',
+                                    'y': 'centroid_y',
+                                    'z': 'centroid_z',
+                                    'xdim': 'dim_x',
+                                    'ydim': 'dim_y',
+                                    'zdim': 'dim_z'}, inplace=True)
+
+    # create vulcan header df to append to start of block model
+
+    vulcan_header['Data Type'] = 'double'
+    vulcan_header.rename(columns={'Variable': 'Variable descriptions:',
+                                  'Data Type': 'Variable types:',
+                                  'Default Value': 'Variable defaults:'}, inplace=True)
+    mask = vulcan_header['Variable descriptions:'].isin(vulcan_fields)
+    vulcan_header.loc[mask, 'Variable types:'] = ''
+    vulcan_header.loc[mask, 'Variable defaults:'] = ''
+    vulcan_header['Variable descriptions:'] = ''
+
+    vulcan_header = vulcan_header.T
+
+    vulcan_header.columns = blockmodel.columns
+
+    vulcan_header['centroid_x'] = vulcan_header.index
+    vulcan_header.reset_index(inplace=True, drop=True)
+
+    vulcan_model = pd.concat([vulcan_header, blockmodel], axis=0, sort=False, ignore_index=True)
+
+    print("vulcan block model header:")
+    print(tabulate(vulcan_model.head(5), headers="keys", tablefmt='fancy_grid'))
+
+    date_object = datetime.date.today()
+    print(date_object)
+
+    if csv:
+        if csv_name != None:
+            blockmodel.to_csv(csv_name, index=False)
+        else:
+            blockmodel.to_csv(f'vulcan_output_{str(date_object)}.csv', index=False)
+            print(f'written to vulcan_output_{str(date_object)}.csv')
+
+    if inplace:
+        return
+    if not inplace:
+        return blockmodel
 
 
-def vulcan_bdf(blockmodel: pd.DataFrame):
+def vulcan_bdf(blockmodel: pd.DataFrame,
+               xorigin: Union[int, float] = None,
+               yorigin: Union[int, float] = None,
+               zorigin: Union[int, float] = None,
+               xsize: Union[int, float] = None,
+               ysize: Union[int, float] = None,
+               zsize: Union[int, float] = None,
+               start_xoffset: Union[int, float] = None,
+               start_yoffset: Union[int, float] = None,
+               start_zoffset: Union[int, float] = None,
+               end_xoffset: Union[int, float] = None,
+               end_yoffset: Union[int, float] = None,
+               end_zoffset: Union[int, float] = None,
+               format: str = 'T' or 'C',
+               bdf_name: str = None):
     """
-    create a Vulcan block definition file of a block model
-    :param blockmodel: pandas.Dataframe of block model
+    create a Vulcan block definition file from a vulcan block model
+    :param blockmodel: pandas.Dataframe of vulcan block model
+    :param xorigin: x origin of model - this is the corner of the bottom block (not the centroid)
+    :param yorigin: y origin of model - this is the corner of the bottom block (not the centroid)
+    :param zorigin: z origin of model - this is the corner of the bottom block (not the centroid)
+    :param xsize: size of blocks in blockmodel in x dimension
+    :param ysize: size of blocks in blockmodel in y dimension
+    :param zsize: size of blocks in blockmodel in z dimension
+    :param start_xoffset: min offset in x dimension
+    :param start_yoffset: min offset in y dimension
+    :param start_zoffset: min offset in z dimension
+    :param end_xoffset: max offset in x dimension
+    :param end_yoffset: max offset in in y dimension
+    :param end_zoffset: max offset in in z dimension
+    :param format: file format (classic = C, extended = T)
+    :param bdf_name: Name of bdf file to be created
 
     :return Vulcan bdf file
     """
+
+    # Caveats
+    print("\n***\n\n"
+          "This script creates a BDF from a vulcan block model csv that can be imported into Vulcan.\nIt assumes that bearing, dip and plunge are the default"
+          " values for the block model.\nVariables are given a default value of -99.0, a blank description and type 'double'.\n"
+          "This script will define the parent schema.\n"
+          "All of these values can be edited within Vulcan once the script has been run and bdf "
+          "imported.\n\n***\n ")
+
+    # input checks for format
+    assert format == 'T' or format == 'C', "Define format. format='C' for classic, format='T' for extended"
+
+    # listing variables in vulcan block model (removing vulcan headers)
+    variables = list(blockmodel.columns)
+    del variables[0:7]
+
+    # writing bdf file header
+    bdf = open("vulcan_bdf.txt", "w+")
+    bdf.write("*\n")
+    bdf.write(f"*  Written: {datetime.datetime.now()}*\n")
+    bdf.write("*\n")
+    bdf.write("BEGIN$DEF header\n")
+    bdf.write(" ")
+    bdf.write("NO_align_blocks\n")
+    bdf.write(" ")
+    bdf.write("bearing=90.000000000000\n")
+    bdf.write(" ")
+    bdf.write("dip=0.000000000000\n")
+    bdf.write(" ")
+    bdf.write("n_schemas=1.000000000000\n")
+    bdf.write(" ")
+    bdf.write(f"n_variables={len(variables)}\n")
+    bdf.write(" ")
+    bdf.write("plunge=0.000000000000\n")
+    bdf.write(" ")
+    bdf.write(f"x_origin={xorigin}\n")
+    bdf.write(" ")
+    bdf.write(f"y_origin={yorigin}\n")
+    bdf.write(" ")
+    bdf.write(f"z_origin={zorigin}\n")
+    bdf.write("END$DEF header\n")
+
+    # writing variable default, description, name and type
+    count = 1
+    for variable in variables:
+
+        bdf.write("*\n")
+        bdf.write(f"BEGIN$DEF variable_{count}\n")
+        bdf.write(" ")
+        bdf.write("default='-99.0'\n")
+        bdf.write(" ")
+        bdf.write("description=' '\n")
+        bdf.write(" ")
+        bdf.write(f"name='{variables[count-1]}'\n")
+        bdf.write(" ")
+        bdf.write("type='double'\n")
+        bdf.write(f"END$DEF variable_{count}\n")
+
+        count+=1
+
+    # Writing parent schema
+    bdf.write("*\n")
+    bdf.write("BEGIN$DEF schema_1\n")
+    bdf.write(" ")
+    bdf.write(f"block_max_x={xsize}\n")
+    bdf.write(" ")
+    bdf.write(f"block_max_y={ysize}\n")
+    bdf.write(" ")
+    bdf.write(f"block_max_z={zsize}\n")
+    bdf.write(" ")
+    bdf.write(f"block_min_x={xsize}\n")
+    bdf.write(" ")
+    bdf.write(f"block_min_y={ysize}\n")
+    bdf.write(" ")
+    bdf.write(f"block_min_z={zsize}\n")
+    bdf.write(" ")
+    bdf.write("description='parent'\n")
+    bdf.write(" ")
+    bdf.write(f"schema_max_x={end_xoffset}\n")
+    bdf.write(" ")
+    bdf.write(f"schema_max_y={end_yoffset}\n")
+    bdf.write(" ")
+    bdf.write(f"schema_max_z={end_zoffset}\n")
+    bdf.write(" ")
+    bdf.write(f"schema_min_x={start_xoffset}\n")
+    bdf.write(" ")
+    bdf.write(f"schema_min_y={start_yoffset}\n")
+    bdf.write(" ")
+    bdf.write(f"schema_min_z={start_zoffset}\n")
+    bdf.write("END$DEF schema_1\n")
+    bdf.write("*\n")
+
+    # Writing Boundaries
+    bdf.write("BEGIN$DEF boundaries\n")
+    bdf.write(" ")
+    bdf.write("n_boundaries=0.000000000000\n")
+    bdf.write(" ")
+    bdf.write("n_exceptions=0.000000000000\n")
+    bdf.write(" ")
+    bdf.write("n_limits=0.000000000000\n")
+    bdf.write("END$DEF boundaries\n")
+    bdf.write("*\n")
+
+    # Writing File format
+    bdf.write("BEGIN$DEF file_format\n")
+    bdf.write(" ")
+    bdf.write(f"file_format='{format}'\n")
+    bdf.write("END$DEF\n")
+
+    bdf.write("END$FILE")
+    bdf.close()
+
+    # Writing BDF file
+    date_object = datetime.date.today()
+
+    if bdf_name != None:
+        vulcan_bdf, txt = os.path.splitext("vulcan_bdf.txt")
+        os.rename("vulcan_bdf.txt", f"{bdf_name}" + ".bdf")
+        print(f"written bdf to '{bdf_name}.bdf'")
+    else:
+        vulcan_bdf, txt = os.path.splitext("vulcan_bdf.txt")
+        os.rename("vulcan_bdf.txt", f"vulcan_bdf_{date_object}" + ".bdf")
+        print(f'written bdf to vulcan_bdf_{str(date_object)}.bdf')
+
     return
-
-
-def vulcan_bmf(blockmodel: pd.DataFrame):
-    """
-    create a Vulcan block model file of a block model
-    :param blockmodel: pandas.Dataframe of block model
-
-    :return Vulcan bmf file
-    """
-    pass
 
 
 def geometric_reblock(blockmodel: pd.DataFrame):
@@ -527,9 +732,9 @@ def model_rotation(blockmodel: pd.DataFrame,
 
 
 def model_origin(blockmodel: pd.DataFrame,
-                   xcol: str = None,
-                   ycol: str = None,
-                   zcol: str = None) -> Tuple[float, float, float]:
+                 xcol: str = None,
+                 ycol: str = None,
+                 zcol: str = None) -> Tuple[float, float, float]:
     """
     calculate the origin of a block model grid relative to its current xyz grid
     origin is the corner of the block with min xyz coordinates
@@ -544,20 +749,20 @@ def model_origin(blockmodel: pd.DataFrame,
     yorigin = blockmodel[ycol].min()
     zorigin = blockmodel[zcol].min()
 
-    return (xorigin, yorigin, zorigin)
+    return xorigin, yorigin, zorigin
 
 
 def model_block_size(blockmodel:     pd.DataFrame,
-                    xcol:           str = None,
-                    ycol:           str = None,
-                    zcol:           str = None,
-                    xorigin:        Union[int, float] = None,
-                    yorigin:        Union[int, float] = None,
-                    zorigin:        Union[int, float] = None,
-                    x_rotation:     Union[int, float] = 0,
-                    y_rotation:     Union[int, float] = 0,
-                    z_rotation:     Union[int, float] = 0,
-                    inplace:        bool = False) -> Tuple[float, float, float]:
+                     xcol:           str = None,
+                     ycol:           str = None,
+                     zcol:           str = None,
+                     xorigin:        Union[int, float] = None,
+                     yorigin:        Union[int, float] = None,
+                     zorigin:        Union[int, float] = None,
+                     x_rotation:     Union[int, float] = 0,
+                     y_rotation:     Union[int, float] = 0,
+                     z_rotation:     Union[int, float] = 0,
+                     inplace:        bool = False) -> Tuple[float, float, float]:
     return
 
 
@@ -594,35 +799,28 @@ def attribute_reblock(blockmodel: pd.DataFrame):
     return
 
 
-def blocks2vtk(blockmodel: pd.DataFrame,
-               path:       str = None,
-               xcol:       str = None,
-               ycol:       str = None,
-               zcol:       str = None,
-               xsize:      Union[int, float] = None,
-               ysize:      Union[int, float] = None,
-               zsize:      Union[int, float] = None,
-               x_rotation: Union[int, float] = 0,
-               y_rotation: Union[int, float] = 0,
-               z_rotation: Union[int, float] = 0,
-               cols:       List[str] = None) -> None:
+def blocks2vtk(blockmodel:  pd.DataFrame,
+               path:        str = None,
+               xyz_cols:    Tuple[str, str, str] = ('x', 'y', 'z'),
+               dims:        Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+               rotation:    Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
+               cols:        List[str] = None) -> None:
     """
     exports blocks and attributes of block model to a vtk file to visualise in paraview
     :param blockmodel: pandas.Dataframe of block model
     :param path: filename for vtk file
-    :param xcol: name of the x centroid column added to the model
-    :param ycol: name of the y centroid column added to the model
-    :param zcol: name of the z centroid column added to the model
-    :param xsize: x dimension of regular parent blocks
-    :param ysize: y dimension of regular parent blocks
-    :param zsize: z dimension of regular parent blocks
-    :param x_rotation: rotation of blocks around x axis, -180 to 180 degrees
-    :param y_rotation: rotation of blocks around y axis, -180 to 180 degrees
-    :param z_rotation: rotation of blocks around z axis (xy plane), -180 to 180 degrees
+    :param xyz_cols: names of x,y,z centroid columns in model
+    :param dims: x,y,z dimension of regular parent blocks
+    :param rotation: rotation of block model grid around x,y,z axis, -180 to 180 degrees
     :param cols: columns of attributes to visualise using vtk. If None then exports all columns
 
     :return .vtu vtk file
     """
+
+    # definitions for simplicity
+    xcol, ycol, zcol = xyz_cols[0], xyz_cols[1], xyz_cols[2]
+    xsize, ysize, zsize = dims[0], dims[1], dims[2]
+    x_rotation, y_rotation, z_rotation = rotation[0], rotation[1], rotation[2]
 
     # check if cols parameter is string or list or None
     # if string (single column), make into single element list
@@ -747,29 +945,29 @@ def blocks2vtk(blockmodel: pd.DataFrame,
         block_corners[:,1] += y[i]
         block_corners[:,2] += z[i]
 
-        pcoords.SetTuple3(id+0, block_corners[0,0], block_corners[0,1], block_corners[0,2])
-        pcoords.SetTuple3(id+1, block_corners[1,0], block_corners[1,1], block_corners[1,2])
-        pcoords.SetTuple3(id+2, block_corners[2,0], block_corners[2,1], block_corners[2,2])
-        pcoords.SetTuple3(id+3, block_corners[3,0], block_corners[3,1], block_corners[3,2])
-        pcoords.SetTuple3(id+4, block_corners[4,0], block_corners[4,1], block_corners[4,2])
-        pcoords.SetTuple3(id+5, block_corners[5,0], block_corners[5,1], block_corners[5,2])
-        pcoords.SetTuple3(id+6, block_corners[6,0], block_corners[6,1], block_corners[6,2])
-        pcoords.SetTuple3(id+7, block_corners[7,0], block_corners[7,1], block_corners[7,2])
+        pcoords.SetTuple3(id+0, block_corners[0, 0], block_corners[0, 1], block_corners[0, 2])
+        pcoords.SetTuple3(id+1, block_corners[1, 0], block_corners[1, 1], block_corners[1, 2])
+        pcoords.SetTuple3(id+2, block_corners[2, 0], block_corners[2, 1], block_corners[2, 2])
+        pcoords.SetTuple3(id+3, block_corners[3, 0], block_corners[3, 1], block_corners[3, 2])
+        pcoords.SetTuple3(id+4, block_corners[4, 0], block_corners[4, 1], block_corners[4, 2])
+        pcoords.SetTuple3(id+5, block_corners[5, 0], block_corners[5, 1], block_corners[5, 2])
+        pcoords.SetTuple3(id+6, block_corners[6, 0], block_corners[6, 1], block_corners[6, 2])
+        pcoords.SetTuple3(id+7, block_corners[7, 0], block_corners[7, 1], block_corners[7, 2])
         id += 8
 
     # add points to the cell
     points.SetData(pcoords)
 
     # Create the cells for each block
-    id=-1
-    for i in range (nc):
+    id = -1
+    for i in range(nc):
 
         # add next cell
         voxelArray.InsertNextCell(8)
 
         # for each vertex
-        for j in range (8):
-            id+=1
+        for j in range(8):
+            id += 1
             voxelArray.InsertCellPoint(id)
 
     # create the unstructured grid
@@ -820,17 +1018,10 @@ def blocks2vtk(blockmodel: pd.DataFrame,
 def blocks2dxf(blockmodel:              pd.DataFrame,
                path:                    str = None,
                dxf_split:               str = None,
-               delete_internal_points:  bool = False,
                facetype:                str = '3DFACE',
-               xcol:                    str = None,
-               ycol:                    str = None,
-               zcol:                    str = None,
-               xsize:                   Union[int, float] = None,
-               ysize:                   Union[int, float] = None,
-               zsize:                   Union[int, float] = None,
-               x_rotation:              Union[int, float] = 0,
-               y_rotation:              Union[int, float] = 0,
-               z_rotation:              Union[int, float] = 0) -> None:
+               xyz_cols: Tuple[str, str, str] = ('x', 'y', 'z'),
+               dims: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+               rotation: Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0)) -> None:
     """
     exports blocks and attributes of block model to a vtk file to visualise in paraview
     :param blockmodel: pandas.Dataframe of block model
@@ -838,34 +1029,29 @@ def blocks2dxf(blockmodel:              pd.DataFrame,
     :param dxf_split: column to split dxf files by.
                       for example, could be the year mined column from minemax
                       if None then one dxf is made of every block in blockmodel
-    :param delete_internal_points: True/False to delete internal points.
-                                   i.e. just have the dxf skin of the blocks = True (only outer shell)
-                                   have all the faces of all the blocks = False (inner meshes)
     :param facetype:    type of face for the blocks:
                         3DFACE will create standard dxf faces which are understood by most software
                         MESH is a newer type which requires less space but might not work well
                         None will create no face (could be useful when we add line drawing functionality in the function)
-    :param xcol: name of the x centroid column added to the model
-    :param ycol: name of the y centroid column added to the model
-    :param zcol: name of the z centroid column added to the model
-    :param xsize: x dimension of regular parent blocks
-    :param ysize: y dimension of regular parent blocks
-    :param zsize: z dimension of regular parent blocks
-    :param x_rotation: rotation of block model grid around x axis, -180 to 180 degrees
-    :param y_rotation: rotation of block model grid around y axis, -180 to 180 degrees
-    :param z_rotation: rotation of block model grid around z axis (xy plane), -180 to 180 degrees
+    :param xyz_cols: names of x,y,z centroid columns in model
+    :param dims: x,y,z dimension of regular parent blocks
+    :param rotation: rotation of block model grid around x,y,z axis, -180 to 180 degrees
 
     :return single or multiple .dxf file(s)
     """
+
+    # definitions for simplicity
+    xcol, ycol, zcol = xyz_cols[0], xyz_cols[1], xyz_cols[2]
+    xsize, ysize, zsize = dims[0], dims[1], dims[2]
+    x_rotation, y_rotation, z_rotation = rotation[0], rotation[1], rotation[2]
 
     # check for duplicate blocks and return warning
     dup_check = list(blockmodel.duplicated(subset=[xcol, ycol, zcol]).unique())
     assert True not in dup_check, 'duplicate blocks in dataframe'
 
     # check rotation is within parameters
-    rotations = [x_rotation, y_rotation, z_rotation]
-    for rotation in rotations:
-        if -180 <= rotation <= 180:
+    for rot in rotation:
+        if -180 <= rot <= 180:
             pass
         else:
             raise Exception('Rotation is limited to between -180 and +180 degrees')
@@ -889,12 +1075,12 @@ def blocks2dxf(blockmodel:              pd.DataFrame,
     dz = np.ones(nc) * float(zsize)
 
     # define rotation matrix - used for rotated models
-    x_sin = sin(x_rotation*(pi/180.0))
-    x_cos = cos(x_rotation*(pi/180.0))
-    y_sin = sin(y_rotation*(pi/180.0))
-    y_cos = cos(y_rotation*(pi/180.0))
-    z_sin = sin(z_rotation*(pi/180.0))
-    z_cos = cos(z_rotation*(pi/180.0))
+    x_sin = sin(x_rotation * (pi/180.0))
+    x_cos = cos(x_rotation * (pi/180.0))
+    y_sin = sin(y_rotation * (pi/180.0))
+    y_cos = cos(y_rotation * (pi/180.0))
+    z_sin = sin(z_rotation * (pi/180.0))
+    z_cos = cos(z_rotation * (pi/180.0))
 
     rotation_matrix = np.zeros((3, 3), dtype=np.float64)
     rotation_matrix[0][0] = z_cos * y_cos
@@ -920,13 +1106,13 @@ def blocks2dxf(blockmodel:              pd.DataFrame,
 
     # create dxf object to fill
     dwg = ezdxf.new('AC1024')  # mesh requires the DXF 2000 or newer format
-    #AC1009 = AutoCAD R12
-    #AC1015 = AutoCAD R2000
-    #AC1018 = AutoCAD R2004
-    #AC1021 = AutoCAD R2007
-    #AC1024 = AutoCAD R2010
-    #AC1027 = AutoCAD R2013
-    #AC1032 = AutoCAD R2018
+    # AC1009 = AutoCAD R12
+    # AC1015 = AutoCAD R2000
+    # AC1018 = AutoCAD R2004
+    # AC1021 = AutoCAD R2007
+    # AC1024 = AutoCAD R2010
+    # AC1027 = AutoCAD R2013
+    # AC1032 = AutoCAD R2018
 
     msp = dwg.modelspace()
 
@@ -954,28 +1140,28 @@ def blocks2dxf(blockmodel:              pd.DataFrame,
         block_corners = np.dot(rotation_matrix, block_corners)
         block_corners = block_corners.transpose()
 
-        block_corners[:,0] += x[i]
-        block_corners[:,1] += y[i]
-        block_corners[:,2] += z[i]
+        block_corners[:, 0] += x[i]
+        block_corners[:, 1] += y[i]
+        block_corners[:, 2] += z[i]
 
         # Creates Faces for the block sides
         if facetype == '3DFACE':
             bc = block_corners
 
-            msp.add_3dface([bc[0],bc[1],bc[5],bc[4]])
-            msp.add_3dface([bc[1],bc[2],bc[6],bc[5]])
-            msp.add_3dface([bc[5],bc[4],bc[7],bc[6]])
-            msp.add_3dface([bc[7],bc[4],bc[0],bc[3]])
-            msp.add_3dface([bc[0],bc[1],bc[2],bc[3]])
-            msp.add_3dface([bc[3],bc[2],bc[6],bc[7]])
+            msp.add_3dface([bc[0], bc[1], bc[5], bc[4]])
+            msp.add_3dface([bc[1], bc[2], bc[6], bc[5]])
+            msp.add_3dface([bc[5], bc[4], bc[7], bc[6]])
+            msp.add_3dface([bc[7], bc[4], bc[0], bc[3]])
+            msp.add_3dface([bc[0], bc[1], bc[2], bc[3]])
+            msp.add_3dface([bc[3], bc[2], bc[6], bc[7]])
 
         elif facetype == 'MESH':
             block_corners = block_corners.tolist()
             mesh = msp.add_mesh()
             mesh.dxf.subdivision_levels = 0  # do not subdivide cube, 0 is the default value
             with mesh.edit_data() as mesh_data:
-               mesh_data.vertices = block_corners
-               mesh_data.faces = block_faces
+                mesh_data.vertices = block_corners
+                mesh_data.faces = block_faces
 
         else:
             print('No applicable facetype selected!')
