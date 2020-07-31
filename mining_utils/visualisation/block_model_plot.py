@@ -3,17 +3,18 @@ import pyvista as pv
 import pandas as pd
 from pandas.core.base import PandasObject
 import numpy as np
+from typing import Union, Tuple
 
 
-def plot3D(model=None,                  # block model dataframe
-           coord_cols=('x', 'y', 'z'),  # column names for x,y,z coordinates
-           col=None,                    # attribute column to plot (i.e. tonnage, grade, etc)
-           dims=None,                   # tuple (xdim,ydim,zdim) of blocks
-           widget=None,                 # add widgets such as slider (cut off grade) or cross-section. "COG" or "section"
-           show_grid=True):             # add x,y,z grid to see coordinates on plot
+def plot3D(blockmodel:  pd.DataFrame,                                                           # block model dataframe
+           coord_cols:  Tuple[str, str, str] = ('x', 'y', 'z'),                                 # column names for x,y,z coordinates
+           col:         str = None,                                                             # attribute column to plot (i.e. tonnage, grade, etc)
+           dims:        Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,  # tuple (xdim,ydim,zdim) of blocks
+           widget:      str = None,                                                             # add widgets such as slider (cut off grade) or cross-section. "COG" or "section"
+           show_grid:   bool = True) -> None:                                                   # add x,y,z grid to see coordinates on plot
 
-    # read in block model
-    block_model = model[coord_cols+[col]].copy()
+    # make shallow copy of required columns
+    block_model = blockmodel[coord_cols + col]
 
     # Create the spatial reference
     grid = pv.UniformGrid()
@@ -59,7 +60,7 @@ def plot3D(model=None,                  # block model dataframe
 
     p = pv.Plotter(notebook=False)
 
-    if widget == None:
+    if widget is None:
         p.add_mesh(grid, show_edges=True, scalars=col)
     if widget == "section":
         p.add_mesh_clip_plane(mesh=grid, show_edges=True, scalars=col)
