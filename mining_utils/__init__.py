@@ -1,3 +1,6 @@
-from mining_utils.core import *
+import mining_utils.core
+import mining_utils.visualisation
+import mining_utils.vulcan
 
-core.extend_pandas()
+# versioning
+__version__ = "2020-08-02"

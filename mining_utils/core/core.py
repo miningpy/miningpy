@@ -1262,12 +1262,11 @@ def table_to_1D_array():
     return
 
 
-
 def extend_pandas():
-    '''
+    """
     Extends pandas' PandasObject (Series,
     DataFrame) with functions defined in this file.
-    '''
+    """
 
     PandasObject.ijk = ijk
     PandasObject.xyz = xyz
@@ -1275,7 +1274,6 @@ def extend_pandas():
     PandasObject.group_weighted_average = group_weighted_average
     PandasObject.vulcan_csv = vulcan_csv
     PandasObject.vulcan_bdf = vulcan_bdf
-    PandasObject.vulcan_bmf = vulcan_bmf
     PandasObject.geometric_reblock = geometric_reblock
     PandasObject.whittle_mod = whittle_mod
     PandasObject.model_rotation = model_rotation
@@ -1285,13 +1283,8 @@ def extend_pandas():
     PandasObject.check_internal_blocks_missing = check_internal_blocks_missing
     PandasObject.blocks2vtk = blocks2vtk
     PandasObject.blocks2dxf = blocks2dxf
-
     PandasObject.face_position_dxf = face_position_dxf
-
-
     PandasObject.index_3D_to_1D = index_3D_to_1D
     PandasObject.index_1D_to_3D = index_1D_to_3D
     PandasObject.table_to_4D_array = table_to_4D_array
     PandasObject.table_to_1D_array = table_to_1D_array
-
-
