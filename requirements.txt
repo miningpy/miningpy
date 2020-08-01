@@ -21,5 +21,5 @@ pyvista>=0.25.3
 scooby>=0.5.6
 six>=1.15.0
 toml>=0.10.1
-vtk>=9.0.1
+vtk
 zipp>=3.1.0

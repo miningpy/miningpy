@@ -3,6 +3,13 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+install_requires = ['ezdxf>=0.13.1',
+                    'numpy>=1.19.1',
+                    'pandas>=1.1.0',
+                    'pyvista>=0.25.3',
+                    'vtk',
+                    ]
+
 setuptools.setup(
     name="mining_utils",
     version="2020-08-02",
@@ -13,6 +20,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="",
     packages=setuptools.find_packages(),
+    install_requires=install_requires,
     classifiers=[
         "Programming Language :: Python :: 3",
         "Development Status :: 3 - Alpha",
