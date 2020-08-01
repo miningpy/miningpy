@@ -36,7 +36,7 @@ install_requires_lin = ['ezdxf>=0.13.1',
                         'numpy',
                         'pandas>=1.1.0',
                         'pyvista',
-                        'vtk @ https://vtk.org/files/release/9.0/vtk-9.0.0-cp38-cp38-linux_x86_64.whl#egg=vtk-9.0.0',
+                        'vtk @ https://vtk.org/files/release/9.0/vtk-9.0.0-cp38-cp38-linux_x86_64.whl',
                         ]
 
 if sys.platform == 'linux':
