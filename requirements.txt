@@ -17,9 +17,9 @@ py>=1.9.0
 pyparsing>=2.4.7
 python-dateutil>=2.8.1
 pytz>=2020.1
-pyvista>=0.25.3
+pyvista
 scooby>=0.5.6
 six>=1.15.0
 toml>=0.10.1
-vtk
+vtk<9.0
 zipp>=3.1.0
