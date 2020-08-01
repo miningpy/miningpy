@@ -14,7 +14,7 @@ import ezdxf
 
 def ijk(blockmodel:     pd.DataFrame,
         method:         str = 'ijk',
-        indexing:       int = 1,
+        indexing:       int = 0,
         xyz_cols:       Tuple[str, str, str] = None,
         origin:         Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
         dims:           Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
@@ -135,7 +135,7 @@ def ijk(blockmodel:     pd.DataFrame,
 
 def xyz(blockmodel:     pd.DataFrame,
         method:         str = 'xyz',
-        indexing:       int = 1,
+        indexing:       int = 0,
         ijk_cols:       Tuple[str, str, str] = ('i', 'j', 'k'),
         origin:         Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
         dims:           Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
@@ -1176,7 +1176,7 @@ def face_position_dxf():
 
 
 def index_3D_to_1D(blockmodel:     pd.DataFrame,
-                indexing:       int = 1,
+                indexing:       int = 0,
                 xcol:           str = None,
                 ycol:           str = None,
                 zcol:           str = None,
