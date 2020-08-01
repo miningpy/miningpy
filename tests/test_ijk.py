@@ -5,15 +5,21 @@ import pytest
 import mining_utils
 import os
 
-# get input/result data dirs
-dir_input = r'data/input/ijk/'
-dir_result = r'data/result/ijk/'
+# test data
+testdata = {
+    'x': [5, 5, 15],
+    'y': [5, 15, 25],
+    'z': [5, 5, 5],
+    'xdim': [5, 5, 5],
+    'ydim': [5, 5, 5],
+    'zdim': [5, 5, 5],
+}
 
 
 def test_ijk_1():
     # test ijk inplace
     # all params specified
-    data = pd.read_csv(dir_input + 'test_ijk_1.csv')
+    data = pd.DataFrame(testdata)
     result = pd.read_csv(dir_result + 'test_ijk_1.csv')
     data.ijk(
         method='ijk',
