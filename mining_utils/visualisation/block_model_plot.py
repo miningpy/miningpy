@@ -73,7 +73,7 @@ def plot3D(blockmodel:  pd.DataFrame,                                           
     p.show(full_screen=True)
 
 
-def extend_pandas():
+def extend_pandas_plot():
     """
     Extends pandas' PandasObject (Series,
     DataFrame) with functions defined in this file.
