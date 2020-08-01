@@ -23,7 +23,8 @@ Caveats:
    array -- don't delete the VTK array.
 
 """
-from vtk import vtkIdTypeArray, vtkLongArray, vtkDataArray, vtkCommonKitPython
+from vtk import *
+# from vtk import vtkIdTypeArray, vtkLongArray, vtkDataArray, vtkCommonKitPython
 import numpy as np
 
 # Useful constants for VTK arrays.

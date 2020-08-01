@@ -4,7 +4,8 @@ from pandas.core.base import PandasObject
 from typing import Union, List, Tuple
 from mining_utils.utilities.numpy_vtk import *
 import ezdxf
-from vtk import vtkCommonKitPython, vtkFloatArray, vtkStringArray, vtkPoints, vtkCellArray, vtkUnstructuredGrid, vtkExtractUnstructuredGrid, vtkXMLUnstructuredGridWriter
+from vtk import *
+# from vtk import vtkCommonKitPython, vtkFloatArray, vtkStringArray, vtkPoints, vtkCellArray, vtkUnstructuredGrid, vtkExtractUnstructuredGrid, vtkXMLUnstructuredGridWriter
 
 
 def blocks2vtk(blockmodel:  pd.DataFrame,
