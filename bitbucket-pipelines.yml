@@ -5,10 +5,10 @@ pipelines:
   custom: # Pipelines that are triggered manually
     manual: # The name that is displayed in the list in the Bitbucket Cloud GUI
       - step:
-        caches:
-          - pip
-        script:
-          - pip install -r requirements.txt
-          - pip install pytest
-          - python setup.py install
-          - python -m pytest
+          caches:
+            - pip
+          script:
+            - pip install -r requirements.txt
+            - pip install pytest
+            - python setup.py install
+            - python -m pytest
