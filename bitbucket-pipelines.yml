@@ -1,5 +1,5 @@
 # run pytests
-image: python:3-windowsservercore
+image: python:3.8
 
 pipelines:
   custom: # Pipelines that are triggered manually

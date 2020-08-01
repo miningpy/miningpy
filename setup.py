@@ -7,7 +7,7 @@ install_requires = ['ezdxf>=0.13.1',
                     'numpy>=1.19.1',
                     'pandas>=1.1.0',
                     'pyvista',
-                    'vtk<9.0',
+                    'vtk>9.0',
                     ]
 
 setuptools.setup(

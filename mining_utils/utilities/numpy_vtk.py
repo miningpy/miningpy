@@ -23,8 +23,10 @@ Caveats:
    array -- don't delete the VTK array.
 
 """
-
-import vtk
+try:
+    import vtk
+except ImportError:
+    print('failed to import VTK')
 import numpy as np
 
 # Useful constants for VTK arrays.
