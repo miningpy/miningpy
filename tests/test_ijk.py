@@ -1,4 +1,4 @@
-# standard automated tests for mining_utils core functions
+# standard automated tests for mining_utils->core->ijk function
 
 import pandas as pd
 import pytest
@@ -20,329 +20,262 @@ def test_ijk_1():
     # test ijk inplace
     # all params specified
     data = pd.DataFrame(testdata)
-    result = pd.read_csv(dir_result + 'test_ijk_1.csv')
+    result = {
+        'i': [1, 1, 3],
+        'j': [1, 3, 5],
+        'k': [1, 1, 1],
+    }
+    result = pd.DataFrame(result)
     data.ijk(
         method='ijk',
         indexing=1,
-        xcol='x',
-        ycol='y',
-        zcol='z',
-        xorigin=2.5,
-        yorigin=2.5,
-        zorigin=2.5,
-        xsize=5,
-        ysize=5,
-        zsize=5,
-        x_rotation=0,
-        y_rotation=0,
-        z_rotation=0,
-        icol='i',
-        jcol='j',
-        kcol='k',
+        xyz_cols=('x', 'y', 'z'),
+        origin=(2.5, 2.5, 2.5),
+        dims=(5, 5, 5),
+        rotation=(0, 0, 0),
+        ijk_cols=('i', 'j', 'k'),
         inplace=True
     )
     data = data.astype(float)  # make sure dtypes same
     result = result.astype(float)  # make sure dtypes same
-    assert data.equals(result)
+    assert data[['i', 'j', 'k']].equals(result)
 
 
 def test_ijk_2():
     # test ijk not inplace
     # all params specified
-    data = pd.read_csv(dir_input + 'test_ijk_2.csv')
-    result = pd.read_csv(dir_result + 'test_ijk_2.csv')
+    data = pd.DataFrame(testdata)
+    result = {
+        'i': [1, 1, 3],
+        'j': [1, 3, 5],
+        'k': [1, 1, 1],
+    }
+    result = pd.DataFrame(result)
     data = data.ijk(
             method='ijk',
             indexing=1,
-            xcol='x',
-            ycol='y',
-            zcol='z',
-            xorigin=2.5,
-            yorigin=2.5,
-            zorigin=2.5,
-            xsize=5,
-            ysize=5,
-            zsize=5,
-            x_rotation=0,
-            y_rotation=0,
-            z_rotation=0,
-            icol='i',
-            jcol='j',
-            kcol='k',
-            inplace=False
-        )
+            xyz_cols=('x', 'y', 'z'),
+            origin=(2.5, 2.5, 2.5),
+            dims=(5, 5, 5),
+            rotation=(0, 0, 0),
+            ijk_cols=('i', 'j', 'k'),
+    )
     data = data.astype(float)  # make sure dtypes same
     result = result.astype(float)  # make sure dtypes same
-    assert data.equals(result)
+    assert data[['i', 'j', 'k']].equals(result)
 
 
 def test_ijk_3():
     # test ijk inplace
     # using default params specified
-    data = pd.read_csv(dir_input + 'test_ijk_3.csv')
-    result = pd.read_csv(dir_result + 'test_ijk_3.csv')
+    data = pd.DataFrame(testdata)
+    result = {
+        'i': [0, 0, 2],
+        'j': [0, 2, 4],
+        'k': [0, 0, 0],
+    }
+    result = pd.DataFrame(result)
     data.ijk(
-        xcol='x',
-        ycol='y',
-        zcol='z',
-        xorigin=2.5,
-        yorigin=2.5,
-        zorigin=2.5,
-        xsize=5,
-        ysize=5,
-        zsize=5,
+        method='ijk',
+        xyz_cols=('x', 'y', 'z'),
+        origin=(2.5, 2.5, 2.5),
+        dims=(5, 5, 5),
+        rotation=(0, 0, 0),
+        ijk_cols=('i', 'j', 'k'),
         inplace=True
-        )
+    )
     data = data.astype(float)  # make sure dtypes same
     result = result.astype(float)  # make sure dtypes same
-    assert data.equals(result)
+    assert data[['i', 'j', 'k']].equals(result)
 
 
 def test_ijk_4():
     # test ijk inplace
     # all params specified
-    # only calculatig i
-    data = pd.read_csv(dir_input + 'test_ijk_4.csv')
-    result = pd.read_csv(dir_result + 'test_ijk_4.csv')
+    # only calculating i
+    data = pd.DataFrame(testdata)
+    result = {
+        'i': [1, 1, 3],
+    }
+    result = pd.DataFrame(result)
     data.ijk(
         method='i',
         indexing=1,
-        xcol='x',
-        ycol='y',
-        zcol='z',
-        xorigin=2.5,
-        yorigin=2.5,
-        zorigin=2.5,
-        xsize=5,
-        ysize=5,
-        zsize=5,
-        x_rotation=0,
-        y_rotation=0,
-        z_rotation=0,
-        icol='i',
-        jcol='j',
-        kcol='k',
+        xyz_cols=('x', 'y', 'z'),
+        origin=(2.5, 2.5, 2.5),
+        dims=(5, 5, 5),
+        rotation=(0, 0, 0),
+        ijk_cols=('i', 'j', 'k'),
         inplace=True
     )
     data = data.astype(float)  # make sure dtypes same
     result = result.astype(float)  # make sure dtypes same
-    assert data.equals(result)
+    assert data[['i']].equals(result)
 
 
 def test_ijk_5():
     # test ijk inplace
     # all params specified
     # only calculatig j
-    data = pd.read_csv(dir_input + 'test_ijk_5.csv')
-    result = pd.read_csv(dir_result + 'test_ijk_5.csv')
+    data = pd.DataFrame(testdata)
+    result = {
+        'j': [1, 3, 5],
+    }
+    result = pd.DataFrame(result)
     data.ijk(
         method='j',
         indexing=1,
-        xcol='x',
-        ycol='y',
-        zcol='z',
-        xorigin=2.5,
-        yorigin=2.5,
-        zorigin=2.5,
-        xsize=5,
-        ysize=5,
-        zsize=5,
-        x_rotation=0,
-        y_rotation=0,
-        z_rotation=0,
-        icol='i',
-        jcol='j',
-        kcol='k',
+        xyz_cols=('x', 'y', 'z'),
+        origin=(2.5, 2.5, 2.5),
+        dims=(5, 5, 5),
+        rotation=(0, 0, 0),
+        ijk_cols=('i', 'j', 'k'),
         inplace=True
     )
     data = data.astype(float)  # make sure dtypes same
     result = result.astype(float)  # make sure dtypes same
-    assert data.equals(result)
+    assert data[['j']].equals(result)
 
 
 def test_ijk_6():
     # test ijk inplace
     # all params specified
     # only calculatig k
-    data = pd.read_csv(dir_input + 'test_ijk_6.csv')
-    result = pd.read_csv(dir_result + 'test_ijk_6.csv')
+    data = pd.DataFrame(testdata)
+    result = {
+        'k': [1, 1, 1],
+    }
+    result = pd.DataFrame(result)
     data.ijk(
         method='k',
         indexing=1,
-        xcol='x',
-        ycol='y',
-        zcol='z',
-        xorigin=2.5,
-        yorigin=2.5,
-        zorigin=2.5,
-        xsize=5,
-        ysize=5,
-        zsize=5,
-        x_rotation=0,
-        y_rotation=0,
-        z_rotation=0,
-        icol='i',
-        jcol='j',
-        kcol='k',
+        xyz_cols=('x', 'y', 'z'),
+        origin=(2.5, 2.5, 2.5),
+        dims=(5, 5, 5),
+        rotation=(0, 0, 0),
+        ijk_cols=('i', 'j', 'k'),
         inplace=True
     )
     data = data.astype(float)  # make sure dtypes same
     result = result.astype(float)  # make sure dtypes same
-    assert data.equals(result)
+    assert data[['k']].equals(result)
 
 
 def test_ijk_7():
     # test ijk inplace
     # using default params specified
     # zero indexing
-    data = pd.read_csv(dir_input + 'test_ijk_7.csv')
-    result = pd.read_csv(dir_result + 'test_ijk_7.csv')
+    data = pd.DataFrame(testdata)
+    result = {
+        'i': [0, 0, 2],
+        'j': [0, 2, 4],
+        'k': [0, 0, 0],
+    }
+    result = pd.DataFrame(result)
     data.ijk(
-        xcol='x',
-        ycol='y',
-        zcol='z',
+        method='ijk',
         indexing=0,
-        xorigin=2.5,
-        yorigin=2.5,
-        zorigin=2.5,
-        xsize=5,
-        ysize=5,
-        zsize=5,
+        xyz_cols=('x', 'y', 'z'),
+        origin=(2.5, 2.5, 2.5),
+        dims=(5, 5, 5),
+        rotation=(0, 0, 0),
+        ijk_cols=('i', 'j', 'k'),
         inplace=True
-        )
+    )
     data = data.astype(float)  # make sure dtypes same
     result = result.astype(float)  # make sure dtypes same
-    assert data.equals(result)
+    assert data[['i', 'j', 'k']].equals(result)
 
 
 def test_ijk_8():
     # test ijk inplace
     # using default params specified
     # specifying wrong method, to see if test fails
-    data = pd.read_csv(dir_input + 'test_ijk_8.csv')
+    data = pd.DataFrame(testdata)
     with pytest.raises(Exception):
         for wrong_method in ['kj', 'l', 'kji', 'ji']:
             data.ijk(
-                method = wrong_method,
-                xcol='x',
-                ycol='y',
-                zcol='z',
-                xorigin=2.5,
-                yorigin=2.5,
-                zorigin=2.5,
-                xsize=5,
-                ysize=5,
-                zsize=5,
+                method=wrong_method,
+                indexing=0,
+                xyz_cols=('x', 'y', 'z'),
+                origin=(2.5, 2.5, 2.5),
+                dims=(5, 5, 5),
+                rotation=(0, 0, 0),
+                ijk_cols=('i', 'j', 'k'),
                 inplace=True
-                )
+            )
+
 
 def test_ijk_9():
     # test ijk inplace
     # using default params specified
     # specifying indexing other than 1 or 0, to see if fail
-    data = pd.read_csv(dir_input + 'test_ijk_9.csv')
+    data = pd.DataFrame(testdata)
     with pytest.raises(Exception):
         data.ijk(
-            xcol='x',
-            ycol='y',
-            zcol='z',
+            method='ijk',
             indexing=5,
-            xorigin=2.5,
-            yorigin=2.5,
-            zorigin=2.5,
-            xsize=5,
-            ysize=5,
-            zsize=5,
+            xyz_cols=('x', 'y', 'z'),
+            origin=(2.5, 2.5, 2.5),
+            dims=(5, 5, 5),
+            rotation=(0, 0, 0),
+            ijk_cols=('i', 'j', 'k'),
             inplace=True
-            )
+        )
     with pytest.raises(Exception):
         data.ijk(
-            xcol='x',
-            ycol='y',
-            zcol='z',
+            method='ijk',
             indexing=-5,
-            xorigin=2.5,
-            yorigin=2.5,
-            zorigin=2.5,
-            xsize=5,
-            ysize=5,
-            zsize=5,
+            xyz_cols=('x', 'y', 'z'),
+            origin=(2.5, 2.5, 2.5),
+            dims=(5, 5, 5),
+            rotation=(0, 0, 0),
+            ijk_cols=('i', 'j', 'k'),
             inplace=True
-            )
+        )
 
 
 def test_ijk_10():
     # test ijk inplace
     # using default params specified
     # specifying rotation out of bounds to see if test fails
-    data = pd.read_csv(dir_input + 'test_ijk_10.csv')
+    data = pd.DataFrame(testdata)
     with pytest.raises(Exception):
         data.ijk(
-            xcol='x',
-            ycol='y',
-            zcol='z',
-            xorigin=2.5,
-            yorigin=2.5,
-            zorigin=2.5,
-            x_rotation=300,
-            xsize=5,
-            ysize=5,
-            zsize=5,
-            inplace=True
-            )
-    with pytest.raises(Exception):
-        data.ijk(
-            xcol='x',
-            ycol='y',
-            zcol='z',
-            xorigin=2.5,
-            yorigin=2.5,
-            zorigin=2.5,
-            y_rotation=-300,
-            xsize=5,
-            ysize=5,
-            zsize=5,
+            method='ijk',
+            indexing=1,
+            xyz_cols=('x', 'y', 'z'),
+            origin=(2.5, 2.5, 2.5),
+            dims=(5, 5, 5),
+            rotation=(300, 0, 0),
+            ijk_cols=('i', 'j', 'k'),
             inplace=True
         )
     with pytest.raises(Exception):
         data.ijk(
-            xcol='x',
-            ycol='y',
-            zcol='z',
-            xorigin=2.5,
-            yorigin=2.5,
-            zorigin=2.5,
-            z_rotation=200,
-            xsize=5,
-            ysize=5,
-            zsize=5,
+            method='ijk',
+            indexing=1,
+            xyz_cols=('x', 'y', 'z'),
+            origin=(2.5, 2.5, 2.5),
+            dims=(5, 5, 5),
+            rotation=(0, -300, 0),
+            ijk_cols=('i', 'j', 'k'),
+            inplace=True
+        )
+    with pytest.raises(Exception):
+        data.ijk(
+            method='ijk',
+            indexing=1,
+            xyz_cols=('x', 'y', 'z'),
+            origin=(2.5, 2.5, 2.5),
+            dims=(5, 5, 5),
+            rotation=(0, 0, 200),
+            ijk_cols=('i', 'j', 'k'),
             inplace=True
         )
 
 
-def test_ijk_11():
-    # test ijk inplace
-    # using default params specified
-    # test x rotation
-    data = pd.read_csv(dir_input + 'test_ijk_11.csv')
-    result = pd.read_csv(dir_result + 'test_ijk_11.csv')
-    data.ijk(
-        xcol='x',
-        ycol='y',
-        zcol='z',
-        indexing=0,
-        xorigin=2.5,
-        yorigin=2.5,
-        zorigin=2.5,
-        x_rotation=45,
-        xsize=5,
-        ysize=5,
-        zsize=5,
-        inplace=True
-        )
-    data = data.astype(float)  # make sure dtypes same
-    result = result.astype(float)  # make sure dtypes same
-    assert data.equals(result)
+# test rotation
 
 
 
