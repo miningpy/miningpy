@@ -5,6 +5,7 @@ from pandas.core.base import PandasObject
 from typing import Union, List, Tuple
 from mining_utils.utilities.numpy_vtk import *
 import ezdxf
+from vtk import vtkCommonKitPython, vtkFloatArray, vtkStringArray, vtkPoints, vtkCellArray, vtkUnstructuredGrid, vtkExtractUnstructuredGrid, vtkXMLUnstructuredGridWriter
 
 
 # applies model calculations to pandas dataframe of block model as a pandas method
@@ -889,12 +890,12 @@ def blocks2vtk(blockmodel:  pd.DataFrame,
     npt = nc * 8
 
     # Create array of the points and ID
-    pcoords = vtk.vtkFloatArray()
+    pcoords = vtkFloatArray()
     pcoords.SetNumberOfComponents(3)
     pcoords.SetNumberOfTuples(npt)
 
-    points = vtk.vtkPoints()
-    voxelArray = vtk.vtkCellArray()
+    points = vtkPoints()
+    voxelArray = vtkCellArray()
 
     # define rotation matrix - used for rotated models
     x_sin = sin(x_rotation*(pi/180.0))
@@ -971,15 +972,15 @@ def blocks2vtk(blockmodel:  pd.DataFrame,
             voxelArray.InsertCellPoint(id)
 
     # create the unstructured grid
-    grid = vtk.vtkUnstructuredGrid()
+    grid = vtkUnstructuredGrid()
     # Assign points and cells
     grid.SetPoints(points)
-    grid.SetCells(vtk.VTK_VOXEL, voxelArray)
+    grid.SetCells(VTK_VOXEL, voxelArray)
 
     # asign scalar
     for i in range(nvar):
         if var[i].dtype == np.object:
-            vtk_array = vtk.vtkStringArray()
+            vtk_array = vtkStringArray()
             for idx in var[i]:
                 vtk_array.InsertNextValue(str(idx))
             vtk_array.SetName(varname[i])
@@ -996,7 +997,7 @@ def blocks2vtk(blockmodel:  pd.DataFrame,
 
     # Clean before saving...
     # this will remove duplicated points
-    extractGrid = vtk.vtkExtractUnstructuredGrid()
+    extractGrid = vtkExtractUnstructuredGrid()
     extractGrid.SetInputData(grid)
     extractGrid.PointClippingOff()
     extractGrid.ExtentClippingOff()
@@ -1007,7 +1008,7 @@ def blocks2vtk(blockmodel:  pd.DataFrame,
     extractGrid.Update()
 
     # save results
-    writer = vtk.vtkXMLUnstructuredGridWriter()
+    writer = vtkXMLUnstructuredGridWriter()
     writer.SetFileName(path)
     writer.SetInputData(extractGrid.GetOutput())
     writer.Write()
