@@ -1,9 +1,7 @@
 # standard automated tests for mining_utils->core->ijk function
-
 import pandas as pd
 import pytest
 import mining_utils
-import os
 
 # test data
 testdata = {

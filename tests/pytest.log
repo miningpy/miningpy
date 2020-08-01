@@ -1,0 +1,14 @@
+============================= test session starts =============================
+platform win32 -- Python 3.7.4, pytest-6.0.1, py-1.9.0, pluggy-0.13.1
+rootdir: C:\Repos\mining_utils
+collected 10 items
+
+tests\test_ijk.py ..........                                             [100%]
+
+============================== warnings summary ===============================
+venv\lib\site-packages\pyvista\core\pyvista_ndarray.py:2
+  C:\Repos\mining_utils\venv\lib\site-packages\pyvista\core\pyvista_ndarray.py:2: DeprecationWarning: Using or importing the ABCs from 'collections' instead of from 'collections.abc' is deprecated, and in 3.8 it will stop working
+    from collections import Iterable
+
+-- Docs: https://docs.pytest.org/en/stable/warnings.html
+======================== 10 passed, 1 warning in 0.95s ========================
