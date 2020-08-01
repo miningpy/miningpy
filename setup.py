@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 install_requires = ['ezdxf>=0.13.1',
-                    'numpy>=1.19.1',
+                    'numpy',
                     'pandas>=1.1.0',
                     'pyvista',
                     'vtk>9.0',
