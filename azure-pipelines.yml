@@ -34,3 +34,33 @@ jobs:
         pip install pytest pytest-azurepipelines
         python -m pytest
       displayName: 'pytest'
+
+  - job: WindowsAnaconda
+    pool:
+      vmImage: 'VS2017-Win2016'
+    strategy:
+      matrix:
+        Python36:
+          python.version: '3.6'
+        Python37:
+          python.version: '3.7'
+        Python38:
+          python.version: '3.8'
+
+    steps:
+    - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
+      displayName: Add conda to PATH
+
+    - script: conda create --yes --quiet --name baseAnaconda python=$(python.version) anaconda
+      displayName: Create Anaconda environment & Install packages
+
+    - script: |
+        call activate baseAnaconda
+        python setup.py install
+      displayName: Install mining_utils package in conda env
+    
+    - script: |
+        call activate baseAnaconda
+        pip install pytest pytest-azurepipelines
+        python -m pytest
+      displayName: pytest
