@@ -5,6 +5,19 @@
 
 trigger: none
 
+schedules:
+- cron: "0 9 * * *"
+  displayName: Daily build
+  branches:
+    include:
+    - master
+- cron: "0 7 * * 0"
+  displayName: Weekly Sunday build
+  branches:
+    include:
+    - master
+  always: true
+
 jobs:
   - job: WindowsPip
     pool:
