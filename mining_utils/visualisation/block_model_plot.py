@@ -6,22 +6,44 @@ import numpy as np
 from typing import Union, Tuple
 
 
-def plot3D(blockmodel:  pd.DataFrame,                                                           # block model dataframe
-           coord_cols:  Tuple[str, str, str] = ('x', 'y', 'z'),                                 # column names for x,y,z coordinates
-           col:         str = None,                                                             # attribute column to plot (i.e. tonnage, grade, etc)
-           dims:        Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,  # tuple (xdim,ydim,zdim) of blocks
-           widget:      str = None,                                                             # add widgets such as slider (cut off grade) or cross-section. "COG" or "section"
-           show_grid:   bool = True) -> None:                                                   # add x,y,z grid to see coordinates on plot
+def plot3D(blockmodel:  pd.DataFrame,
+           xyz_cols:  Tuple[str, str, str] = ('x', 'y', 'z'),
+           col:         str = None,
+           dims:        Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+           widget:      str = None,
+           show_grid:   bool = True) -> None:
+    """
+    create activate 3D vtk plot of block model that is fully interactive
+
+    Parameters
+    ----------
+    blockmodel: pd.DataFrame
+        pandas dataframe of block model
+    xyz_cols: tuple of strings
+        names of x,y,z columns in model
+    col: str
+        attribute column to plot (i.e. tonnage, grade, etc)
+    dims: tuple of floats or ints
+        x,y,z dimension of regular parent blocks
+    widget: {"COG","section"}
+        add widgets such as slider (cut off grade) or cross-section.
+    show_grid: bool
+        add x,y,z grid to see coordinates on plot
+
+    Returns
+    -------
+    active window of block model 3D plot
+    """
 
     # make shallow copy of required columns
-    block_model = blockmodel[coord_cols + col]
+    block_model = blockmodel[xyz_cols + col]
 
     # Create the spatial reference
     grid = pv.UniformGrid()
 
-    x_orig = block_model[coord_cols[0]].min() - (0.5 * dims[0])
-    y_orig = block_model[coord_cols[1]].min() - (0.5 * dims[1])
-    z_orig = block_model[coord_cols[2]].min() - (0.5 * dims[2])
+    x_orig = block_model[xyz_cols[0]].min() - (0.5 * dims[0])
+    y_orig = block_model[xyz_cols[1]].min() - (0.5 * dims[1])
+    z_orig = block_model[xyz_cols[2]].min() - (0.5 * dims[2])
     origin = (x_orig, y_orig, z_orig)
 
     # Edit the spatial reference
@@ -29,27 +51,27 @@ def plot3D(blockmodel:  pd.DataFrame,                                           
     grid.spacing = dims  # x,y,z dimensions of blocks
 
     # build the block model framework
-    nx = int((block_model[coord_cols[0]].max() - block_model[coord_cols[0]].min()) / grid.spacing[0]) + 1  # number of blocks in x dimension
-    ny = int((block_model[coord_cols[1]].max() - block_model[coord_cols[1]].min()) / grid.spacing[1]) + 1  # number of blocks in y dimension
-    nz = int((block_model[coord_cols[2]].max() - block_model[coord_cols[2]].min()) / grid.spacing[2]) + 1  # number of blocks in z dimension
+    nx = int((block_model[xyz_cols[0]].max() - block_model[xyz_cols[0]].min()) / grid.spacing[0]) + 1  # number of blocks in x dimension
+    ny = int((block_model[xyz_cols[1]].max() - block_model[xyz_cols[1]].min()) / grid.spacing[1]) + 1  # number of blocks in y dimension
+    nz = int((block_model[xyz_cols[2]].max() - block_model[xyz_cols[2]].min()) / grid.spacing[2]) + 1  # number of blocks in z dimension
     grid.dimensions = [nx+1, ny+1, nz+1]  # need extra dimension - 4th dimension is for data (x,y,z,data)
 
     # only keep blocks actually in block model dataframe
     centers = np.array(grid.cell_centers().points)
     cell_coords = pd.DataFrame(data=centers)
-    cell_coords.columns = coord_cols
+    cell_coords.columns = xyz_cols
     cell_coords['idx'] = cell_coords.index
-    mask = pd.merge(cell_coords, block_model, on=coord_cols, how='inner')
+    mask = pd.merge(cell_coords, block_model, on=xyz_cols, how='inner')
 
     grid = grid.extract_cells(mask['idx'].values)
 
     centers = np.array(grid.cell_centers().points)
     cell_coords = pd.DataFrame(data=centers)
-    cell_coords.columns = coord_cols
+    cell_coords.columns = xyz_cols
     cell_coords['idx'] = cell_coords.index
 
-    cell_coords.set_index(coord_cols, inplace=True)
-    block_model.set_index(coord_cols, inplace=True)
+    cell_coords.set_index(xyz_cols, inplace=True)
+    block_model.set_index(xyz_cols, inplace=True)
     block_model['idx'] = cell_coords['idx']
     block_model.sort_values(by=['idx'], inplace=True)
 
