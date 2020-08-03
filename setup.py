@@ -10,9 +10,12 @@ install_requires = ['ezdxf>=0.13.1',
                     'vtk>=9.0',
                     ]
 
+with open('miningpy/VERSION') as version_file:
+    ver = version_file.read().strip()
+
 setuptools.setup(
     name="miningpy",
-    version="0.1.0",
+    version=ver,
     author="Iain Fullelove",
     author_email="fullelove.iain@gmail.com",
     description="set of tools for mining engineering",
