@@ -1,0 +1,50 @@
+# Python package
+# Test deploying package to PyPi
+
+trigger: none
+
+schedules:
+- cron: "0 9 * * *"
+  displayName: Daily build
+  branches:
+    include:
+    - master
+- cron: "0 7 * * 0"
+  displayName: Weekly Sunday build
+  branches:
+    include:
+    - master
+  always: true
+
+jobs:
+  - job: Test PyPi Deploy
+    pool:
+      vmImage: 'VS2017-Win2016'
+    strategy:
+      matrix:
+          python.version: '3.8'
+
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '$(python.version)'
+        addToPath: true
+      displayName: 'Use Python $(python.version)'
+
+    - script: |
+        python -m pip install --upgrade pip
+        pip install twine
+        pip install wheel
+      displayName: 'Install Deployment Requirements'
+
+    - script: |
+        python setup.py sdist bdist_wheel
+        twine check dist/*
+      displayName: 'Build/Check Project'
+
+    - script: |
+        twine upload --repository testpypi dist/*
+      displayName: 'Deploy Project'
+      env:
+        TWINE_USERNAME: $(twine.username)
+        TWINE_PASSWORD: $(twine.password)
