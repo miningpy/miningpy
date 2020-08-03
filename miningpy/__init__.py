@@ -3,10 +3,11 @@ import miningpy.visualisation
 import miningpy.vulcan
 import os
 
-DIR = os.path.dirname(__file__)
+__location__ = os.path.realpath(
+    os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 # versioning
-with open(os.path.join(DIR, 'VERSION')) as version_file:
+with open(os.path.join(__location__, 'VERSION')) as version_file:
     ver = version_file.read().strip()
 
 __version__ = ver

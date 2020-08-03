@@ -1,5 +1,5 @@
 # Include docs
 include LICENSE
-include VERSION
+include miningpy/VERSION
 recursive-exclude docs *.rst
 recursive-exclude docs *.py

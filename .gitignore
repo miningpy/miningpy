@@ -5,3 +5,6 @@ venv/
 .vscode/
 .pytest_cache/
 docs/_build/
+miningpy.egg-info/
+build/
+dist/
