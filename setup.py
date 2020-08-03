@@ -1,4 +1,5 @@
 import setuptools 
+import sys
 
 with open("README.rst", "r") as fh:
     long_description = fh.read()
@@ -12,6 +13,16 @@ install_requires = ['ezdxf>=0.13.1',
 
 with open('miningpy/VERSION') as version_file:
     ver = version_file.read().strip()
+
+# for test deployments only
+if '--testversion' in sys.argv:
+    index = sys.argv.index('--testversion')
+    sys.argv.pop(index)  # Removes the '--testversion'
+    ver = sys.argv.pop(index)  # Returns the element after the '--testversion'
+
+    # be careful! this is only intended for automated testing on azure pipelines - do not use this in production
+    with open('miningpy/VERSION', 'w') as version_file:
+        version_file.write(ver)
 
 setuptools.setup(
     name="miningpy",
