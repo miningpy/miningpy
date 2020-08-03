@@ -17,11 +17,12 @@ schedules:
   always: true
 
 jobs:
-  - job: Test PyPi Deploy
+  - job: Test_PyPi_Deploy
     pool:
       vmImage: 'VS2017-Win2016'
     strategy:
       matrix:
+        Python38:
           python.version: '3.8'
 
     steps:
