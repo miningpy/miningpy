@@ -3,9 +3,9 @@ mining_utils core API
 
 This page describes the core functions in the mining_utils library
 
-The test module contains...
+The core module contains...
 
-.. currentmodule:: core
+.. currentmodule:: mining_utils.core
 
 ijk
 ---
@@ -23,22 +23,22 @@ rotate_grid
 .. autofunction:: rotate_grid
 
 group_weighted_average
------------
+----------------------
 
 .. autofunction:: group_weighted_average
 
 vulcan_csv
------------
+----------
 
 .. autofunction:: vulcan_csv
 
 vulcan_bdf
------------
+----------
 
 .. autofunction:: vulcan_bdf
 
 index_3D_to_1D
------------
+--------------
 
 .. autofunction:: index_3D_to_1D
 
