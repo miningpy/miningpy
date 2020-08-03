@@ -39,7 +39,10 @@ jobs:
       displayName: 'Install Deployment Requirements'
 
     - script: |
-        python setup.py sdist bdist_wheel
+        set /p version=<miningpy/VERSION
+        FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
+        set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%-%DTS:~8,4%
+        python setup.py sdist bdist_wheel --testversion %version%-%CUR_DATE%
         twine check dist/*
       displayName: 'Build/Check Project'
 
