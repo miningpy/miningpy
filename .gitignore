@@ -4,3 +4,4 @@ venv/
 .mypy_cache/
 .vscode/
 .pytest_cache/
+docs/_build/
