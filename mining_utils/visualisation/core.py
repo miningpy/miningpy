@@ -5,7 +5,6 @@ from typing import Union, List, Tuple
 from mining_utils.utilities.numpy_vtk import *
 import ezdxf
 from vtk import *
-# from vtk import vtkCommonKitPython, vtkFloatArray, vtkStringArray, vtkPoints, vtkCellArray, vtkUnstructuredGrid, vtkExtractUnstructuredGrid, vtkXMLUnstructuredGridWriter
 
 
 def blocks2vtk(blockmodel:  pd.DataFrame,
@@ -16,14 +15,25 @@ def blocks2vtk(blockmodel:  pd.DataFrame,
                cols:        List[str] = None) -> None:
     """
     exports blocks and attributes of block model to a vtk file to visualise in paraview
-    :param blockmodel: pandas.Dataframe of block model
-    :param path: filename for vtk file
-    :param xyz_cols: names of x,y,z centroid columns in model
-    :param dims: x,y,z dimension of regular parent blocks
-    :param rotation: rotation of block model grid around x,y,z axis, -180 to 180 degrees
-    :param cols: columns of attributes to visualise using vtk. If None then exports all columns
 
-    :return .vtu vtk file
+    Parameters
+    ----------
+    blockmodel: pd.DataFrame
+        pandas dataframe of block model
+    path: str
+        filename for vtk file
+    xyz_cols: tuple of strings
+        names of x,y,z columns in model
+    dims: tuple of floats or ints
+        x,y,z dimension of regular parent blocks
+    rotation: tuple of floats or ints
+        rotation of block model grid around x,y,z axis, -180 to 180 degrees
+    cols: list of strings
+        columns of attributes to visualise using vtk. If None then exports all columns
+
+    Returns
+    -------
+    .vtu vtk file
     """
 
     # definitions for simplicity
@@ -224,29 +234,41 @@ def blocks2vtk(blockmodel:  pd.DataFrame,
     return
 
 
-def blocks2dxf(blockmodel:              pd.DataFrame,
-               path:                    str = None,
-               dxf_split:               str = None,
-               facetype:                str = '3DFACE',
-               xyz_cols: Tuple[str, str, str] = ('x', 'y', 'z'),
-               dims: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
-               rotation: Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0)) -> None:
+def blocks2dxf(blockmodel:   pd.DataFrame,
+               path:         str = None,
+               dxf_split:    str = None,
+               facetype:     str = '3DFACE',
+               xyz_cols:     Tuple[str, str, str] = ('x', 'y', 'z'),
+               dims:         Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+               rotation:     Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0)) -> None:
     """
     exports blocks and attributes of block model to a vtk file to visualise in paraview
-    :param blockmodel: pandas.Dataframe of block model
-    :param path: filename for dxf files. If multiple dxfs produced, this will be used as the file suffix
-    :param dxf_split: column to split dxf files by.
-                      for example, could be the year mined column from minemax
-                      if None then one dxf is made of every block in blockmodel
-    :param facetype:    type of face for the blocks:
-                        3DFACE will create standard dxf faces which are understood by most software
-                        MESH is a newer type which requires less space but might not work well
-                        None will create no face (could be useful when we add line drawing functionality in the function)
-    :param xyz_cols: names of x,y,z centroid columns in model
-    :param dims: x,y,z dimension of regular parent blocks
-    :param rotation: rotation of block model grid around x,y,z axis, -180 to 180 degrees
 
-    :return single or multiple .dxf file(s)
+    Parameters
+    ----------
+    blockmodel: pd.DataFrame
+        pandas dataframe of block model
+    path: str
+        filename for dxf files. If multiple dxfs produced, this will be used as the file suffix
+    dxf_split: str
+        column to split dxf files by.
+        for example, could be the year mined column from minemax
+        if None then one dxf is made of every block in blockmodel
+    facetype: {'3DFACE', 'MESH', None}
+        type of face for the blocks
+        3DFACE will create standard dxf faces which are understood by most software
+        MESH is a newer type which requires less space but might not work well
+        None will create no face (could be useful when we add line drawing functionality in the function)
+    xyz_cols: tuple of strings
+        names of x,y,z columns in model
+    dims: tuple of floats or ints
+        x,y,z dimension of regular parent blocks
+    rotation: tuple of floats or ints
+        rotation of block model grid around x,y,z axis, -180 to 180 degrees
+
+    Returns
+    -------
+    single or multiple .dxf file(s)
     """
 
     # definitions for simplicity
