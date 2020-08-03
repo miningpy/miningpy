@@ -12,7 +12,7 @@ install_requires = ['ezdxf>=0.13.1',
 
 setuptools.setup(
     name="mining_utils",
-    version="2020-08-02",
+    version="0.1.0",
     author="Iain Fullelove",
     author_email="fullelove.iain@gmail.com",
     description="set of tools for mining engineering purposes",

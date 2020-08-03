@@ -10,19 +10,22 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
+import datetime
+sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('..'))
+import mining_utils
 
 
 # -- Project information -----------------------------------------------------
 
 project = 'mining_utils'
-copyright = '2020, Iain Fullelove'
+copyright = f'{datetime.date.today().year}, Iain Fullelove'
 author = 'Iain Fullelove'
 
 # The full version, including alpha/beta/rc tags
-release = '0.1.0'
+release = mining_utils.__version__
 
 
 # -- General configuration ---------------------------------------------------
@@ -30,7 +33,10 @@ release = '0.1.0'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['recommonmark']
+extensions = ['recommonmark',
+              'numpydoc',
+              'sphinx.ext.autodoc',
+              'sphinx.ext.napoleon']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
