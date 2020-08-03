@@ -72,7 +72,20 @@ VTK is a dependency of MiningPy and there are known issues with the current Linu
 
 API Reference
 -------------
+The MiningPy API currently includes:
 
+* :ref:`core-api`.
+* :ref:`visualisation-api`.
+* :ref:`vulcan-api`.
+
+.. toctree::
+   :maxdepth: 2
+   :caption: API Reference
+   :hidden:
+
+   core/core
+   visualisation/visualisation
+   vulcan/vulcan
 
 License
 -------

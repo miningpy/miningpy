@@ -1,5 +1,7 @@
-MiningPy Vulcan API
-===================
+.. _vulcan-api:
+
+Maptek Vulcan Integration
+=========================
 
 This page describes the core functions in MiningPy
 

@@ -1,5 +1,7 @@
-MiningPy Visualisation API
-==========================
+.. _visualisation-api:
+
+Visualisation
+=============
 
 This page describes the visualisation functions in MiningPy
 

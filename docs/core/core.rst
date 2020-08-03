@@ -1,5 +1,7 @@
-MiningPy core API
-=====================
+.. _core-api:
+
+Core API
+========
 
 This page describes the core functions in MiningPy
 
