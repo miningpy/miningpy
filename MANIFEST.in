@@ -1,0 +1,4 @@
+# Include docs
+include LICENSE
+recursive-exclude docs *.rst
+recursive-exclude docs *.py
