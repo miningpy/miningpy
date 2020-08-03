@@ -7,8 +7,6 @@
 MiningPy documentation
 ========================================
 
-Version: |release|
-
 About
 -----
 MiningPy is intended to help mining engineers harness the full power of the Python ecosystem to solve routine mine planning problems.
