@@ -1,9 +1,7 @@
-miningpy core API
+MiningPy core API
 =====================
 
-This page describes the core functions in the miningpy library
-
-The core module contains...
+This page describes the core functions in MiningPy
 
 .. currentmodule:: miningpy.core
 
