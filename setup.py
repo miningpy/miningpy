@@ -11,11 +11,11 @@ install_requires = ['ezdxf>=0.13.1',
                     ]
 
 setuptools.setup(
-    name="mining_utils",
+    name="miningpy",
     version="0.1.0",
     author="Iain Fullelove",
     author_email="fullelove.iain@gmail.com",
-    description="set of tools for mining engineering purposes",
+    description="set of tools for mining engineering",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="",

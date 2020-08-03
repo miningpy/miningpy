@@ -2,7 +2,7 @@ import pandas as pd
 from math import sin, cos, pi
 from pandas.core.base import PandasObject
 from typing import Union, List, Tuple
-from mining_utils.utilities.numpy_vtk import *
+from miningpy.utilities.numpy_vtk import *
 import ezdxf
 from vtk import *
 

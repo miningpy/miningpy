@@ -1,11 +1,11 @@
-mining_utils core API
+miningpy core API
 =====================
 
-This page describes the core functions in the mining_utils library
+This page describes the core functions in the miningpy library
 
 The core module contains...
 
-.. currentmodule:: mining_utils.core
+.. currentmodule:: miningpy.core
 
 ijk
 ---

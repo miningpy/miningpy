@@ -15,7 +15,7 @@ import sys
 import datetime
 sys.path.insert(0, os.path.abspath('.'))
 sys.path.insert(0, os.path.abspath('..'))
-import mining_utils
+import miningpy
 
 
 # -- Project information -----------------------------------------------------
@@ -25,7 +25,7 @@ copyright = f'{datetime.date.today().year}, Iain Fullelove'
 author = 'Iain Fullelove'
 
 # The full version, including alpha/beta/rc tags
-release = mining_utils.__version__
+release = miningpy.__version__
 
 
 # -- General configuration ---------------------------------------------------
