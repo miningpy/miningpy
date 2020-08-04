@@ -1,4 +1,6 @@
-![alt text](https://bitbucket.org/incitron/miningpy/src/master/docs/_static/miningpy_logo.png)
+# MiningPy Documentation
+
+![picture](docs/_static/miningpy_logo.png)
 
 Version:        0.1.0
 
