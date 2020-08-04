@@ -39,7 +39,7 @@ jobs:
         python setup.py install
       displayName: Install miningpy package in conda env
 
-  - job: WindowsCondaVtk-condaForge
+  - job: WindowsCondaVtk_condaForge
     pool:
       vmImage: 'VS2017-Win2016'
     strategy:
