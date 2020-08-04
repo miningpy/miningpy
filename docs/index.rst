@@ -9,6 +9,10 @@ MiningPy documentation
 
 Version: |release|
 
+Documentation:  https://miningpy.readthedocs.io/en/latest/
+
+Repository:     https://bitbucket.org/incitron/miningpy
+
 .. toctree::
    :name: Introduction
    :hidden:
@@ -46,10 +50,6 @@ There are numerous geological packages that have been written in Python, such as
 However, none of these packages directly provide any tools to handle mining engineering specific problems.
 MiningPy aims to provide a simple API to mining engineers that extends existing data science tools like `Pandas <https://pandas.pydata.org/>`_, without having to re-invent the wheel every time they need to interface with commercial mine planning software or manipulate mining data.
 
-Author
-------
-The creator of MiningPy is a mining engineer that primarly works in long-term strategic mine planning.
-
 Installation
 ------------
 MiningPy is distributed using `PyPi <https://pypi.org>`_ and can be installed through Pip::
@@ -86,6 +86,12 @@ The MiningPy API currently includes:
    core/core
    visualisation/visualisation
    vulcan/vulcan
+
+
+Author
+------
+The creator of MiningPy is a mining engineer that primarly works in long-term strategic mine planning.
+
 
 License
 -------
