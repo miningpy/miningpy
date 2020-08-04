@@ -29,7 +29,7 @@ setuptools.setup(
     version=ver,
     author="Iain Fullelove",
     author_email="fullelove.iain@gmail.com",
-    description="set of tools for mining engineering",
+    description="python tools for mining engineering",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="",
