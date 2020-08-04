@@ -15,17 +15,34 @@ cd miningpy
 python -m pip install .
 ```
 
-## Reporting Bugs
+
+## Issue Tracking
+
+The bitbucket repository [issues page](https://bitbucket.org/incitron/miningpy/issues) is used 
+to track issues, suggest features, ask questions, etc. When creating an issue, please tag it using
+the correct *component* so that the developers can track it. The components setup for the repository include:
+- `bug`: uh-oh! Something isn't working as expected.
+- `deployment`: anything related to deploying MiningPy to services like PyPI.
+- `documentation`: anything related to the documentation/website.
+- `enhancement`: changes that enhance the library.
+- `feature`: please add this cool feature!
+- `installation`: fails to work on install.
+- `release`: issue related to existing releases on PyPi.
+- `review`: please review this feature.
+- `testing`: anything related to CI testing.
+
+
+### Reporting Bugs
 
 If you stumble across any bugs, crashes, or concerning quirks while using code
 distributed here, please report it on the [issues page](https://bitbucket.org/incitron/miningpy/issues)
-with an appropriate label so we can promptly address it.
+with an appropriate component so we can promptly address it.
 When reporting an issue, please be overly descriptive so that we may reproduce
 it. Whenever possible, please provide tracebacks, screenshots, and sample files
 to help us address the issue.
 
 
-## Feature Requests
+### Feature Requests
 
 We encourage users to submit ideas for improvements to PyVista code base!
 Please create an issue on the [issues page](https://bitbucket.org/incitron/miningpy/issues)
