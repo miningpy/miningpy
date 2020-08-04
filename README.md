@@ -83,7 +83,7 @@ cd miningpy/docs
 make html
 ```
 
-The documention can then be found in miningpy/docs/_build/html/index.html
+The documention can then be found in `miningpy/docs/_build/html/index.html`.
 
 
 ## Supported Platforms & Testing
