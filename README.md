@@ -39,11 +39,6 @@ However, none of these packages directly provide any tools to handle mining engi
 MiningPy aims to provide a simple API to mining engineers that extends existing data science tools like [Pandas](https://pandas.pydata.org), without having to re-invent the wheel every time they need to interface with commercial mine planning software or manipulate mining data.
 
 
-## Author
-
-The creator of MiningPy is a mining engineer that primarly works in long-term strategic mine planning.
-
-
 ## Installation
 
 MiningPy is distributed using [PyPi](https://pypi.org) and can be installed through Pip:
@@ -51,9 +46,28 @@ MiningPy is distributed using [PyPi](https://pypi.org) and can be installed thro
     $ pip install miningpy
 
 
-## Supported Platforms
+## Documentation
+
+Auto-generated documentation is hosted at [Read The Docs](https://miningpy.readthedocs.io/en/latest/)
+
+You may also build the documentation yourself:
+
+```bash
+git clone https://bitbucket.org/incitron/miningpy/miningpy.git
+cd miningpy/docs
+make html
+```
+
+The documention can then be found in miningpy/docs/_build/html/index.html
+
+
+## Supported Platforms & Testing
+
+### Platforms
 
 MiningPy is only tested on Microsoft Windows 10.
+
+### Testing
 
 The package is built and tested nightly using environments based on [Virtualenv](https://virtualenv.pypa.io/) and [Conda](https://docs.conda.io) (with the current base Anaconda packages).
 
@@ -65,8 +79,21 @@ MiningPy is tested to be compatible with the following versions of Python:
 
 VTK is a dependency of MiningPy and there are known issues with the current Linux version of VTK published on [PyPi](https://pypi.org/project/vtk/).
 
+The package is also automatically deployed nightly to [TestPyPi](https://test.pypi.org/project/miningpy/), to ensure that official package releases are stable.
+The versioning format used on TestPyPi is: `version.version.version.yyyyMMddHHmm`.
 
 ## API Reference
+
+
+## Author
+
+The creator of MiningPy is a mining engineer consultant that primarly works in long-term strategic mine planning.
+
+
+## Contributing
+
+Contributions to the MiningPy package are welcome. 
+Please refer to the [Contributing Guide](CONTRIBUTING.md) for detailed information.
 
 
 ## License
