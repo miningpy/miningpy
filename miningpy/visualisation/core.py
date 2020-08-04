@@ -12,7 +12,7 @@ def blocks2vtk(blockmodel:  pd.DataFrame,
                xyz_cols:    Tuple[str, str, str] = ('x', 'y', 'z'),
                dims:        Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
                rotation:    Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
-               cols:        List[str] = None) -> None:
+               cols:        List[str] = None) -> bool:
     """
     exports blocks and attributes of block model to a vtk file to visualise in paraview
 
@@ -33,7 +33,7 @@ def blocks2vtk(blockmodel:  pd.DataFrame,
 
     Returns
     -------
-    .vtu vtk file
+    True if .vtu file is exported with no errors
     """
 
     # definitions for simplicity
@@ -231,7 +231,7 @@ def blocks2vtk(blockmodel:  pd.DataFrame,
     writer.SetInputData(extractGrid.GetOutput())
     writer.Write()
 
-    return
+    return True
 
 
 def blocks2dxf(blockmodel:   pd.DataFrame,
@@ -240,7 +240,7 @@ def blocks2dxf(blockmodel:   pd.DataFrame,
                facetype:     str = '3DFACE',
                xyz_cols:     Tuple[str, str, str] = ('x', 'y', 'z'),
                dims:         Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
-               rotation:     Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0)) -> None:
+               rotation:     Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0)) -> bool:
     """
     exports blocks and attributes of block model to a vtk file to visualise in paraview
 
@@ -268,7 +268,7 @@ def blocks2dxf(blockmodel:   pd.DataFrame,
 
     Returns
     -------
-    single or multiple .dxf file(s)
+    True if .dxf file(s) are exported with no errors
     """
 
     # definitions for simplicity
@@ -399,7 +399,7 @@ def blocks2dxf(blockmodel:   pd.DataFrame,
             pass
 
     dwg.saveas(path)
-    return
+    return True
 
 
 def face_position_dxf():

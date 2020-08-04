@@ -11,7 +11,8 @@ def plot3D(blockmodel:  pd.DataFrame,
            col:         str = None,
            dims:        Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
            widget:      str = None,
-           show_grid:   bool = True) -> None:
+           show_grid:   bool = True,
+           show_plot:   bool = True) -> pv.Plotter:
     """
     create activate 3D vtk plot of block model that is fully interactive
 
@@ -29,14 +30,20 @@ def plot3D(blockmodel:  pd.DataFrame,
         add widgets such as slider (cut off grade) or cross-section.
     show_grid: bool
         add x,y,z grid to see coordinates on plot
+    show_plot: bool
+        whether to open active window or just return pyvista.Plotter object
+        to .show() later
 
     Returns
     -------
-    active window of block model 3D plot
+    pyvista.Plotter object & active window of block model 3D plot
     """
 
     # make shallow copy of required columns
-    block_model = blockmodel[xyz_cols + col]
+    xyz_cols = list(xyz_cols)
+    cols = list(xyz_cols)
+    cols.append(col)
+    block_model = blockmodel[cols]
 
     # Create the spatial reference
     grid = pv.UniformGrid()
@@ -92,7 +99,11 @@ def plot3D(blockmodel:  pd.DataFrame,
         p.show_grid()
 
     p.show_axes()
-    p.show(full_screen=True)
+
+    if show_plot:
+        p.show(full_screen=True)
+
+    return p
 
 
 def extend_pandas_plot():
