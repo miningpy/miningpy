@@ -22,6 +22,7 @@ jobs:
       year: $[format('{0:yyyy}', pipeline.startTime)]
       month: $[format('{0:MM}', pipeline.startTime)]
       day: $[format('{0:dd}', pipeline.startTime)]
+      hour: $[format('{0:HH}', pipeline.startTime)]
       min: $[format('{0:mm}', pipeline.startTime)]
     pool:
       vmImage: 'VS2017-Win2016'
@@ -45,7 +46,7 @@ jobs:
 
     - script: |
         set /p version=<miningpy/VERSION
-        python setup.py sdist bdist_wheel --testversion %version%.$(year).$(month).$(day).$(min)
+        python setup.py sdist bdist_wheel --testversion %version%.$(year).$(month).$(day).$(hour).$(min)
         twine check dist/*
       displayName: 'Build/Check Project'
 
