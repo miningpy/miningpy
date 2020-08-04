@@ -6,7 +6,7 @@ with open("README.rst", "r") as fh:
 
 install_requires = ['ezdxf>=0.13.1',
                     'numpy',
-                    'pandas>=1.1.0',
+                    'pandas',
                     'pyvista',
                     'vtk>=9.0',
                     ]
