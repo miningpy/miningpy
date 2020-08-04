@@ -69,7 +69,7 @@ blockModel.plot3D(
     col='tonnage',  # block attribute to colour by
 )
 ```
-
+![](docs/_static/plot3D_example.png)
 
 ## Documentation
 
