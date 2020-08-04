@@ -19,7 +19,7 @@ schedules:
 jobs:
   - job: Test_PyPi_Deploy
     variables:
-      datetime: format('{yyyy.MM.dd.HH.mm}', pipeline.startTime)
+      year: format('{0:yyyy}', pipeline.startTime)
     pool:
       vmImage: 'VS2017-Win2016'
     strategy:
@@ -38,6 +38,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install twine
         pip install wheel
+        echo $(year)
       displayName: 'Install Deployment Requirements'
 
     - script: |
