@@ -8,7 +8,7 @@
    MiningPy documentation
    ========================================
 
-.. image:: _static/miningpy_logo.png
+.. image:: _static\\miningpy_logo.png
     :alt: MiningPy
 
 Version: |release|
@@ -83,7 +83,7 @@ Example
        col='tonnage',  # block attribute to colour by
    )
 
-.. image:: _static/plot3D_example.png
+.. image:: _static\\plot3D_example.png
     :alt: plot3D
 
 
