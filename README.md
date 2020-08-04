@@ -8,6 +8,9 @@ Documentation:  https://miningpy.readthedocs.io/en/latest/
 
 Repository:     https://bitbucket.org/incitron/miningpy
 
+Nightly Release: https://test.pypi.org/project/miningpy/
+Nightly Release Version Format: `version.version.version.yyyyMMddHHmm`
+
 
 ## About
 MiningPy is intended to help mining engineers harness the full power of the Python ecosystem to solve routine mine planning problems.
