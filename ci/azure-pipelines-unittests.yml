@@ -11,7 +11,7 @@ schedules:
   branches:
     include:
     - master
-- cron: "0 7 * * 0"
+- cron: "0 8 * * 0"
   displayName: Weekly Sunday build
   branches:
     include:
