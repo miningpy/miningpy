@@ -42,7 +42,7 @@ jobs:
 
     - script: |
         set /p version=<miningpy/VERSION
-        python setup.py sdist bdist_wheel --testversion %version%.%datetime%
+        python setup.py sdist bdist_wheel --testversion %version%.$[variables.datetime]
         twine check dist/*
       displayName: 'Build/Check Project'
 
