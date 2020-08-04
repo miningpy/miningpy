@@ -21,6 +21,7 @@ python -m pip install .
 The bitbucket repository [issues page](https://bitbucket.org/incitron/miningpy/issues) is used 
 to track issues, suggest features, ask questions, etc. When creating an issue, please tag it using
 the correct *component* so that the developers can track it. The components setup for the repository include:
+
 - `bug`: uh-oh! Something isn't working as expected.
 - `deployment`: anything related to deploying MiningPy to services like PyPI.
 - `documentation`: anything related to the documentation/website.
