@@ -1,8 +1,6 @@
 # MiningPy Documentation
 
-![picture](docs/_static/miningpy_logo.png)
-
-<p><img src="https://bitbucket.org/incitron/miningpy/src/master/docs/_static/miningpy_logo.png" alt="" /></p>
+![](docs/_static/miningpy_logo.png)
 
 Version:        0.1.0
 
