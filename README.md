@@ -5,24 +5,24 @@ MiningPy is intended to help mining engineers harness the full power of the Pyth
 This package includes tools to help with:
 
 - Block model manipulation:
-   - Indexing (ijk)
-   - Reblocking (geometric & attribute based)
-   - Rotations
-   - Calculating the model framework (origin, dimensions, rotation, extents, etc...)
-   - Validating the block model (missing internal blocks, checking the model is regular, etc...)
-   - Creating bench reserves
-   - Aggregatng blocks for scheduling
-   - Haulage modelling & encoding to the block model
+    - Indexing (ijk)
+    - Reblocking (geometric & attribute based)
+    - Rotations
+    - Calculating the model framework (origin, dimensions, rotation, extents, etc...)
+    - Validating the block model (missing internal blocks, checking the model is regular, etc...)
+    - Creating bench reserves
+    - Aggregatng blocks for scheduling
+    - Haulage modelling & encoding to the block model
 - Interfacing with commercial mine planning packages, such as:
-   - Maptek Vulcan
-   - GEOVIA Whittle
-   - COMET
-   - Minemax Scheduler/Tempo
-   - Datamine
+    - Maptek Vulcan
+    - GEOVIA Whittle
+    - COMET
+    - Minemax Scheduler/Tempo
+    - Datamine
 - Visualisation:
-   - Previewing block models directly in Python for fast reviewing of work
-   - Previewing designs (.dxf) directly in Python
-   - Exporting block models in [Paraview](https://www.paraview.org/) compatible format
+    - Previewing block models directly in Python for fast reviewing of work
+    - Previewing designs (.dxf) directly in Python
+    - Exporting block models in [Paraview](https://www.paraview.org/) compatible format
 
 ## Why MiningPy?
 
