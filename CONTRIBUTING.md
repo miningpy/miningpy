@@ -15,6 +15,36 @@ cd miningpy
 python -m pip install .
 ```
 
+## Reporting Bugs
+
+If you stumble across any bugs, crashes, or concerning quirks while using code
+distributed here, please report it on the [issues page](https://bitbucket.org/incitron/miningpy/issues)
+with an appropriate label so we can promptly address it.
+When reporting an issue, please be overly descriptive so that we may reproduce
+it. Whenever possible, please provide tracebacks, screenshots, and sample files
+to help us address the issue.
+
+
+## Feature Requests
+
+We encourage users to submit ideas for improvements to PyVista code base!
+Please create an issue on the [issues page](https://bitbucket.org/incitron/miningpy/issues)
+with a *feature* component to suggest an improvement.
+Please use a descriptive title and provide ample background information to help
+the community implement that functionality. For example, if you would like a
+reader for a specific file format, please provide a link to documentation of
+that file format and possibly provide some sample files with screenshots to work
+with. We will use the issue thread as a place to discuss and provide feedback.
+
+
+## Licensing
+
+All contributed code will be licensed under The MIT License found in the
+repository. If you did not write the code yourself, it is your responsibility
+to ensure that the existing license is compatible and included in the
+contributed files or you can obtain permission from the original author to
+relicense the code.
+
 
 ## Development Practices
 This section provides a guide to how we conduct development in the MiningPy repository. 
