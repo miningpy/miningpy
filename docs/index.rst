@@ -3,13 +3,16 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-..
-   ========================================
-   MiningPy documentation
-   ========================================
 
-.. image:: ./_static/miningpy_logo.png
-    :alt: MiningPy
+.. title:: MiningPy
+
+
+.. raw:: html
+
+    <div class="banner">
+        <img src="_static/miningpy_logo.png" alt="MiningPy">
+    </div>
+
 
 Version: |release|
 
@@ -21,7 +24,8 @@ Repository:     https://bitbucket.org/incitron/miningpy
    :name: Introduction
    :hidden:
 
-   self
+   Introduction<self>
+
 
 About
 -----
@@ -83,8 +87,11 @@ Example
        col='tonnage',  # block attribute to colour by
    )
 
-.. image:: ./_static./plot3D_example.png
-    :alt: plot3D
+.. raw:: html
+
+    <div class="banner">
+        <img src="_static./plot3D_example.png" alt="plot3D">
+    </div>
 
 
 Supported Platforms & Testing
