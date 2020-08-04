@@ -19,7 +19,7 @@ schedules:
 jobs:
   - job: Test_PyPi_Deploy
     variables:
-      datetime: format('{yyyy}.{MM}.{dd}.{HH}.{mm}', pipeline.startTime)
+      datetime: format('{yyyy.MM.dd.HH.mm}', pipeline.startTime)
     pool:
       vmImage: 'VS2017-Win2016'
     strategy:
