@@ -1,0 +1,44 @@
+trigger: none
+
+schedules:
+- cron: "0 7 * * *"
+  displayName: Daily build
+  branches:
+    include:
+    - master
+- cron: "0 5 * * 0"
+  displayName: Weekly Sunday build
+  branches:
+    include:
+    - master
+  always: true
+
+jobs:
+  - job: BuildSphinxDocs
+    pool:
+      vmImage: 'VS2017-Win2016'
+    strategy:
+      matrix:
+        Python36:
+          python.version: '3.6'
+        Python37:
+          python.version: '3.7'
+        Python38:
+          python.version: '3.8'
+
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '$(python.version)'
+        addToPath: true
+      displayName: 'Use Python $(python.version)'
+
+    - script: |
+        python -m pip install --upgrade pip
+        pip install -r requirements_docs.txt
+      displayName: 'Install Doc Requirements'
+
+    - script: |
+        cd docs
+        make html
+      displayName: 'Build Documentation'
