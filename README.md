@@ -2,6 +2,8 @@
 
 ![picture](docs/_static/miningpy_logo.png)
 
+<p><img src="https://bitbucket.org/incitron/miningpy/src/master/docs/_static/miningpy_logo.png" alt="" /></p>
+
 Version:        0.1.0
 
 Documentation:  https://miningpy.readthedocs.io/en/latest/
