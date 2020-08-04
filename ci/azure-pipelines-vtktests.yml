@@ -1,0 +1,63 @@
+# Azure devops pipeline to test installing MiningPy
+# inside conda environment that already has VTK installed
+# need to check/ensure there are not package conflicts
+
+trigger: none
+
+schedules:
+- cron: "30 9 * * *"
+  displayName: Daily build
+  branches:
+    include:
+    - master
+- cron: "30 7 * * 0"
+  displayName: Weekly Sunday build
+  branches:
+    include:
+    - master
+  always: true
+
+jobs:
+  - job: WindowsCondaVtk
+    pool:
+      vmImage: 'VS2017-Win2016'
+    strategy:
+      matrix:
+        Python38:
+          python.version: '3.8'
+
+    steps:
+    - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
+      displayName: Add conda to PATH
+
+    - script: conda create --yes --quiet --name baseAnaconda python=$(python.version) anaconda
+      displayName: Create Anaconda environment & Install packages
+
+    - script: |
+        call activate baseAnaconda
+        conda install vtk
+        python setup.py install
+      displayName: Install miningpy package in conda env
+
+  - job: WindowsCondaVtk-condaForge
+    pool:
+      vmImage: 'VS2017-Win2016'
+    strategy:
+      matrix:
+        Python38:
+          python.version: '3.8'
+
+    steps:
+    - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
+      displayName: Add conda to PATH
+
+    - script: conda create --yes --quiet --name baseAnaconda python=$(python.version) anaconda
+      displayName: Create Anaconda environment & Install packages
+
+    - script: |
+        call activate baseAnaconda
+        conda config --add channels conda-forge
+        conda config --set channel_priority strict
+        conda install -c conda-forge vtk
+        python setup.py install
+      displayName: Install miningpy package in conda env
