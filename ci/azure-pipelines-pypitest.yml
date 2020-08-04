@@ -20,6 +20,9 @@ jobs:
   - job: Test_PyPi_Deploy
     variables:
       year: $[format('{0:yyyy}', pipeline.startTime)]
+      month: $[format('{0:MM}', pipeline.startTime)]
+      day: $[format('{0:dd}', pipeline.startTime)]
+      min: $[format('{0:mm}', pipeline.startTime)]
     pool:
       vmImage: 'VS2017-Win2016'
     strategy:
@@ -38,12 +41,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install twine
         pip install wheel
-        echo $(year)
       displayName: 'Install Deployment Requirements'
 
     - script: |
         set /p version=<miningpy/VERSION
-        python setup.py sdist bdist_wheel --testversion %version%.$[variables.datetime]
+        python setup.py sdist bdist_wheel --testversion %version%.$(year).$(month).$(day).$(min)
         twine check dist/*
       displayName: 'Build/Check Project'
 
