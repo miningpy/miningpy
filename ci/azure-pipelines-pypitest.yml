@@ -18,6 +18,8 @@ schedules:
 
 jobs:
   - job: Test_PyPi_Deploy
+    variables:
+      datetime: format('{yyyy}.{MM}.{dd}.{HH}.{mm}', pipeline.startTime)
     pool:
       vmImage: 'VS2017-Win2016'
     strategy:
@@ -40,9 +42,7 @@ jobs:
 
     - script: |
         set /p version=<miningpy/VERSION
-        FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
-        set CUR_DATE=%DTS:~0,4%.%DTS:~4,2%.%DTS:~6,2%.%DTS:~8,4%
-        python setup.py sdist bdist_wheel --testversion %version%.%CUR_DATE%
+        python setup.py sdist bdist_wheel --testversion %version%.%datetime%
         twine check dist/*
       displayName: 'Build/Check Project'
 
