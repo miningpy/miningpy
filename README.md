@@ -48,8 +48,9 @@ MiningPy aims to provide a simple API to mining engineers that extends existing 
 
 MiningPy is distributed using [PyPi](https://pypi.org) and can be installed through Pip:
 
-    $ pip install miningpy
-
+```bat
+pip install miningpy
+```
 
 ## Example
 
