@@ -1,4 +1,4 @@
-# standard automated tests for miningpy->visualisation->blocks2vtk function
+# standard automated tests for miningpy->visualisation->plot3D function
 import pandas as pd
 import pytest
 import miningpy
