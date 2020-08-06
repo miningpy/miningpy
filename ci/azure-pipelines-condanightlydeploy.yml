@@ -1,0 +1,53 @@
+# Azure devops pipeline to test installing MiningPy from the nightly release to TestPyPi
+
+
+trigger: none
+
+schedules:
+- cron: "0 13 * * *"
+  displayName: Daily build
+  branches:
+    include:
+    - master
+- cron: "0 11 * * 0"
+  displayName: Weekly Sunday build
+  branches:
+    include:
+    - master
+  always: true
+
+jobs:
+  - job: WindowsInstallMiningPyTestPyPi
+    pool:
+      vmImage: 'VS2017-Win2016'
+    strategy:
+      matrix:
+        Python38:
+          python.version: '3.8'
+
+    steps:
+    - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
+      displayName: Add conda to PATH
+
+    - script: |
+        conda update conda
+        conda install conda-build
+        conda update conda-build
+      displayName: Update conda & conda-build
+
+    - script: |
+        conda install anaconda-client
+        anaconda login --hostname AZURE --username $(anaconda.username) --password $(anaconda.password)
+      displayName: Connect to Anaconda Cloud
+
+    - script: conda create --yes --quiet --name baseAnaconda python=$(python.version)
+      displayName: Create Anaconda environment & Install packages
+
+    - script: |
+        conda build purge-all
+      displayName: Purge Conda Build Dir
+
+    - script: |
+        conda config --set anaconda_upload yes
+        conda-build conda.recipe --channel conda-forge
+      displayName: Conda-Build Recipe & Test
