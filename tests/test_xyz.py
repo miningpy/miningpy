@@ -1,4 +1,4 @@
-# standard automated tests for miningpy->core->ijk function
+# standard automated tests for miningpy->core->xyz function
 import pandas as pd
 import pytest
 import miningpy
