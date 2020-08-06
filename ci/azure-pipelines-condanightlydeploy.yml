@@ -17,7 +17,7 @@ schedules:
   always: true
 
 jobs:
-  - job: WindowsInstallMiningPyTestPyPi
+  - job: WindowsDeployCondaNightly
     pool:
       vmImage: 'VS2017-Win2016'
     strategy:
