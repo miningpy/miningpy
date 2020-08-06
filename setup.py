@@ -40,6 +40,7 @@ setuptools.setup(
         "Programming Language :: Python :: 3",
         "Development Status :: 3 - Alpha",
         "Natural Language :: English",
+        "Operating System :: Microsoft :: Windows",
         "License :: OSI Approved :: MIT License"
     ],
 )
