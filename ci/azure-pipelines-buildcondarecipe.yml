@@ -30,6 +30,7 @@ jobs:
 
     - script: |
         conda update conda
+        conda install conda-build
         conda update conda-build
       displayName: Update conda & conda-build
 
