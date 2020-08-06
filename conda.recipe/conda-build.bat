@@ -1,5 +1,5 @@
 REM clean build dir
-conda build purge
+conda build purge-all
 
 REM check the recipe
 conda-build conda.recipe --check

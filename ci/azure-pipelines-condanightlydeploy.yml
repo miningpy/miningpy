@@ -18,6 +18,8 @@ schedules:
 
 jobs:
   - job: WindowsDeployCondaNightly
+    variables:
+      time: $[format('{0:yyyyMMddHHmm}', pipeline.startTime)]
     pool:
       vmImage: 'VS2017-Win2016'
     strategy:
@@ -37,7 +39,7 @@ jobs:
 
     - script: |
         conda install anaconda-client
-        anaconda login --hostname AZURE --username $(anaconda.username) --password $(anaconda.password)
+        anaconda login --hostname AZURE_$(time) --username $(anaconda.username) --password $(anaconda.password)
       displayName: Connect to Anaconda Cloud
 
     - script: conda create --yes --quiet --name baseAnaconda python=$(python.version)
@@ -49,5 +51,7 @@ jobs:
 
     - script: |
         conda config --set anaconda_upload yes
-        conda-build conda.recipe --channel conda-forge
+        conda-build conda.recipe.nightly --channel conda-forge
       displayName: Conda-Build Recipe & Test
+      env:
+        DEPLOY_TIME: $(time)
