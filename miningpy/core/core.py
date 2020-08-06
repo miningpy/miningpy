@@ -456,11 +456,12 @@ def group_weighted_average(blockmodel:   pd.DataFrame,
 
 def vulcan_csv(blockmodel: pd.DataFrame,
                path: str = None,
+               var_path: str = None,
                xyz_cols: Tuple[str, str, str] = None,
                dims: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
-               inplace: bool = False) -> None:
+               inplace: bool = False) -> pd.DataFrame:
     """
-    transform pandas.Dataframe block model into Vulcan import compatible CSV format
+    transform pandas.Dataframe block model into Vulcan import compatible CSV format.
 
     Parameters
     ----------
@@ -468,18 +469,23 @@ def vulcan_csv(blockmodel: pd.DataFrame,
         pandas dataframe of block model
     path: str
         filename for vulcan csv block model file
+    var_path: {optional} str
+        filename for csv that lists the Vulcan dtype of each column in block model (used if manually creating bdf)
     xyz_cols: tuple of strings
         names of x,y,z columns in model
     dims: tuple of floats or ints
         x,y,z dimension of regular parent blocks
     inplace: bool
-        whether to do calculation inplace on pandas.DataFrame
+        whether to do calculation inplace (i.e. add Vulcan headers inplace) or return pandas.DataFrame with Vulcan headers
 
     Returns
     -------
     pandas.DataFrame
         block model in Vulcan import CSV format
     """
+
+    xcol, ycol, zcol = xyz_cols[0], xyz_cols[1], xyz_cols[2]
+    xsize, ysize, zsize = dims[0], dims[1], dims[2]
 
     # check inplace
     if inplace:
@@ -507,23 +513,21 @@ def vulcan_csv(blockmodel: pd.DataFrame,
                             'float64': 'Double (Real * 8)',
                             'object': 'Name (Translation Table)'}
 
-    for pandas,vulcan in pandas_vulcan_dtypes.items():
+    for pandas, vulcan in pandas_vulcan_dtypes.items():
         mask = vulcan_header['Data Type'] == pandas
         vulcan_header.loc[mask, 'Data Type'] = vulcan
 
-    vulcan_variables.to_csv('vulcan_variables.csv', index=False)
+    if var_path is not None:
+        vulcan_variables.to_csv(var_path, index=False)
 
     # rename column headers to vulcan format
-    blockmodel.rename(columns={'x': 'centroid_x',
-                                    'y': 'centroid_y',
-                                    'z': 'centroid_z',
-                                    'xdim': 'dim_x',
-                                    'ydim': 'dim_y',
-                                    'zdim': 'dim_z'}, inplace=True)
+    blockmodel.rename(columns={xcol: 'centroid_x',
+                               ycol: 'centroid_y',
+                               zcol: 'centroid_z'}, inplace=True)
 
     # create vulcan header df to append to start of block model
 
-    vulcan_header['Data Type'] = 'double'
+    vulcan_header['Data Type'] = 'double'  # data types are read from bdf, not csv. so doesn't matter
     vulcan_header.rename(columns={'Variable': 'Variable descriptions:',
                                   'Data Type': 'Variable types:',
                                   'Default Value': 'Variable defaults:'}, inplace=True)
@@ -539,23 +543,10 @@ def vulcan_csv(blockmodel: pd.DataFrame,
     vulcan_header['centroid_x'] = vulcan_header.index
     vulcan_header.reset_index(inplace=True, drop=True)
 
-    vulcan_model = pd.concat([vulcan_header, blockmodel], axis=0, sort=False, ignore_index=True)
+    blockmodel = pd.concat([vulcan_header, blockmodel], axis=0, sort=False, ignore_index=True)
 
-    print("vulcan block model header:")
-    print(tabulate(vulcan_model.head(5), headers="keys", tablefmt='fancy_grid'))
+    blockmodel.to_csv(path, index=False)
 
-    date_object = datetime.date.today()
-    print(date_object)
-
-    if csv:
-        if csv_name != None:
-            blockmodel.to_csv(csv_name, index=False)
-        else:
-            blockmodel.to_csv(f'vulcan_output_{str(date_object)}.csv', index=False)
-            print(f'written to vulcan_output_{str(date_object)}.csv')
-
-    if inplace:
-        return
     if not inplace:
         return blockmodel
 
