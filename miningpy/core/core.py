@@ -14,6 +14,7 @@ import numpy as np
 from math import sin, cos, pi
 from pandas.core.base import PandasObject
 from typing import Union, List, Tuple
+import datetime
 
 
 def ijk(blockmodel:     pd.DataFrame,
@@ -484,6 +485,7 @@ def vulcan_csv(blockmodel: pd.DataFrame,
         block model in Vulcan import CSV format
     """
 
+    # definitions for simplicity
     xcol, ycol, zcol = xyz_cols[0], xyz_cols[1], xyz_cols[2]
     xsize, ysize, zsize = dims[0], dims[1], dims[2]
 
@@ -555,16 +557,21 @@ def vulcan_bdf(blockmodel: pd.DataFrame,
                path: str = None,
                origin: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
                dims: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
-               start_offset: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+               start_offset: Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0.0, 0.0, 0.0),
                end_offset: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
-               format: str = 'T') -> None:
+               format: str = 'T') -> bool:
     """
-    create a Vulcan block definition file from a vulcan block model
+    create a Vulcan block definition file from a vulcan block model.
+    This script creates a BDF from a vulcan block model csv that can be imported into Vulcan.
+    It assumes that bearing, dip and plunge are the default.
+    values for the block model. Variables are given a default value of -99.0, a blank description and type 'double'.
+    This script will define the parent schema.
+    All of these values can be edited within Vulcan once the script has been run and bdf imported.
 
     Parameters
     ----------
     blockmodel: pd.DataFrame
-        pandas dataframe of block model
+        pandas dataframe of block model in Vulcan CSV import compatible format (use funtion: "vulcan_csv")
     path: str
         filename for vulcan bdf file
     origin: tuple of floats or ints
@@ -580,16 +587,14 @@ def vulcan_bdf(blockmodel: pd.DataFrame,
 
     Returns
     -------
-    vulcan bdf file
+    True if Vulcan .bdf file is exported with no errors
     """
 
-    # Caveats
-    print("\n***\n\n"
-          "This script creates a BDF from a vulcan block model csv that can be imported into Vulcan.\nIt assumes that bearing, dip and plunge are the default"
-          " values for the block model.\nVariables are given a default value of -99.0, a blank description and type 'double'.\n"
-          "This script will define the parent schema.\n"
-          "All of these values can be edited within Vulcan once the script has been run and bdf "
-          "imported.\n\n***\n ")
+    # definitions for simplicity
+    xorigin, yorigin, zorigin = origin[0], origin[1], origin[2]
+    xsize, ysize, zsize = dims[0], dims[1], dims[2]
+    start_xoffset, start_yoffset, start_zoffset = start_offset[0], start_offset[1], start_offset[2]
+    end_xoffset, end_yoffset, end_zoffset = end_offset[0], end_offset[1], end_offset[2]
 
     # input checks for format
     assert format == 'T' or format == 'C', "Define format. format='C' for classic, format='T' for extended"
@@ -599,7 +604,7 @@ def vulcan_bdf(blockmodel: pd.DataFrame,
     del variables[0:7]
 
     # writing bdf file header
-    bdf = open("vulcan_bdf.txt", "w+")
+    bdf = open(path, "w+")
     bdf.write("*\n")
     bdf.write(f"*  Written: {datetime.datetime.now()}*\n")
     bdf.write("*\n")
@@ -627,7 +632,6 @@ def vulcan_bdf(blockmodel: pd.DataFrame,
     # writing variable default, description, name and type
     count = 1
     for variable in variables:
-
         bdf.write("*\n")
         bdf.write(f"BEGIN$DEF variable_{count}\n")
         bdf.write(" ")
@@ -640,7 +644,7 @@ def vulcan_bdf(blockmodel: pd.DataFrame,
         bdf.write("type='double'\n")
         bdf.write(f"END$DEF variable_{count}\n")
 
-        count+=1
+        count += 1
 
     # Writing parent schema
     bdf.write("*\n")
@@ -694,19 +698,7 @@ def vulcan_bdf(blockmodel: pd.DataFrame,
     bdf.write("END$FILE")
     bdf.close()
 
-    # Writing BDF file
-    date_object = datetime.date.today()
-
-    if bdf_name != None:
-        vulcan_bdf, txt = os.path.splitext("vulcan_bdf.txt")
-        os.rename("vulcan_bdf.txt", f"{bdf_name}" + ".bdf")
-        print(f"written bdf to '{bdf_name}.bdf'")
-    else:
-        vulcan_bdf, txt = os.path.splitext("vulcan_bdf.txt")
-        os.rename("vulcan_bdf.txt", f"vulcan_bdf_{date_object}" + ".bdf")
-        print(f'written bdf to vulcan_bdf_{str(date_object)}.bdf')
-
-    return
+    return True
 
 
 def geometric_reblock(blockmodel: pd.DataFrame):
