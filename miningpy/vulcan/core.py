@@ -31,7 +31,6 @@ def bdf_from_bmf(input_bmf_path,
     subprocess.call(args, shell=True)
     return
 
-
 def create_bdf(output_bdf_path):
     """
     Create a basic regular Vulcan bdf that defines a block model framework.
@@ -40,7 +39,7 @@ def create_bdf(output_bdf_path):
 
     exe = os.environ['VULCAN'] + '/bmine'
 
-    return
+    raise Exception("MiningPy Vulcan function {create_bdf} hasn't been created yet")
 
 
 def bmf_to_csv(input_bmf_path,
@@ -80,7 +79,7 @@ def csv_to_bmf(input_bmf_path):
 
     exe = os.environ['VULCAN'] + '/bmine'
 
-    return
+    raise Exception("MiningPy Vulcan function {csv_to_bmf} hasn't been created yet")
 
 
 def pandas_to_bmf(input_bmf_path):
@@ -90,7 +89,7 @@ def pandas_to_bmf(input_bmf_path):
 
     exe = os.environ['VULCAN'] + '/bmine'
 
-    return
+    raise Exception("MiningPy Vulcan function {pandas_to_bmf} hasn't been created yet")
 
 
 def bmf_to_pandas(input_bmf_path,
@@ -122,7 +121,7 @@ def mine_block_model(input_bmf_path):
 
     exe = os.environ['VULCAN'] + '/bmine'
 
-    return
+    raise Exception("MiningPy Vulcan function {mine_block_model} hasn't been created yet")
 
 
 def set_variable(input_bmf_path,
@@ -156,7 +155,7 @@ def create_variable(input_bmf_path,
 
     exe = os.environ['VULCAN'] + '/DGD2DWG'
 
-    return
+    raise Exception("MiningPy Vulcan function {create_variable} hasn't been created yet")
 
 
 def strings_to_dxf():
@@ -166,7 +165,7 @@ def strings_to_dxf():
 
     exe = os.environ['VULCAN'] + '/DGD2DWG'
 
-    return
+    raise Exception("MiningPy Vulcan function {strings_to_dxf} hasn't been created yet")
 
 
 def dxf_to_strings():
@@ -176,4 +175,4 @@ def dxf_to_strings():
 
     exe = os.environ['VULCAN'] + '/DWG2DGD'
 
-    return
+    raise Exception("MiningPy Vulcan function {dxf_to_strings} hasn't been created yet")

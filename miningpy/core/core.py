@@ -743,7 +743,7 @@ def geometric_reblock(blockmodel: pd.DataFrame):
     pandas.DataFrame
         reblocked block model
     """
-    pass
+    raise Exception("MiningPy function {geometric_reblock} hasn't been created yet")
 
 
 def whittle_mod(blockmodel: pd.DataFrame):
@@ -759,11 +759,11 @@ def whittle_mod(blockmodel: pd.DataFrame):
     -------
     Whittle .MOD text file
     """
-    pass
+    raise Exception("MiningPy function {whittle_mod} hasn't been created yet")
 
 
 def whittle_par():
-    return
+    raise Exception("MiningPy function {whittle_par} hasn't been created yet")
 
 
 def model_rotation(blockmodel: pd.DataFrame,
@@ -790,7 +790,7 @@ def model_rotation(blockmodel: pd.DataFrame,
     tuple of floats
         block model around each axis (x,y,z)
     """
-    pass
+    raise Exception("MiningPy function {model_rotation} hasn't been created yet")
 
 
 def model_origin(blockmodel: pd.DataFrame,
@@ -829,7 +829,7 @@ def model_block_size(blockmodel:     pd.DataFrame,
                      y_rotation:     Union[int, float] = 0,
                      z_rotation:     Union[int, float] = 0,
                      inplace:        bool = False) -> Tuple[float, float, float]:
-    return
+    raise Exception("MiningPy function {model_block_size} hasn't been created yet")
 
 
 def check_regular(blockmodel: pd.DataFrame) -> None:
@@ -846,7 +846,7 @@ def check_regular(blockmodel: pd.DataFrame) -> None:
     bool
         whether block model is regular or not. True if regular.
     """
-    return
+    raise Exception("MiningPy function {check_regular} hasn't been created yet")
 
 
 def check_internal_blocks_missing(blockmodel: pd.DataFrame):
@@ -863,7 +863,7 @@ def check_internal_blocks_missing(blockmodel: pd.DataFrame):
     bool
         whether block model contains missing internal blocks
     """
-    return
+    raise Exception("MiningPy function {check_internal_blocks_missing} hasn't been created yet")
 
 
 def attribute_reblock(blockmodel: pd.DataFrame):
@@ -883,7 +883,7 @@ def attribute_reblock(blockmodel: pd.DataFrame):
     pandas.DataFrame
         block model with binned attributes & tonnes for each bench
     """
-    return
+    raise Exception("MiningPy function {attribute_reblock} hasn't been created yet")
 
 
 def index_3D_to_1D(blockmodel:  pd.DataFrame,
@@ -961,15 +961,15 @@ def index_3D_to_1D(blockmodel:  pd.DataFrame,
 
 
 def index_1D_to_3D():
-    return
+    raise Exception("MiningPy function {index_1D_to_3D} hasn't been created yet")
 
 
 def table_to_4D_array():
-    return
+    raise Exception("MiningPy function {table_to_4D_array} hasn't been created yet")
 
 
 def table_to_1D_array():
-    return
+    raise Exception("MiningPy function {table_to_1D_array} hasn't been created yet")
 
 
 def extend_pandas():
