@@ -1,4 +1,4 @@
-# standard automated tests for miningpy->core->rotate_grid function
+# standard automated tests for miningpy->core->group_weighted_average function
 import pandas as pd
 import pytest
 import miningpy
