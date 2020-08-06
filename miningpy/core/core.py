@@ -403,8 +403,7 @@ def rotate_grid(blockmodel:         pd.DataFrame,
 def group_weighted_average(blockmodel:   pd.DataFrame,
                            avg_cols:     Union[str, List[str]],
                            weight_col:   str,
-                           group_cols:    Union[str, List[str]],
-                           inplace:      bool = False) -> pd.DataFrame:
+                           group_cols:    Union[str, List[str]]) -> pd.DataFrame:
     """
     weighted average of block model attribute(s)
 
@@ -418,20 +417,12 @@ def group_weighted_average(blockmodel:   pd.DataFrame,
         column to weight on. Example the tonnes column
     group_cols: str or list of str
         the columns you want to group on. Either single column or list of columns
-    inplace: bool
-        whether to do calculation inplace on pandas.DataFrame
 
     Returns
     -------
     pandas.DataFrame
         block model
     """
-
-    # check inplace
-    if inplace:
-        blockmodel = blockmodel
-    if not inplace:
-        blockmodel = blockmodel.copy()
 
     average_cols = []
     groupby_cols = []
@@ -450,16 +441,17 @@ def group_weighted_average(blockmodel:   pd.DataFrame,
     else:
         raise Exception('Groupby columns parameter must be single column name or list of column names')
 
-    dfs = []
+    dfs = dict()
     for count, col in enumerate(average_cols, 1):
-        vars()[str(count) + '_' + col] = (blockmodel[col] * blockmodel[weight_col]).groupby(groupby_cols).sum() / blockmodel[weight_col].groupby(groupby_cols).sum()
-        dfs.append((str(count) + '_' + col))
+        dfs[col] = blockmodel.groupby(groupby_cols).apply(lambda dfx: (dfx[col] * dfx[weight_col]).sum() / dfx[weight_col].sum())
 
-    blockmodel = pd.concat(dfs, axis=1) if len(dfs) > 1 else dfs[0]
+    col_names = list(dfs.keys())
+    series = list(dfs.values())
 
-    # check inplace for return
-    if not inplace:
-        return blockmodel
+    blockmodel = pd.concat(series, axis=1)
+    blockmodel.columns = col_names
+
+    return blockmodel
 
 
 def vulcan_csv(blockmodel: pd.DataFrame,
