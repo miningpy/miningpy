@@ -1,0 +1,40 @@
+package:
+  name: miningpy
+  version: 0.1.0
+
+build:
+  always_include_files:
+    - miningpy/VERSION
+
+source:
+  git_url: https://incitron@bitbucket.org/incitron/miningpy.git
+
+requirements:
+  build:
+    - python
+    - setuptools
+
+  host:
+    - python
+    - ezdxf >=0.13.1
+    - numpy
+    - pandas
+    - pyvista
+    - vtk >=8.0
+
+test:
+  requires:
+    - pytest
+    - ezdxf >=0.13.1
+    - numpy
+    - pandas
+    - pyvista
+    - vtk >=8.0
+  commands:
+    - python -m pytest
+  source_files:
+    - tests
+
+about:
+  home: https://bitbucket.org/incitron/miningpy
+  license: MIT
