@@ -28,6 +28,11 @@ jobs:
     - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
       displayName: Add conda to PATH
 
+    - script: |
+        conda update conda
+        conda update conda-build
+      displayName: Update conda & conda-build
+
     - script: conda create --yes --quiet --name baseAnaconda python=$(python.version)
       displayName: Create Anaconda environment & Install packages
 
