@@ -7,17 +7,21 @@ build:
     - miningpy/VERSION
 
 source:
-  git_url: https://incitron@bitbucket.org/incitron/miningpy.git
+  git_url: ../
 
 requirements:
-  build:
-    - python
-    - setuptools
-
   host:
     - python
+    - pip
     - ezdxf >=0.13.1
-    - numpy
+    - numpy >=1.15
+    - pandas
+    - pyvista
+    - vtk >=8.0
+  run:
+    - python >=3.6
+    - ezdxf >=0.13.1
+    - numpy >=1.15
     - pandas
     - pyvista
     - vtk >=8.0
@@ -26,7 +30,7 @@ test:
   requires:
     - pytest
     - ezdxf >=0.13.1
-    - numpy
+    - numpy >=1.15
     - pandas
     - pyvista
     - vtk >=8.0
