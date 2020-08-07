@@ -13,14 +13,9 @@ source:
   git_url: ../
 
 requirements:
-  build:
-    - python >=3.6
-    - setuptools
-
   host:
     - python >=3.6
     - pip
-
   run:
     - python >=3.6
     - ezdxf >=0.13.1
