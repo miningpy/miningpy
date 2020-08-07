@@ -43,7 +43,11 @@ jobs:
         conda update conda
       displayName: Update conda
 
+    - script: conda create --yes --quiet --name baseAnaconda python=$(python.version)
+      displayName: Create Anaconda environment
+
     - script: |
+        call activate baseAnaconda
         conda install -c miningpy_nightly miningpy
       displayName: Install Nightly MiningPy
 
@@ -52,4 +56,5 @@ jobs:
         scriptSource: inline
         script: |
           import miningpy
+      displayName: Test MiningPy Import
 
