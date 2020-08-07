@@ -14,11 +14,11 @@ source:
 
 requirements:
   build:
-    - python >= 3.6
+    - python >=3.6
     - setuptools
 
   host:
-    - python >= 3.6
+    - python >=3.6
     - ezdxf >=0.13.1
     - numpy >=1.15
     - pandas
