@@ -20,7 +20,7 @@ requirements:
   host:
     - python {{ python }}
     - ezdxf >=0.13.1
-    - numpy
+    - numpy >=1.15
     - pandas
     - pyvista
     - vtk >=8.0
@@ -29,7 +29,7 @@ test:
   requires:
     - pytest
     - ezdxf >=0.13.1
-    - numpy
+    - numpy >=1.15
     - pandas
     - pyvista
     - vtk >=8.0
