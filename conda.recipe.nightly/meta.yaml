@@ -1,9 +1,9 @@
 package:
   name: miningpy
-  version: 0.1.0
+  version: 0.1.0.DEPLOY_TIME
 
 build:
-  script: python setup.py install --single-version-externally-managed --record=record.txt --testversion PKG_VERSION.DEPLOY_TIME
+  script: python setup.py install --single-version-externally-managed --record=record.txt
   always_include_files:
     - miningpy/VERSION
 
