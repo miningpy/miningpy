@@ -1,8 +1,10 @@
 package:
   name: miningpy
-  version: 0.1.0.DEPLOY_TIME
+  version: 0.1.0.{{ DEPLOY_TIME }}
 
 build:
+  script_env:
+    - DEPLOY_TIME
   script: python setup.py install --single-version-externally-managed --record=record.txt
   always_include_files:
     - miningpy/VERSION
