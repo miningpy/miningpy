@@ -1,0 +1,44 @@
+# Azure devops pipeline to test installing MiningPy from the nightly release from Anaconda Cloud
+
+
+trigger: none
+
+schedules:
+- cron: "0 14 * * *"
+  displayName: Daily build
+  branches:
+    include:
+    - master
+- cron: "0 12 * * 0"
+  displayName: Weekly Sunday build
+  branches:
+    include:
+    - master
+  always: true
+
+jobs:
+  - job: WindowsInstallCondaNightly
+    pool:
+      vmImage: 'VS2017-Win2016'
+    strategy:
+      matrix:
+        Python38:
+          python.version: '3.8'
+
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '$(python.version)'
+        addToPath: true
+      displayName: 'Use Python $(python.version)'
+
+    - script: |
+        conda install -c miningpy_nightly miningpy
+      displayName: Install Nightly MiningPy
+
+    - task: PythonScript@0
+      inputs:
+        scriptSource: inline
+        script: |
+          import miningpy
+
