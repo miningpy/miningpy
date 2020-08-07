@@ -32,6 +32,13 @@ jobs:
         addToPath: true
       displayName: 'Use Python $(python.version)'
 
+    - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
+      displayName: Add conda to PATH
+
+    - script: |
+        conda update conda
+      displayName: Update conda
+
     - script: |
         conda install -c miningpy_nightly miningpy
       displayName: Install Nightly MiningPy
