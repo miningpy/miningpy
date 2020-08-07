@@ -1,0 +1,39 @@
+# Python package
+# Test deploying package to PyPi
+
+trigger: none
+
+
+jobs:
+  - job: Test_PyPi_Deploy
+    pool:
+      vmImage: 'VS2017-Win2016'
+    strategy:
+      matrix:
+        Python38:
+          python.version: '3.8'
+
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '$(python.version)'
+        addToPath: true
+      displayName: 'Use Python $(python.version)'
+
+    - script: |
+        python -m pip install --upgrade pip
+        pip install twine
+        pip install wheel
+      displayName: 'Install Deployment Requirements'
+
+    - script: |
+        python setup.py sdist bdist_wheel
+        twine check dist/*
+      displayName: 'Build/Check Project'
+
+    - script: |
+        twine upload dist/*
+      displayName: 'Deploy Project to PyPi'
+      env:
+        TWINE_USERNAME: $(twine.username)
+        TWINE_PASSWORD: $(twine.password)
