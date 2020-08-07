@@ -5,20 +5,20 @@ package:
 build:
   script_env:
     - DEPLOY_TIME
-  script: python setup.py install --single-version-externally-managed --record=record.txt
+  script: {{ PYTHON }} setup.py install --single-version-externally-managed --record=record.txt
   always_include_files:
     - miningpy/VERSION
 
 source:
-  git_url: https://incitron@bitbucket.org/incitron/miningpy.git
+  git_url: ../
 
 requirements:
   build:
-    - python
+    - python {{ python }}
     - setuptools
 
   host:
-    - python
+    - python {{ python }}
     - ezdxf >=0.13.1
     - numpy
     - pandas

@@ -50,8 +50,14 @@ jobs:
       displayName: Purge Conda Build Dir
 
     - script: |
+        python conda.recipe.nightly/change_ver.py --testversion $(time)
+      displayName: Update version numbering
+      env:
+        DEPLOY_TIME: $(time)
+
+    - script: |
         conda config --set anaconda_upload yes
-        conda-build conda.recipe.nightly --channel conda-forge
+        conda-build conda.recipe.nightly
       displayName: Conda-Build Recipe & Test
       env:
         DEPLOY_TIME: $(time)
