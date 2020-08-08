@@ -1,4 +1,4 @@
-# Azure devops pipeline to test installing MiningPy from the nightly release to TestPyPi
+# Azure devops pipeline to test installing MiningPy from the stable release to TestPyPi
 
 
 trigger: none
@@ -33,7 +33,7 @@ jobs:
       displayName: 'Use Python $(python.version)'
 
     - script: |
-        pip install -i https://test.pypi.org/simple/ miningpy
+        pip install miningpy
       displayName: Install Nightly MiningPy
 
     - task: PythonScript@0
