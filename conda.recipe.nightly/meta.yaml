@@ -28,7 +28,7 @@ requirements:
     - vtk >=8.0
 
 test:
-  import:
+  imports:
     - miningpy
 
 about:
