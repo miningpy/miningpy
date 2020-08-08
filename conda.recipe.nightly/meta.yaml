@@ -13,9 +13,6 @@ build:
   script: {{ PYTHON }} -m pip install . --no-deps -vv
 
 requirements:
-  build:
-    - pip
-    - python >=3.6
   host:
     - pip
     - python >=3.6
