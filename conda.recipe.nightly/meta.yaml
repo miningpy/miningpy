@@ -12,7 +12,6 @@ source:
 build:
   script_env:
     - DEPLOY_TIME
-  noarch: python
   script: {{ PYTHON }} setup.py install --single-version-externally-managed --record=record.txt
   always_include_files:
     - miningpy/VERSION
@@ -20,7 +19,7 @@ build:
 requirements:
   host:
     - pip
-    - python >=3.6
+    - python
   run:
     - ezdxf >=0.13.1
     - numpy
