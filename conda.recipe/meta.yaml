@@ -1,28 +1,27 @@
-package:
-  name: miningpy
-  version: 0.1.0
+{% set name = "miningpy" %}
+{% set version = 0.1.0 %}
 
-build:
-  always_include_files:
-    - miningpy/VERSION
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
 
 source:
   git_url: ../
 
+build:
+  number: 0
+  script: {{ PYTHON }} setup.py install --single-version-externally-managed --record=record.txt
+
 requirements:
   host:
-    - python
     - pip
-    - ezdxf >=0.13.1
-    - numpy >=1.15
-    - pandas
-    - pyvista
-    - vtk >=8.0
+    - python
   run:
-    - python >=3.6
     - ezdxf >=0.13.1
-    - numpy >=1.15
+    - numpy
     - pandas
+    - python >=3.6
     - pyvista
     - vtk >=8.0
 
@@ -40,5 +39,11 @@ test:
     - tests
 
 about:
-  home: https://bitbucket.org/incitron/miningpy
+  home: https://pypi.org/project/miningpy/
+  summary: python tools for mining engineering
   license: MIT
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - iainfullelove
