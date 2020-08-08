@@ -43,5 +43,6 @@ jobs:
     - task: PythonScript@0
       inputs:
         scriptSource: inline
+        failOnStderr: true
         script: |
           import miningpy
