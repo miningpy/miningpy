@@ -1,4 +1,4 @@
-# Azure devops pipeline to test installing MiningPy from the stable release to TestPyPi
+# Azure devops pipeline to test installing MiningPy from the stable release to PyPi
 
 
 trigger: none
