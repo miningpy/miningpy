@@ -7,15 +7,10 @@ package:
   version: {{ version }}.{{ DEPLOY_TIME }}
 
 source:
-  git_url: ../
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
 
 build:
-  script_env:
-    - DEPLOY_TIME
-  noarch: python
-  script: {{ PYTHON }} setup.py install --single-version-externally-managed --record=record.txt
-  always_include_files:
-    - miningpy/VERSION
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
 
 requirements:
   build:
