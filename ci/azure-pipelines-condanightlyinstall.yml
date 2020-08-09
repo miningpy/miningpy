@@ -43,6 +43,10 @@ jobs:
     - script: |
         call activate baseAnaconda
         conda config --add channels conda-forge
+      displayName: Add Conda Forge Channel
+
+    - script: |
+        call activate baseAnaconda
         conda install --yes --quiet --name baseAnaconda -c miningpy_nightly miningpy
       displayName: Install Nightly MiningPy
 
