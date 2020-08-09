@@ -134,7 +134,6 @@ Example
     <div class="banner">
         <img src="_static./plot3D_example.png" alt="plot3D">
     </div>
-|
 
 Documentation
 -------------
