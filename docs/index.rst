@@ -22,13 +22,13 @@ Repository: https://bitbucket.org/incitron/miningpy
 
 Stable Release:
 
-* https://anaconda.org/miningpy/miningpy
-* https://pypi.org/project/miningpy/
+   * `Anaconda Cloud Stable <https://anaconda.org/miningpy/miningpy>`_
+   * `PyPi Stable <https://pypi.org/project/miningpy/>`_
 
 Nightly Release: Version Format: `version.version.version.yyyyMMddHHmm`
 
-- https://anaconda.org/miningpy_nightly/miningpy
-- https://test.pypi.org/project/miningpy/
+   * `Anaconda Cloud Nightly <https://anaconda.org/miningpy_nightly/miningpy>`_
+   * `PyPi Nightly <https://test.pypi.org/project/miningpy/>`_
 
 Testing Pipelines (Azure DevOps): https://dev.azure.com/Iain123/MiningPy
 
@@ -75,9 +75,9 @@ Installation
 
 MiningPy is distributed using:
 
-- `conda-forge <https://conda-forge.org/>`_
-- `Anaconda Cloud <https://anaconda.org/miningpy/miningpy>`_
-- `PyPi <https://pypi.org/project/miningpy/>`_
+* `conda-forge <https://conda-forge.org/>`_
+* `Anaconda Cloud <https://anaconda.org/miningpy/miningpy>`_
+* `PyPi <https://pypi.org/project/miningpy/>`_
 
 Conda
 ^^^^^
@@ -134,7 +134,7 @@ Example
     <div class="banner">
         <img src="_static./plot3D_example.png" alt="plot3D">
     </div>
-
+|
 
 Documentation
 -------------
