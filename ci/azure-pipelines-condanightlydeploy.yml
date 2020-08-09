@@ -43,7 +43,7 @@ jobs:
 
     - script: |
         conda install anaconda-client
-        anaconda login --hostname AZURE_$(time) --username $(anaconda.username) --password $(anaconda.password)
+        anaconda login --hostname AZURE_$(time)_$(python.version) --username $(anaconda.username) --password $(anaconda.password)
       displayName: Connect to Anaconda Cloud
 
     - script: conda create --yes --quiet --name baseAnaconda python=$(python.version)
