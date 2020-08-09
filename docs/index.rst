@@ -24,13 +24,13 @@ Repository: https://bitbucket.org/incitron/miningpy
 
 Stable Release:
 
-* `Anaconda Cloud Stable <https://anaconda.org/miningpy/miningpy>`_
-* `PyPi Stable <https://pypi.org/project/miningpy/>`_
+* Anaconda Cloud Stable: https://anaconda.org/miningpy/miningpy
+* PyPi Stable: https://pypi.org/project/miningpy
 
 Nightly Release: Version Format: `version.version.version.yyyyMMddHHmm`
 
-* `Anaconda Cloud Nightly <https://anaconda.org/miningpy_nightly/miningpy>`_
-* `PyPi Nightly <https://test.pypi.org/project/miningpy/>`_
+* Anaconda Cloud Nightly: https://anaconda.org/miningpy_nightly/miningpy
+* PyPi Nightly: https://test.pypi.org/project/miningpy/
 
 Testing Pipelines (Azure DevOps): https://dev.azure.com/Iain123/MiningPy
 
