@@ -1,0 +1,56 @@
+# Azure devops pipeline to test installing MiningPy from the stable release
+
+trigger: none
+
+schedules:
+- cron: "0 15 * * *"
+  displayName: Daily build
+  branches:
+    include:
+    - master
+- cron: "0 13 * * 0"
+  displayName: Weekly Sunday build
+  branches:
+    include:
+    - master
+  always: true
+
+jobs:
+  - job: WindowsInstallCondaStable
+    pool:
+      vmImage: 'VS2017-Win2016'
+    strategy:
+      matrix:
+        Python36:
+          python.version: '3.6'
+        Python37:
+          python.version: '3.7'
+        Python38:
+          python.version: '3.8'
+
+    steps:
+    - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
+      displayName: Add conda to PATH
+
+    - script: |
+        conda update conda
+      displayName: Update conda
+
+    - script: conda create --yes --quiet --name baseAnaconda python=$(python.version)
+      displayName: Create Anaconda environment
+
+    - script: |
+        call activate baseAnaconda
+        conda config --add channels conda-forge
+      displayName: Add Conda Forge Channel
+
+    - script: |
+        call activate baseAnaconda
+        conda install --yes --quiet --name baseAnaconda -c miningpy miningpy
+      displayName: Install Nightly MiningPy
+
+    - script: |
+        call activate baseAnaconda
+        python -c "import miningpy"
+      displayName: Test MiningPy Import
+
