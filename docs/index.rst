@@ -86,13 +86,13 @@ MiningPy can be installed using the Conda package manager.
 To install using `conda`, you need to add the `conda-forge` channel
 so that all dependencies are installed correctly:
 
-.. code-block::
+.. code-block:: batch
 
    conda config --add channels conda-forge
 
 To install from `Anaconda Cloud <https://anaconda.org/miningpy/miningpy>`_:
 
-.. code-block::
+.. code-block:: batch
 
    conda install -c miningpy miningpy
 
@@ -103,7 +103,7 @@ Pip
 
 MiningPy can be installed using the Pip package manager:
 
-.. code-block::
+.. code-block:: batch
 
    pip install miningpy
 
@@ -144,7 +144,7 @@ Auto-generated documentation is hosted at
 
 You may also build the documentation yourself:
 
-.. code-block::
+.. code-block:: batch
 
    git clone https://bitbucket.org/incitron/miningpy/miningpy.git
    cd miningpy/docs
