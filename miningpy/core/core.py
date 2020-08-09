@@ -769,7 +769,9 @@ def model_rotation(blockmodel: pd.DataFrame,
 
 
 def model_origin(blockmodel: pd.DataFrame,
-                 xyz_cols: Tuple[str, str, str] = None) -> Tuple[float, float, float]:
+                 xyz_cols: Tuple[str, str, str] = None,
+                 dims: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None) -> Tuple[float, float, float]:
+
     """
     calculate the origin of a block model grid relative to its current xyz grid
     origin is the corner of the block with min xyz coordinates
@@ -780,15 +782,18 @@ def model_origin(blockmodel: pd.DataFrame,
         pandas dataframe of block model
     xyz_cols: tuple of strings
         names of x,y,z columns in model
+    dims: tuple of floats or ints
+        x,y,z dimension of regular parent blocks
 
     Returns
     -------
     tuple of floats
         origin of a block model for each axis (x,y,z)
     """
-    xorigin = blockmodel[xcol].min()
-    yorigin = blockmodel[ycol].min()
-    zorigin = blockmodel[zcol].min()
+
+    xorigin = blockmodel[xyz_cols[0]].min() - dims[0]
+    yorigin = blockmodel[xyz_cols[1]].min() - dims[1]
+    zorigin = blockmodel[xyz_cols[2]].min() - dims[2]
 
     return xorigin, yorigin, zorigin
 
