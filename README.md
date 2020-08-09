@@ -8,8 +8,17 @@ Documentation:  https://miningpy.readthedocs.io/en/latest/
 
 Repository:     https://bitbucket.org/incitron/miningpy
 
-Nightly Release: https://test.pypi.org/project/miningpy/
-Nightly Release Version Format: `version.version.version.yyyyMMddHHmm`
+Stable Release:
+
+- https://anaconda.org/miningpy/miningpy
+- https://pypi.org/project/miningpy/
+
+Nightly Release: Version Format: `version.version.version.yyyyMMddHHmm`
+
+- https://anaconda.org/miningpy_nightly/miningpy
+- https://test.pypi.org/project/miningpy/
+
+Testing Pipelines (Azure DevOps): https://dev.azure.com/Iain123/MiningPy
 
 
 ## About
@@ -99,6 +108,8 @@ MiningPy is only tested on Microsoft Windows 10.
 ### Testing
 
 The package is built and tested nightly using environments based on [Virtualenv](https://virtualenv.pypa.io/) and [Conda](https://docs.conda.io) (with the current base Anaconda packages).
+
+[Azure DevOps](https://dev.azure.com/Iain123/MiningPy) hosts and runs and the testing pipelines.
 
 MiningPy is tested to be compatible with the following versions of Python:
 
