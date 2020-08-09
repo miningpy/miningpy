@@ -50,12 +50,8 @@ jobs:
         conda install --yes --quiet --name baseAnaconda -c miningpy_nightly miningpy
       displayName: Install Nightly MiningPy
 
-    - task: PythonScript@0
-      inputs:
-        scriptSource: inline
-        failOnStderr: true
-        pythonInterpreter: C:\Miniconda\envs\baseAnaconda\python.exe
-        script: |
-          import miningpy
+    - script: |
+        call activate baseAnaconda
+        python -c "import miningpy"
       displayName: Test MiningPy Import
 
