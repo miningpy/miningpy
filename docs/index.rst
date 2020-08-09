@@ -13,6 +13,8 @@
         <img src="_static/miningpy_logo.png" alt="MiningPy">
     </div>
 
+Links
+-----
 
 Version: |release|
 
