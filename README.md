@@ -57,7 +57,7 @@ MiningPy aims to provide a simple API to mining engineers that extends existing 
 
 MiningPy is distributed using:
  
-- [Conda-Forge](https://conda-forge.org/)
+- [conda-forge](https://conda-forge.org/)
 - [Anaconda Cloud](https://anaconda.org/miningpy/miningpy) 
 - [PyPi](https://pypi.org/project/miningpy/) 
 

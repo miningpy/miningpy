@@ -16,9 +16,21 @@
 
 Version: |release|
 
-Documentation:  https://miningpy.readthedocs.io/en/latest/
+Documentation: https://miningpy.readthedocs.io/en/latest/
 
-Repository:     https://bitbucket.org/incitron/miningpy
+Repository: https://bitbucket.org/incitron/miningpy
+
+Stable Release:
+
+* https://anaconda.org/miningpy/miningpy
+* https://pypi.org/project/miningpy/
+
+Nightly Release: Version Format: `version.version.version.yyyyMMddHHmm`
+
+- https://anaconda.org/miningpy_nightly/miningpy
+- https://test.pypi.org/project/miningpy/
+
+Testing Pipelines (Azure DevOps): https://dev.azure.com/Iain123/MiningPy
 
 .. toctree::
    :name: Introduction
@@ -60,10 +72,40 @@ MiningPy aims to provide a simple API to mining engineers that extends existing 
 
 Installation
 ------------
-MiningPy is distributed using `PyPi <https://pypi.org>`_ and can be installed through Pip::
 
-    $ pip install miningpy
+MiningPy is distributed using:
 
+- `conda-forge <https://conda-forge.org/>`_
+- `Anaconda Cloud <https://anaconda.org/miningpy/miningpy>`_
+- `PyPi <https://pypi.org/project/miningpy/>`_
+
+Conda
+^^^^^
+
+MiningPy can be installed using the Conda package manager.
+To install using `conda`, you need to add the `conda-forge` channel
+so that all dependencies are installed correctly:
+
+.. code-block::
+
+   conda config --add channels conda-forge
+
+To install from `Anaconda Cloud <https://anaconda.org/miningpy/miningpy>`_:
+
+.. code-block::
+
+   conda install -c miningpy miningpy
+
+To install from Conda-Forge:
+
+Pip
+^^^
+
+MiningPy can be installed using the Pip package manager:
+
+.. code-block::
+
+   pip install miningpy
 
 Example
 -------
@@ -94,6 +136,22 @@ Example
     </div>
 
 
+Documentation
+-------------
+
+Auto-generated documentation is hosted at
+`Read The Docs <https://miningpy.readthedocs.io/en/latest/>`_.
+
+You may also build the documentation yourself:
+
+.. code-block::
+
+   git clone https://bitbucket.org/incitron/miningpy/miningpy.git
+   cd miningpy/docs
+   make html
+
+The documention can then be found in `miningpy/docs/_build/html/index.html`.
+
 Supported Platforms & Testing
 -----------------------------
 
@@ -106,6 +164,9 @@ Testing
 ^^^^^^^
 
 The package is built and tested nightly using environments based on `Virtualenv <https://virtualenv.pypa.io/>`_ and `Conda <https://docs.conda.io>`_ (with the current base Anaconda packages).
+
+`Azure DevOps <https://dev.azure.com/Iain123/MiningPy>`_
+hosts and runs and the testing pipelines.
 
 MiningPy is tested to be compatible with the following versions of Python:
 
