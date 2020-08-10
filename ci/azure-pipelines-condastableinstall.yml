@@ -1,14 +1,15 @@
-# Azure devops pipeline to test installing MiningPy from the stable release
+# Azure devops pipeline to test installing MiningPy from the stable release from conda-forge channel
+
 
 trigger: none
 
 schedules:
-- cron: "0 15 * * *"
+- cron: "0 16 * * *"
   displayName: Daily build
   branches:
     include:
     - master
-- cron: "0 13 * * 0"
+- cron: "0 14 * * 0"
   displayName: Weekly Sunday build
   branches:
     include:
@@ -46,7 +47,7 @@ jobs:
 
     - script: |
         call activate baseAnaconda
-        conda install --yes --quiet --name baseAnaconda -c miningpy miningpy
+        conda install --yes --quiet --name baseAnaconda -c conda-forge miningpy
       displayName: Install Nightly MiningPy
 
     - script: |
