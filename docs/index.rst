@@ -77,7 +77,7 @@ Installation
 
 MiningPy is distributed using:
 
-* `conda-forge <https://conda-forge.org/>`_
+* `conda-forge <https://anaconda.org/conda-forge/miningpy>`_
 * `Anaconda Cloud <https://anaconda.org/miningpy/miningpy>`_
 * `PyPi <https://pypi.org/project/miningpy/>`_
 
