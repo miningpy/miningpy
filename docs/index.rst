@@ -92,13 +92,18 @@ so that all dependencies are installed correctly:
 
    conda config --add channels conda-forge
 
-To install from `Anaconda Cloud <https://anaconda.org/miningpy/miningpy>`_:
+To install from `conda-forge <https://anaconda.org/conda-forge/miningpy>`_ (after adding the conda-forge channel):
+
+.. code-block:: batch
+
+   conda install miningpy
+
+To install from `Anaconda Cloud <https://anaconda.org/miningpy/miningpy>`_ (after adding the conda-forge channel):
 
 .. code-block:: batch
 
    conda install -c miningpy miningpy
 
-To install from Conda-Forge:
 
 Pip
 ^^^

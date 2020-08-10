@@ -57,7 +57,7 @@ MiningPy aims to provide a simple API to mining engineers that extends existing 
 
 MiningPy is distributed using:
  
-- [conda-forge](https://conda-forge.org/)
+- [conda-forge](https://anaconda.org/conda-forge/miningpy)
 - [Anaconda Cloud](https://anaconda.org/miningpy/miningpy) 
 - [PyPi](https://pypi.org/project/miningpy/) 
 
@@ -71,15 +71,17 @@ so that all dependencies are installed correctly:
 conda config --add channels conda-forge 
 ```
 
-To install from [Anaconda Cloud](https://anaconda.org/miningpy/miningpy):
+To install from [conda-forge](https://anaconda.org/conda-forge/miningpy) (after adding the conda-forge channel):
+
+```bat
+conda install miningpy
+```
+
+To install from [Anaconda Cloud](https://anaconda.org/miningpy/miningpy) (after adding the conda-forge channel):
 
 ```bat
 conda install -c miningpy miningpy
 ```
-
-To install from Conda-Forge:
-
-
 
 ### Pip
 
