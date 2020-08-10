@@ -22,7 +22,7 @@ def ijk(blockmodel:     pd.DataFrame,
         indexing:       int = 0,
         xyz_cols:       Tuple[str, str, str] = None,
         origin:         Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
-        dims:           Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+        dims:           Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
         rotation:       Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
         ijk_cols:       Tuple[str, str, str] = ('i', 'j', 'k'),
         inplace:        bool = False) -> pd.DataFrame:
@@ -41,8 +41,10 @@ def ijk(blockmodel:     pd.DataFrame,
         names of x,y,z columns in model
     origin: tuple of floats or ints
         x,y,z origin of model - this is the corner of the bottom block (not the centroid)
-    dims: tuple of floats or ints
+    dims: tuple of floats, ints or str
         x,y,z dimension of regular parent blocks
+        can either be a number or the columns names of the x,y,z
+        columns in the dataframe
     rotation: tuple of floats or ints
         rotation of block model grid around x,y,z axis, -180 to 180 degrees
     ijk_cols: tuple of strings
@@ -87,43 +89,25 @@ def ijk(blockmodel:     pd.DataFrame,
     if x_rotation == 0:  # x rotation
         bm_xcol = blockmodel[xcol]
     else:
-        bm_xcol = blockmodel.rotate_grid(xcol=xcol,
-                                         ycol=ycol,
-                                         zcol=zcol,
-                                         xorigin=xorigin,
-                                         yorigin=yorigin,
-                                         zorigin=zorigin,
-                                         x_rotation=x_rotation,
-                                         y_rotation=y_rotation,
-                                         z_rotation=z_rotation,
+        bm_xcol = blockmodel.rotate_grid(xyz_cols=xyz_cols,
+                                         origin=origin,
+                                         rotation=rotation,
                                          return_full_model=False,
                                          inplace=True)['x']
     if y_rotation == 0:
         bm_ycol = blockmodel[ycol]
     else:
-        bm_ycol = blockmodel.rotate_grid(xcol=xcol,
-                                         ycol=ycol,
-                                         zcol=zcol,
-                                         xorigin=xorigin,
-                                         yorigin=yorigin,
-                                         zorigin=zorigin,
-                                         x_rotation=x_rotation,
-                                         y_rotation=y_rotation,
-                                         z_rotation=z_rotation,
+        bm_ycol = blockmodel.rotate_grid(xyz_cols=xyz_cols,
+                                         origin=origin,
+                                         rotation=rotation,
                                          return_full_model=False,
                                          inplace=True)['y']
     if z_rotation == 0:
         bm_zcol = blockmodel[zcol]
     else:
-        bm_zcol = blockmodel.rotate_grid(xcol=xcol,
-                                         ycol=ycol,
-                                         zcol=zcol,
-                                         xorigin=xorigin,
-                                         yorigin=yorigin,
-                                         zorigin=zorigin,
-                                         x_rotation=x_rotation,
-                                         y_rotation=y_rotation,
-                                         z_rotation=z_rotation,
+        bm_zcol = blockmodel.rotate_grid(xyz_cols=xyz_cols,
+                                         origin=origin,
+                                         rotation=rotation,
                                          return_full_model=False,
                                          inplace=True)['z']
     
@@ -158,7 +142,7 @@ def xyz(blockmodel:     pd.DataFrame,
         indexing:       int = 0,
         ijk_cols:       Tuple[str, str, str] = ('i', 'j', 'k'),
         origin:         Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
-        dims:           Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+        dims:           Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
         rotation:       Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
         xyz_cols:       Tuple[str, str, str] = ('x', 'y', 'z'),
         inplace:        bool = False) -> pd.DataFrame:
@@ -177,8 +161,10 @@ def xyz(blockmodel:     pd.DataFrame,
         name of the i,j,k columns added to the model
     origin: tuple of floats or ints
         x,y,z origin of model - this is the corner of the bottom block (not the centroid)
-    dims: tuple of floats or ints
+    dims: tuple of floats, ints or str
         x,y,z dimension of regular parent blocks
+        can either be a number or the columns names of the x,y,z
+        columns in the dataframe
     rotation: tuple of floats or ints
         rotation of block model grid around x,y,z axis, -180 to 180 degrees
     xyz_cols: tuple of strings
@@ -250,43 +236,25 @@ def xyz(blockmodel:     pd.DataFrame,
     if x_rotation == 0:
         blockmodel[xcol] = bm_xcol
     else:
-        blockmodel[xcol] = blockmodel.rotate_grid(xcol=xcol,
-                                                  ycol=ycol,
-                                                  zcol=zcol,
-                                                  xorigin=xorigin,
-                                                  yorigin=yorigin,
-                                                  zorigin=zorigin,
-                                                  x_rotation=x_rotation,
-                                                  y_rotation=y_rotation,
-                                                  z_rotation=z_rotation,
+        blockmodel[xcol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
+                                                  origin=origin,
+                                                  rotation=rotation,
                                                   return_full_model=False,
                                                   inplace=True)['x']
     if y_rotation == 0:
         blockmodel[ycol] = bm_ycol
     else:
-        blockmodel[ycol] = blockmodel.rotate_grid(xcol=xcol,
-                                                  ycol=ycol,
-                                                  zcol=zcol,
-                                                  xorigin=xorigin,
-                                                  yorigin=yorigin,
-                                                  zorigin=zorigin,
-                                                  x_rotation=x_rotation,
-                                                  y_rotation=y_rotation,
-                                                  z_rotation=z_rotation,
+        blockmodel[ycol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
+                                                  origin=origin,
+                                                  rotation=rotation,
                                                   return_full_model=False,
                                                   inplace=True)['y']
     if z_rotation == 0:
         blockmodel[zcol] = bm_zcol
     else:
-        blockmodel[zcol] = blockmodel.rotate_grid(xcol=xcol,
-                                                  ycol=ycol,
-                                                  zcol=zcol,
-                                                  xorigin=xorigin,
-                                                  yorigin=yorigin,
-                                                  zorigin=zorigin,
-                                                  x_rotation=x_rotation,
-                                                  y_rotation=y_rotation,
-                                                  z_rotation=z_rotation,
+        blockmodel[zcol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
+                                                  origin=origin,
+                                                  rotation=rotation,
                                                   return_full_model=False,
                                                   inplace=True)['z']
     
@@ -326,6 +294,8 @@ def rotate_grid(blockmodel:         pd.DataFrame,
     pandas.DataFrame
         rotated block model or dict of rotated x,y,z coordinates
     """
+
+    # definitions for simplicity
     xcol, ycol, zcol = xyz_cols[0], xyz_cols[1], xyz_cols[2]
     xorigin, yorigin, zorigin = origin[0], origin[1], origin[2]
     x_rotation, y_rotation, z_rotation = rotation[0], rotation[1], rotation[2]
@@ -455,11 +425,67 @@ def group_weighted_average(blockmodel:   pd.DataFrame,
     return blockmodel
 
 
+def nblocks_xyz(blockmodel: pd.DataFrame,
+                xyz_cols: Tuple[str, str, str] = None,
+                dims: Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
+                origin: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+                rotation: Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0)
+                ) -> Tuple[Union[int, float], Union[int, float], Union[int, float]]:
+    """
+    Number of blocks along the x,y,z axis.
+    If the model is rotated, it is unrotated and then the number
+    of blocks in the x,y,z axis is calculated.
+
+    Parameters
+    ----------
+    blockmodel: pd.DataFrame
+        pandas dataframe of block model
+    xyz_cols: tuple of strings
+        names of x,y,z columns in model
+    dims: tuple of floats, ints or str
+        x,y,z dimension of regular parent blocks
+        can either be a number or the columns names of the x,y,z
+        columns in the dataframe
+    origin: tuple of floats or ints
+        x,y,z origin of model - this is the corner of the bottom block (not the centroid)
+    rotation: tuple of floats or ints
+        rotation of block model grid around x,y,z axis, -180 to 180 degrees
+
+    Returns
+    -------
+    tuple of floats
+        Number of blocks along the x,y,z axis.
+    """
+
+    # definitions for simplicity
+    xcol, ycol, zcol = xyz_cols[0], xyz_cols[1], xyz_cols[2]
+
+    # check rotation is within parameters
+    for rot in rotation:
+        if -180 <= rot <= 180:
+            pass
+        else:
+            raise Exception('Rotation is limited to between -180 and +180 degrees')
+
+    mod = blockmodel[[xcol, ycol, zcol]].copy()
+    mod.ijk(xyz_cols=xyz_cols,
+            origin=origin,
+            dims=dims,
+            rotation=rotation,
+            inplace=True)
+
+    nx = mod['i'].max() - mod['i'].min() + 1
+    ny = mod['j'].max() - mod['j'].min() + 1
+    nz = mod['k'].max() - mod['k'].min() + 1
+
+    return nx, ny, nz
+
+
 def vulcan_csv(blockmodel: pd.DataFrame,
                path: str = None,
                var_path: str = None,
                xyz_cols: Tuple[str, str, str] = None,
-               dims: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+               dims: Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
                inplace: bool = False) -> pd.DataFrame:
     """
     transform pandas.Dataframe block model into Vulcan import compatible CSV format.
@@ -474,8 +500,10 @@ def vulcan_csv(blockmodel: pd.DataFrame,
         filename for csv that lists the Vulcan dtype of each column in block model (used if manually creating bdf)
     xyz_cols: tuple of strings
         names of x,y,z columns in model
-    dims: tuple of floats or ints
+    dims: tuple of floats, ints or str
         x,y,z dimension of regular parent blocks
+        can either be a number or the columns names of the x,y,z
+        columns in the dataframe
     inplace: bool
         whether to do calculation inplace (i.e. add Vulcan headers inplace) or return pandas.DataFrame with Vulcan headers
 
@@ -556,7 +584,7 @@ def vulcan_csv(blockmodel: pd.DataFrame,
 def vulcan_bdf(blockmodel: pd.DataFrame,
                path: str = None,
                origin: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
-               dims: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+               dims: Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
                start_offset: Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0.0, 0.0, 0.0),
                end_offset: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
                format: str = 'T') -> bool:
@@ -576,8 +604,10 @@ def vulcan_bdf(blockmodel: pd.DataFrame,
         filename for vulcan bdf file
     origin: tuple of floats or ints
         x,y,z origin of model - this is the corner of the bottom block (not the centroid)
-    dims: tuple of floats or ints
+    dims: tuple of floats, ints or str
         x,y,z dimension of regular parent blocks
+        can either be a number or the columns names of the x,y,z
+        columns in the dataframe
     start_offset: tuple of floats or ints
         minimum offset along the x,y,z axes
     end_offset: tuple of floats or ints
@@ -706,7 +736,7 @@ def geometric_reblock(blockmodel: pd.DataFrame):
     reblock regular block model into larger or smaller blocks (split or aggregate blocks)
     can be used as a tool for geometrically aggregating blocks in bench-phases
     reblock factor (n) must be 2^n (i.e. blocks are either doubled, halved, quartered, etc in size)
-    cannot just define any new x,y,z dimension, must be multiple of current parent block size
+    cannot just define any new x,y,z dimension, must be multiple of current parent block size.
 
     Parameters
     ----------
@@ -755,22 +785,25 @@ def model_rotation(blockmodel: pd.DataFrame,
         pandas dataframe of block model
     xyz_cols: tuple of strings
         names of x,y,z columns in model
-    dims: tuple of floats or ints
+    dims: tuple of floats, ints or str
         x,y,z dimension of regular parent blocks
+        can either be a number or the columns names of the x,y,z
+        columns in the dataframe
     origin: tuple of floats or ints
         x,y,z origin of model - this is the corner of the bottom block (not the centroid)
 
     Returns
     -------
     tuple of floats
-        block model around each axis (x,y,z)
+        block model rotation around each axis (x,y,z)
     """
     raise Exception("MiningPy function {model_rotation} hasn't been created yet")
 
 
 def model_origin(blockmodel: pd.DataFrame,
                  xyz_cols: Tuple[str, str, str] = None,
-                 dims: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None) -> Tuple[float, float, float]:
+                 dims: Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
+                 ) -> Tuple[float, float, float]:
 
     """
     calculate the origin of a block model grid relative to its current xyz grid
@@ -782,8 +815,10 @@ def model_origin(blockmodel: pd.DataFrame,
         pandas dataframe of block model
     xyz_cols: tuple of strings
         names of x,y,z columns in model
-    dims: tuple of floats or ints
+    dims: tuple of floats, ints or str
         x,y,z dimension of regular parent blocks
+        can either be a number or the columns names of the x,y,z
+        columns in the dataframe
 
     Returns
     -------
@@ -798,17 +833,17 @@ def model_origin(blockmodel: pd.DataFrame,
     return xorigin, yorigin, zorigin
 
 
-def model_block_size(blockmodel:     pd.DataFrame,
-                     xcol:           str = None,
-                     ycol:           str = None,
-                     zcol:           str = None,
-                     xorigin:        Union[int, float] = None,
-                     yorigin:        Union[int, float] = None,
-                     zorigin:        Union[int, float] = None,
-                     x_rotation:     Union[int, float] = 0,
-                     y_rotation:     Union[int, float] = 0,
-                     z_rotation:     Union[int, float] = 0,
-                     inplace:        bool = False) -> Tuple[float, float, float]:
+def block_dims(blockmodel:     pd.DataFrame,
+               xcol:           str = None,
+               ycol:           str = None,
+               zcol:           str = None,
+               xorigin:        Union[int, float] = None,
+               yorigin:        Union[int, float] = None,
+               zorigin:        Union[int, float] = None,
+               x_rotation:     Union[int, float] = 0,
+               y_rotation:     Union[int, float] = 0,
+               z_rotation:     Union[int, float] = 0,
+               inplace:        bool = False) -> Tuple[float, float, float]:
     raise Exception("MiningPy function {model_block_size} hasn't been created yet")
 
 
@@ -870,7 +905,7 @@ def index_3D_to_1D(blockmodel:  pd.DataFrame,
                    indexing:    int = 0,
                    xyz_cols:    Tuple[str, str, str] = None,
                    origin:      Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
-                   dims:        Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+                   dims: Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
                    rotation:    Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
                    idxcol:      str = 'idx',
                    inplace:     bool = False) -> pd.DataFrame:
@@ -888,8 +923,10 @@ def index_3D_to_1D(blockmodel:  pd.DataFrame,
         names of x,y,z columns in model
     origin: tuple of floats or ints
         x,y,z origin of model - this is the corner of the bottom block (not the centroid)
-    dims: tuple of floats or ints
+    dims: tuple of floats, ints or str
         x,y,z dimension of regular parent blocks
+        can either be a number or the columns names of the x,y,z
+        columns in the dataframe
     rotation: tuple of floats or ints
         rotation of block model grid around x,y,z axis, -180 to 180 degrees
     idxcol: str
