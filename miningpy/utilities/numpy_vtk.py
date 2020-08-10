@@ -23,18 +23,18 @@ Caveats:
    array -- don't delete the VTK array.
 
 """
-from vtk import *
-# from vtk import vtkIdTypeArray, vtkLongArray, vtkDataArray, vtkCommonKitPython
 import numpy as np
+import vtk
+
 
 # Useful constants for VTK arrays.
-VTK_ID_TYPE_SIZE = vtkIdTypeArray().GetDataTypeSize()
+VTK_ID_TYPE_SIZE = vtk.vtkIdTypeArray().GetDataTypeSize()
 if VTK_ID_TYPE_SIZE == 4:
     ID_TYPE_CODE = np.int32
 elif VTK_ID_TYPE_SIZE == 8:
     ID_TYPE_CODE = np.int64
 
-VTK_LONG_TYPE_SIZE = vtkLongArray().GetDataTypeSize()
+VTK_LONG_TYPE_SIZE = vtk.vtkLongArray().GetDataTypeSize()
 if VTK_LONG_TYPE_SIZE == 4:
     LONG_TYPE_CODE = np.int32
     ULONG_TYPE_CODE = np.uint32
@@ -46,20 +46,20 @@ elif VTK_LONG_TYPE_SIZE == 8:
 def get_vtk_array_type(np_array_type):
     """Returns a VTK typecode given a np array."""
     # This is a Mapping from np array types to VTK array types.
-    _np_vtk = {np.character:VTK_UNSIGNED_CHAR,
-                np.uint8:VTK_UNSIGNED_CHAR,
-                np.uint16:VTK_UNSIGNED_SHORT,
-                np.uint32:VTK_UNSIGNED_INT,
-                np.uint64:VTK_UNSIGNED_LONG_LONG,
-                np.int8:VTK_CHAR,
-                np.int16:VTK_SHORT,
-                np.int32:VTK_INT,
-                np.int64:VTK_LONG_LONG,
-                np.float32:VTK_FLOAT,
-                np.float64:VTK_DOUBLE,
-                np.complex64:VTK_FLOAT,
-                np.complex128:VTK_DOUBLE,
-                np.object:VTK_STRING}
+    _np_vtk = {np.character: vtk.VTK_UNSIGNED_CHAR,
+               np.uint8: vtk.VTK_UNSIGNED_CHAR,
+               np.uint16: vtk.VTK_UNSIGNED_SHORT,
+               np.uint32: vtk.VTK_UNSIGNED_INT,
+               np.uint64: vtk.VTK_UNSIGNED_LONG_LONG,
+               np.int8: vtk.VTK_CHAR,
+               np.int16: vtk.VTK_SHORT,
+               np.int32: vtk.VTK_INT,
+               np.int64: vtk.VTK_LONG_LONG,
+               np.float32: vtk.VTK_FLOAT,
+               np.float64: vtk.VTK_DOUBLE,
+               np.complex64: vtk.VTK_FLOAT,
+               np.complex128: vtk.VTK_DOUBLE,
+               np.object: vtk.VTK_STRING}
     for key, vtk_type in _np_vtk.items():
         if np_array_type == key or \
            np.issubdtype(np_array_type, key) or \
@@ -71,21 +71,21 @@ def get_vtk_array_type(np_array_type):
 
 def get_vtk_to_np_typemap():
     """Returns the VTK array type to np array type mapping."""
-    _vtk_np = {VTK_BIT:np.bool,
-                VTK_CHAR:np.int8,
-                VTK_UNSIGNED_CHAR:np.uint8,
-                VTK_SHORT:np.int16,
-                VTK_UNSIGNED_SHORT:np.uint16,
-                VTK_INT:np.int32,
-                VTK_UNSIGNED_INT:np.uint32,
-                VTK_LONG:LONG_TYPE_CODE,
-                VTK_LONG_LONG:np.int64,
-                VTK_UNSIGNED_LONG:ULONG_TYPE_CODE,
-                VTK_UNSIGNED_LONG_LONG:np.uint64,
-                VTK_ID_TYPE:ID_TYPE_CODE,
-                VTK_FLOAT:np.float32,
-                VTK_DOUBLE:np.float64,
-                VTK_STRING:np.object}
+    _vtk_np = {vtk.VTK_BIT: np.bool,
+               vtk.VTK_CHAR: np.int8,
+               vtk.VTK_UNSIGNED_CHAR: np.uint8,
+               vtk.VTK_SHORT: np.int16,
+               vtk.VTK_UNSIGNED_SHORT: np.uint16,
+               vtk.VTK_INT: np.int32,
+               vtk.VTK_UNSIGNED_INT: np.uint32,
+               vtk.VTK_LONG: LONG_TYPE_CODE,
+               vtk.VTK_LONG_LONG: np.int64,
+               vtk.VTK_UNSIGNED_LONG: ULONG_TYPE_CODE,
+               vtk.VTK_UNSIGNED_LONG_LONG: np.uint64,
+               vtk.VTK_ID_TYPE: ID_TYPE_CODE,
+               vtk.VTK_FLOAT: np.float32,
+               vtk.VTK_DOUBLE: np.float64,
+               vtk.VTK_STRING: np.object}
     return _vtk_np
 
 
@@ -98,7 +98,7 @@ def create_vtk_array(vtk_arr_type):
     """Internal function used to create a VTK data array from another
     VTK array given the VTK array type.
     """
-    return vtkDataArray.CreateDataArray(vtk_arr_type)
+    return vtk.vtkDataArray.CreateDataArray(vtk_arr_type)
 
 
 def np_to_vtk(num_array, deep=0, array_type=None):
@@ -181,7 +181,7 @@ def np_to_vtk(num_array, deep=0, array_type=None):
 
 
 def np_to_vtkIdTypeArray(num_array, deep=0):
-    isize = vtkIdTypeArray().GetDataTypeSize()
+    isize = vtk.vtkIdTypeArray().GetDataTypeSize()
     dtype = num_array.dtype
     if isize == 4:
         if dtype != np.int32:
@@ -192,7 +192,7 @@ def np_to_vtkIdTypeArray(num_array, deep=0):
             raise ValueError(
              'Expecting a np.int64 array, got %s instead.' % (str(dtype)))
 
-    return np_to_vtk(num_array, deep, VTK_ID_TYPE)
+    return np_to_vtk(num_array, deep, vtk.VTK_ID_TYPE)
 
 
 def vtk_to_np(vtk_array):
@@ -215,7 +215,7 @@ def vtk_to_np(vtk_array):
     typ = vtk_array.GetDataType()
     assert typ in get_vtk_to_np_typemap().keys(), \
            "Unsupported array type %s"%typ
-    assert typ != VTK_BIT, 'Bit arrays are not supported.'
+    assert typ != vtk.VTK_BIT, 'Bit arrays are not supported.'
 
     shape = vtk_array.GetNumberOfTuples(), \
             vtk_array.GetNumberOfComponents()
@@ -244,5 +244,6 @@ def vtk_to_np(vtk_array):
            # For empty array, reshape fails. Create the empty array explicitly
            # if that happens.
            result = np.empty(shape, dtype=dtype)
-        else: raise
+        else:
+            raise
     return result

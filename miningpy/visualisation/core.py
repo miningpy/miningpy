@@ -4,7 +4,7 @@ from pandas.core.base import PandasObject
 from typing import Union, List, Tuple
 from miningpy.utilities.numpy_vtk import *
 import ezdxf
-from vtk import *
+import vtk
 
 
 def blocks2vtk(blockmodel:  pd.DataFrame,
@@ -108,12 +108,12 @@ def blocks2vtk(blockmodel:  pd.DataFrame,
     npt = nc * 8
 
     # Create array of the points and ID
-    pcoords = vtkFloatArray()
+    pcoords = vtk.vtkFloatArray()
     pcoords.SetNumberOfComponents(3)
     pcoords.SetNumberOfTuples(npt)
 
-    points = vtkPoints()
-    voxelArray = vtkCellArray()
+    points = vtk.vtkPoints()
+    voxelArray = vtk.vtkCellArray()
 
     # define rotation matrix - used for rotated models
     x_sin = sin(x_rotation*(pi/180.0))
@@ -190,15 +190,15 @@ def blocks2vtk(blockmodel:  pd.DataFrame,
             voxelArray.InsertCellPoint(id)
 
     # create the unstructured grid
-    grid = vtkUnstructuredGrid()
+    grid = vtk.vtkUnstructuredGrid()
     # Assign points and cells
     grid.SetPoints(points)
-    grid.SetCells(VTK_VOXEL, voxelArray)
+    grid.SetCells(vtk.VTK_VOXEL, voxelArray)
 
     # asign scalar
     for i in range(nvar):
         if var[i].dtype == np.object:
-            vtk_array = vtkStringArray()
+            vtk_array = vtk.vtkStringArray()
             for idx in var[i]:
                 vtk_array.InsertNextValue(str(idx))
             vtk_array.SetName(varname[i])
@@ -215,7 +215,7 @@ def blocks2vtk(blockmodel:  pd.DataFrame,
 
     # Clean before saving...
     # this will remove duplicated points
-    extractGrid = vtkExtractUnstructuredGrid()
+    extractGrid = vtk.vtkExtractUnstructuredGrid()
     extractGrid.SetInputData(grid)
     extractGrid.PointClippingOff()
     extractGrid.ExtentClippingOff()
@@ -226,7 +226,7 @@ def blocks2vtk(blockmodel:  pd.DataFrame,
     extractGrid.Update()
 
     # save results
-    writer = vtkXMLUnstructuredGridWriter()
+    writer = vtk.vtkXMLUnstructuredGridWriter()
     writer.SetFileName(path)
     writer.SetInputData(extractGrid.GetOutput())
     writer.Write()
