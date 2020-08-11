@@ -901,17 +901,21 @@ def attribute_reblock(blockmodel: pd.DataFrame):
     raise Exception("MiningPy function {attribute_reblock} hasn't been created yet")
 
 
-def index_3D_to_1D(blockmodel:  pd.DataFrame,
-                   indexing:    int = 0,
-                   xyz_cols:    Tuple[str, str, str] = None,
-                   origin:      Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
-                   dims: Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
-                   rotation:    Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
-                   idxcol:      str = 'idx',
-                   inplace:     bool = False) -> pd.DataFrame:
+def index_3Dto1D(blockmodel:    pd.DataFrame,
+                 indexing:      int = 0,
+                 xyz_cols:      Tuple[str, str, str] = None,
+                 origin:        Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+                 dims:          Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
+                 rotation:      Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
+                 nblocks_xyz:   Tuple[int, int, int] = None,
+                 idxcol:        str = 'ijk',
+                 inplace:       bool = False) -> pd.DataFrame:
     """
     Convert 3D array of xyz block centroids to 1D index that is reversible.
     This is identical to the "ijk" parameter in Datamine block models.
+    Note that "ijk" value from this function and from Datamine may be different,
+    depending on which axis Datamine uses as the major indexing axis.
+    Bot "ijk" indexing values are still valid.
 
     Parameters
     ----------
@@ -929,6 +933,11 @@ def index_3D_to_1D(blockmodel:  pd.DataFrame,
         columns in the dataframe
     rotation: tuple of floats or ints
         rotation of block model grid around x,y,z axis, -180 to 180 degrees
+    nblocks_xyz: tuple of ints or None
+        number of blocks along the x,y,z axis.
+        If the model is rotated, it is unrotated and then the number
+        of blocks in the x,y,z axis is calculated.
+        If "None" (default value) then the nx,ny,nz is automatically estimated
     idxcol: str
         name of the 1D index column added to the model
     inplace: bool
@@ -937,7 +946,7 @@ def index_3D_to_1D(blockmodel:  pd.DataFrame,
     Returns
     -------
     pandas.DataFrame
-        1D indexed block model
+        block model with 1D indexed column
     """
 
     if inplace:
@@ -945,39 +954,54 @@ def index_3D_to_1D(blockmodel:  pd.DataFrame,
     if not inplace:
         blockmodel = blockmodel.copy()
 
-    indexing_accepted = [0, 1]
-
     # check input indexing
+    indexing_accepted = [0, 1]
     if indexing in indexing_accepted:
         pass
     else:
         raise ValueError('IJK FAILED - indexing value not accepted - only 1 or 0 can be used')
 
-    if x_rotation == 0 and y_rotation == 0 and z_rotation == 0:
-        pass
-    else:
-        blockmodel.rotate_grid(
-            xcol=xcol,
-            ycol=ycol,
-            zcol=zcol,
-            xorigin=xorigin,
-            yorigin=yorigin,
-            zorigin=zorigin,
-            x_rotation=x_rotation,
-            y_rotation=y_rotation,
-            z_rotation=z_rotation,
-            inplace=True)
+    # check rotation is within parameters
+    for rot in rotation:
+        if -180 <= rot <= 180:
+            pass
+        else:
+            raise Exception('Rotation is limited to between -180 and +180 degrees')
+
+    # take subset of xyz columns
+    subset = blockmodel[list(xyz_cols)].copy()
+
+    # automatically calulcate nx, ny, nz if needed
+    if nblocks_xyz is None:
+        nblocks_xyz = subset.nblocks_xyz(xyz_cols=xyz_cols,
+                                         dims=dims,
+                                         origin=origin,
+                                         rotation=rotation)
+
+    # ijk calculation
+    subset.ijk(indexing=indexing,
+               xyz_cols=xyz_cols,
+               origin=origin,
+               dims=dims,
+               rotation=rotation,
+               inplace=True)
+
+    # definitions for simplicity
+    nx = nblocks_xyz[0]
+    ny = nblocks_xyz[1]
+
+    # ijk calculation
+    subset[idxcol] = subset['i'] + (subset['j'] * nx) + (subset['k'] * nx * ny)
+
+    # add ijk column back to original block model
+    blockmodel.insert(0, idxcol, subset[idxcol])
 
     # check inplace for return
-    if inplace:
-        return
     if not inplace:
         return blockmodel
 
-    return
 
-
-def index_1D_to_3D():
+def index_1Dto3D():
     raise Exception("MiningPy function {index_1D_to_3D} hasn't been created yet")
 
 
@@ -1008,7 +1032,7 @@ def extend_pandas():
     PandasObject.check_regular = check_regular
     PandasObject.attribute_reblock = attribute_reblock
     PandasObject.check_internal_blocks_missing = check_internal_blocks_missing
-    PandasObject.index_3D_to_1D = index_3D_to_1D
-    PandasObject.index_1D_to_3D = index_1D_to_3D
+    PandasObject.index_3Dto1D = index_3Dto1D
+    PandasObject.index_1Dto3D = index_1Dto3D
     PandasObject.table_to_4D_array = table_to_4D_array
     PandasObject.table_to_1D_array = table_to_1D_array

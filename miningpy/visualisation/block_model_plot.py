@@ -7,7 +7,7 @@ from typing import Union, Tuple
 
 
 def plot3D(blockmodel:  pd.DataFrame,
-           xyz_cols:  Tuple[str, str, str] = ('x', 'y', 'z'),
+           xyz_cols:    Tuple[str, str, str] = ('x', 'y', 'z'),
            col:         str = None,
            dims:        Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
            widget:      str = None,
