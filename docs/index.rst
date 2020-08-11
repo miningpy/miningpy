@@ -195,15 +195,6 @@ The MiningPy API currently includes:
 * :ref:`visualisation-api`.
 * :ref:`vulcan-api`.
 
-.. toctree::
-   :maxdepth: 2
-   :caption: API Reference
-   :hidden:
-
-   core/core
-   visualisation/visualisation
-   vulcan/vulcan
-
 
 Author
 ------
@@ -215,4 +206,14 @@ License
 MiningPy is licensed under the very liberal MIT-License_.
 
 .. _MIT-License: http://opensource.org/licenses/mit-license.php
+
+
+.. toctree::
+   :maxdepth: 2
+   :caption: API Reference
+   :hidden:
+
+   core/core
+   visualisation/visualisation
+   vulcan/vulcan
 

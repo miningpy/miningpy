@@ -40,5 +40,5 @@ vulcan_bdf
 index_3D_to_1D
 --------------
 
-.. autofunction:: index_3D_to_1D
+.. autofunction:: index_3Dto1D
 
