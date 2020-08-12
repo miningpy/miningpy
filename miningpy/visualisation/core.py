@@ -12,7 +12,8 @@ def blocks2vtk(blockmodel:  pd.DataFrame,
                xyz_cols:    Tuple[str, str, str] = ('x', 'y', 'z'),
                dims:        Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
                rotation:    Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
-               cols:        List[str] = None) -> bool:
+               cols:        List[str] = None,
+               output_file: bool = True) -> bool:
     """
     exports blocks and attributes of block model to a vtk file to visualise in paraview
 
@@ -30,6 +31,8 @@ def blocks2vtk(blockmodel:  pd.DataFrame,
         rotation of block model grid around x,y,z axis, -180 to 180 degrees
     cols: list of strings
         columns of attributes to visualise using vtk. If None then exports all columns
+    output_file: whether to output .vtu (vtk unstructured grid file) or
+        to just return vtu object to user
 
     Returns
     -------
@@ -65,8 +68,9 @@ def blocks2vtk(blockmodel:  pd.DataFrame,
 
     # add extension to path name for vtk file
     # 'vtu' because unstructured grid
-    if not path.lower().endswith('.vtu'):
-        path = path + '.vtu'
+    if output_file is True:
+        if not path.lower().endswith('.vtu'):
+            path = path + '.vtu'
 
     # prepare block model xyz columns as numpy arrays
     x = blockmodel[xcol].values  # numpy 1D array
@@ -226,12 +230,13 @@ def blocks2vtk(blockmodel:  pd.DataFrame,
     extractGrid.Update()
 
     # save results
-    writer = vtk.vtkXMLUnstructuredGridWriter()
-    writer.SetFileName(path)
-    writer.SetInputData(extractGrid.GetOutput())
-    writer.Write()
+    if output_file:
+        writer = vtk.vtkXMLUnstructuredGridWriter()
+        writer.SetFileName(path)
+        writer.SetInputData(extractGrid.GetOutput())
+        writer.Write()
 
-    return True
+    return extractGrid.GetOutput()  # return unstructured grid
 
 
 def blocks2dxf(blockmodel:   pd.DataFrame,
