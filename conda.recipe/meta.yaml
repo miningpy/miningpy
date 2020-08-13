@@ -12,6 +12,9 @@ source:
 build:
   number: 0
   script: {{ PYTHON }} setup.py install --single-version-externally-managed --record=record.txt
+  always_include_files:
+    - miningpy/VERSION
+    - miningpy/visualisation/ParaViewGlance.html
 
 requirements:
   host:

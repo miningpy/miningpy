@@ -1,5 +1,6 @@
 # Include docs
 include LICENSE
 include miningpy/VERSION
+include miningpy/visualisation/ParaViewGlance.html
 recursive-exclude docs *.rst
 recursive-exclude docs *.py
