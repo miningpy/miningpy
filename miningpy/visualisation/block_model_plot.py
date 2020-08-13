@@ -29,9 +29,8 @@ def plot3D(blockmodel:  pd.DataFrame,
         x,y,z dimension of regular parent blocks
     rotation: tuple of floats or ints
         rotation of block model grid around x,y,z axis, -180 to 180 degrees
-    widget: {"COG","section", "both"}
+    widget: {"COG","section"}
         add widgets such as slider (cut off grade) or cross-section.
-        to add both a COG and cross-section widget use "both"
     show_grid: bool
         add x,y,z grid to see coordinates on plot
     show_plot: bool
@@ -44,7 +43,7 @@ def plot3D(blockmodel:  pd.DataFrame,
     """
 
     # check col data to plot is int or float data - not string or bool
-    if blockmodel[col].dtype != 'int64' or blockmodel[col].dtype != 'float64':
+    if blockmodel[col].dtype != 'int64' and blockmodel[col].dtype != 'float64':
         raise Exception(f'MiningPy ERROR - column to plot: {col} must be Pandas int64 or float64')
 
     # check for duplicate blocks and return warning
@@ -116,17 +115,35 @@ def plot3D(blockmodel:  pd.DataFrame,
     # set theme
     pv.set_plot_theme("ParaView")  # just changes colour scheme
 
-    p = pv.Plotter(notebook=False)
+    p = pv.Plotter(notebook=False, title="Block Model 3D Plot")
 
+    # legend settings
+    sargs = dict(interactive=True)
+
+    # add mesh to plot
     if widget is None:
-        p.add_mesh(grid, show_edges=True, scalars=col)
+        p.add_mesh(grid,
+                   show_edges=True,
+                   scalars=col,
+                   scalar_bar_args=sargs,
+                   cmap='bwr')
+
     if widget == "section":
-        p.add_mesh_clip_plane(mesh=grid, show_edges=True, scalars=col)
+        p.add_mesh_clip_plane(mesh=grid,
+                              show_edges=True,
+                              scalars=col,
+                              scalar_bar_args=sargs,
+                              cmap='bwr')
+
     if widget == "COG":
-        p.add_mesh_threshold(mesh=grid, show_edges=True, scalars=col)
-    if widget == "both":
-        p.add_mesh_threshold(mesh=grid, show_edges=True, scalars=col)
-        p.add_mesh_clip_plane(mesh=grid, show_edges=True, scalars=col)
+        p.add_mesh_threshold(mesh=grid,
+                             title='Cut-Off Grade Slider',
+                             show_edges=True,
+                             scalars=col,
+                             scalar_bar_args=sargs,
+                             cmap='bwr',
+                             pointa=(0.25, 0.92),
+                             pointb=(0.75, 0.92))
     if show_grid:
         p.show_grid()
 
