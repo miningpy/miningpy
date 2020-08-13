@@ -10,7 +10,7 @@ def plot3D(blockmodel:  pd.DataFrame,
            xyz_cols:    Tuple[str, str, str] = ('x', 'y', 'z'),
            col:         str = None,
            dims:        Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
-           rotation: Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
+           rotation:    Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
            widget:      str = None,
            show_grid:   bool = True,
            show_plot:   bool = True) -> pv.Plotter:
@@ -29,8 +29,9 @@ def plot3D(blockmodel:  pd.DataFrame,
         x,y,z dimension of regular parent blocks
     rotation: tuple of floats or ints
         rotation of block model grid around x,y,z axis, -180 to 180 degrees
-    widget: {"COG","section"}
+    widget: {"COG","section", "both"}
         add widgets such as slider (cut off grade) or cross-section.
+        to add both a COG and cross-section widget use "both"
     show_grid: bool
         add x,y,z grid to see coordinates on plot
     show_plot: bool
@@ -123,6 +124,9 @@ def plot3D(blockmodel:  pd.DataFrame,
         p.add_mesh_clip_plane(mesh=grid, show_edges=True, scalars=col)
     if widget == "COG":
         p.add_mesh_threshold(mesh=grid, show_edges=True, scalars=col)
+    if widget == "both":
+        p.add_mesh_threshold(mesh=grid, show_edges=True, scalars=col)
+        p.add_mesh_clip_plane(mesh=grid, show_edges=True, scalars=col)
     if show_grid:
         p.show_grid()
 
