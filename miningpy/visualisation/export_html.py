@@ -53,7 +53,7 @@ def export_html(blockmodel:    pd.DataFrame,
     colour_range: tuple of strings
         colouring range of values in the split_by column
         if no split_by then colour_range is ignored.
-        accepted colours are: 'red', 'blue', 'green'
+        accepted colours are: 'red', 'blue', 'green', 'white', 'black'
         default is ('blue', 'red'). i.e. colour blue to red
 
     Returns
@@ -75,9 +75,9 @@ def export_html(blockmodel:    pd.DataFrame,
 
         uniqueColours = get_colours(uniqueValues, colour_range)
 
-        for val in uniqueValues:
+        for i, val in enumerate(uniqueValues):
             vtu_dict[val] = dict()
-            vtu_dict[val]['colour'] =
+            vtu_dict[val]['colour'] = uniqueColours[i]
 
     # pv glance html template path
     __location__ = os.path.realpath(
@@ -148,7 +148,13 @@ def export_html(blockmodel:    pd.DataFrame,
         addDataToViewer([vtkjs], template, path)
     else:
         for val in uniqueValues:
-            vtu_dict[val]['vtkjs'] = miningpy.utilities.vtu_serializer(vtu_dict[val]['vtu'], data_name + '_' + str(val), colour, camera)
+            vtu_dict[val]['vtkjs'] = miningpy.utilities.vtu_serializer(vtu_dict[val]['vtu'], data_name + '_' + str(val), list(vtu_dict[val]['colour']), camera)
+
+        vtklist = []
+        for val, data in vtu_dict.items():
+            vtklist.append(data['vtkjs'])
+
+        addDataToViewer(vtklist, template, path)
 
     return True
 
@@ -177,6 +183,7 @@ def addDataToViewer(injectData, srcHtmlPath, dstHtmlPath):
 
     return True
 
+
 def get_colours(values, colour_range):
     # using a diverging colour spectrum
 
@@ -185,33 +192,16 @@ def get_colours(values, colour_range):
     colours['red'] = (1.0, 0.0, 0.0)
     colours['blue'] = (0.0, 0.0, 1.0)
     colours['green'] = (0.0, 1.0, 0.0)
+    colours['white'] = (1.0, 1.0, 1.0)
+    colours['black'] = (0.0, 0.0, 0.0)
 
     num_values = len(values)
 
     if num_values == 1:
         return colour_range[0]
 
-    if num_values == 2:
-        return np.linspace(colours[colour_range[0]], colours[colour_range[1]], num=2)
-
-    # check num_values is even
-    if (num_values % 2) == 0:
-        # if num values is even - first colour to base
-        temp1 = np.linspace(colours[colour_range[0]], base, endpoint=False, num=int(num_values/2))
-
-        # if num values is even - base to last colour
-        temp2 = np.linspace(base, colours[colour_range[1]], num=int(num_values/2)+1)
-
-        return np.concatenate([temp1, temp2])
-
-    if (num_values % 2) != 0:
-        # if num values is odd - first colour to base
-        temp1 = np.linspace(colours[colour_range[0]], base, num=int(num_values/2))  # int rounds down
-
-        # if num values is odd - base to last colour
-        temp2 = np.linspace(base, colours[colour_range[1]], num=int(num_values/2))  # int rounds down
-
-        return np.concatenate([temp1, np.arrays(base), temp2])
+    if num_values > 1:
+        return np.linspace(colours[colour_range[0]], colours[colour_range[1]], num=num_values)
 
 
 def extend_pandas_html():
