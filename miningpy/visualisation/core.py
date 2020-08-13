@@ -56,7 +56,7 @@ def blocks2vtk(blockmodel:  pd.DataFrame,
 
     # check for duplicate blocks and return warning
     dup_check = list(blockmodel.duplicated(subset=[xcol, ycol, zcol]).unique())
-    assert True not in dup_check, 'duplicate blocks in dataframe'
+    assert True not in dup_check, 'MiningPy ERROR - duplicate blocks in dataframe'
 
     # check rotation is within parameters
     rotations = [x_rotation, y_rotation, z_rotation]

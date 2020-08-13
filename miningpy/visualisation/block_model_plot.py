@@ -44,7 +44,11 @@ def plot3D(blockmodel:  pd.DataFrame,
 
     # check col data to plot is int or float data - not string or bool
     if blockmodel[col].dtype != 'int64' or blockmodel[col].dtype != 'float64':
-        raise Exception(f'MiningPy Error - column to plot: {col} must be Pandas int64 or float64')
+        raise Exception(f'MiningPy ERROR - column to plot: {col} must be Pandas int64 or float64')
+
+    # check for duplicate blocks and return warning
+    dup_check = list(blockmodel.duplicated(subset=[xyz_cols[0], xyz_cols[1], xyz_cols[2]]).unique())
+    assert True not in dup_check, 'MiningPy ERROR - duplicate blocks in dataframe'
 
     # definitions for simplicity
     x_rotation, y_rotation, z_rotation = rotation[0], rotation[1], rotation[2]
