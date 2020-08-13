@@ -10,6 +10,7 @@ def plot3D(blockmodel:  pd.DataFrame,
            xyz_cols:    Tuple[str, str, str] = ('x', 'y', 'z'),
            col:         str = None,
            dims:        Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+           rotation: Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
            widget:      str = None,
            show_grid:   bool = True,
            show_plot:   bool = True) -> pv.Plotter:
@@ -26,6 +27,8 @@ def plot3D(blockmodel:  pd.DataFrame,
         attribute column to plot (i.e. tonnage, grade, etc)
     dims: tuple of floats or ints
         x,y,z dimension of regular parent blocks
+    rotation: tuple of floats or ints
+        rotation of block model grid around x,y,z axis, -180 to 180 degrees
     widget: {"COG","section"}
         add widgets such as slider (cut off grade) or cross-section.
     show_grid: bool
@@ -38,6 +41,16 @@ def plot3D(blockmodel:  pd.DataFrame,
     -------
     pyvista.Plotter object & active window of block model 3D plot
     """
+
+    # definitions for simplicity
+    x_rotation, y_rotation, z_rotation = rotation[0], rotation[1], rotation[2]
+
+    # check rotation is within parameters
+    for rot in rotation:
+        if -180 <= rot <= 180:
+            pass
+        else:
+            raise Exception('Rotation is limited to between -180 and +180 degrees')
 
     # make shallow copy of required columns
     xyz_cols = list(xyz_cols)
@@ -62,6 +75,13 @@ def plot3D(blockmodel:  pd.DataFrame,
     ny = int((block_model[xyz_cols[1]].max() - block_model[xyz_cols[1]].min()) / grid.spacing[1]) + 1  # number of blocks in y dimension
     nz = int((block_model[xyz_cols[2]].max() - block_model[xyz_cols[2]].min()) / grid.spacing[2]) + 1  # number of blocks in z dimension
     grid.dimensions = [nx+1, ny+1, nz+1]  # need extra dimension - 4th dimension is for data (x,y,z,data)
+
+    if x_rotation > 0:
+        grid.rotate_x(x_rotation)
+    if y_rotation > 0:
+        grid.rotate_y(y_rotation)
+    if z_rotation > 0:
+        grid.rotate_z(z_rotation)
 
     # only keep blocks actually in block model dataframe
     centers = np.array(grid.cell_centers().points)
