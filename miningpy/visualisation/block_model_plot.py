@@ -42,6 +42,10 @@ def plot3D(blockmodel:  pd.DataFrame,
     pyvista.Plotter object & active window of block model 3D plot
     """
 
+    # check col data to plot is int or float data - not string or bool
+    if blockmodel[col].dtype != 'int64' or blockmodel[col].dtype != 'float64':
+        raise Exception(f'MiningPy Error - column to plot: {col} must be Pandas int64 or float64')
+
     # definitions for simplicity
     x_rotation, y_rotation, z_rotation = rotation[0], rotation[1], rotation[2]
 
