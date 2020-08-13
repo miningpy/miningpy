@@ -179,7 +179,6 @@ def addDataToViewer(injectData, srcHtmlPath, dstHtmlPath):
 
 def get_colours(values, colour_range):
     # using a diverging colour spectrum
-    import numpy as np
 
     colours = dict()
 
