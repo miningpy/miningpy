@@ -407,10 +407,6 @@ def blocks2dxf(blockmodel:   pd.DataFrame,
     return True
 
 
-def face_position_dxf():
-    return
-
-
 def extend_pandas_core():
     """
     Extends pandas' PandasObject (Series,
@@ -419,4 +415,3 @@ def extend_pandas_core():
 
     PandasObject.blocks2vtk = blocks2vtk
     PandasObject.blocks2dxf = blocks2dxf
-    PandasObject.face_position_dxf = face_position_dxf

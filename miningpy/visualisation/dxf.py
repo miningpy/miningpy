@@ -7,6 +7,8 @@ import pyvista as pv
 
 
 
+def face_position_dxf():
+    return
 
 
 def extend_pandas_dxf():
@@ -15,4 +17,4 @@ def extend_pandas_dxf():
     DataFrame) with functions defined in this file.
     """
 
-    pass
+    PandasObject.face_position_dxf = face_position_dxf
