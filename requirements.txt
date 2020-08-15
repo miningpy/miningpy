@@ -3,6 +3,7 @@ numpy
 pandas
 pyvista
 vtk>=8.0
+matplotlib
 numpydoc
 sphinx
 sphinx-rtd-theme

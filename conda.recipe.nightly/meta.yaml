@@ -28,6 +28,7 @@ requirements:
     - python >=3.6
     - pyvista
     - vtk >=8.0
+    - matplotlib
 
 test:
   requires:
@@ -37,6 +38,7 @@ test:
     - pandas
     - pyvista
     - vtk >=8.0
+    - matplotlib
   commands:
     - python -m pytest
   source_files:

@@ -9,6 +9,7 @@ install_requires = ['ezdxf>=0.13.1',
                     'pandas',
                     'pyvista',
                     'vtk>=8.0',
+                    'matplotlib'
                     ]
 
 with open('miningpy/VERSION') as version_file:
