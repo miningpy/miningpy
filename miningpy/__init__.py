@@ -1,6 +1,6 @@
-import miningpy.core
-import miningpy.visualisation
-import miningpy.vulcan
+from miningpy.core import *
+from miningpy.visualisation import *
+from miningpy.vulcan import *
 import os
 
 __location__ = os.path.realpath(
