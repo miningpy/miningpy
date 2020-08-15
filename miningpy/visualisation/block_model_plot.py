@@ -12,6 +12,8 @@ def plot3D(blockmodel:  pd.DataFrame,
            dims:        Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
            rotation:    Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
            widget:      str = None,
+           min_max:     Tuple[Union[int, float], Union[int, float]] = None,
+           show_edges:  bool = True,
            show_grid:   bool = True,
            show_plot:   bool = True) -> pv.Plotter:
     """
@@ -31,6 +33,11 @@ def plot3D(blockmodel:  pd.DataFrame,
         rotation of block model grid around x,y,z axis, -180 to 180 degrees
     widget: {"COG","section"}
         add widgets such as slider (cut off grade) or cross-section.
+    min_max: tuple of floats or ints
+        minimum and maximum to colour by
+        values above/below these values will just be coloured red/blue
+    show_edges: bool
+        whether to show the edges of blocks or not
     show_grid: bool
         add x,y,z grid to see coordinates on plot
     show_plot: bool
@@ -60,11 +67,11 @@ def plot3D(blockmodel:  pd.DataFrame,
         else:
             raise Exception('Rotation is limited to between -180 and +180 degrees')
 
-    # make shallow copy of required columns
+    # make copy of required columns
     xyz_cols = list(xyz_cols)
     cols = list(xyz_cols)
     cols.append(col)
-    block_model = blockmodel[cols]
+    block_model = blockmodel[cols].copy()
 
     # Create the spatial reference
     grid = pv.UniformGrid()
@@ -123,25 +130,31 @@ def plot3D(blockmodel:  pd.DataFrame,
     # add mesh to plot
     if widget is None:
         p.add_mesh(grid,
-                   show_edges=True,
+                   style='surface',
+                   show_edges=show_edges,
                    scalars=col,
                    scalar_bar_args=sargs,
-                   cmap='bwr')
+                   cmap='bwr',
+                   clim=min_max)
 
     if widget == "section":
         p.add_mesh_clip_plane(mesh=grid,
-                              show_edges=True,
+                              style='surface',
+                              show_edges=show_edges,
                               scalars=col,
                               scalar_bar_args=sargs,
-                              cmap='bwr')
+                              cmap='bwr',
+                              clim=min_max)
 
     if widget == "COG":
         p.add_mesh_threshold(mesh=grid,
+                             style='surface',
                              title='Cut-Off Grade Slider',
-                             show_edges=True,
+                             show_edges=show_edges,
                              scalars=col,
                              scalar_bar_args=sargs,
                              cmap='bwr',
+                             clim=min_max,
                              pointa=(0.25, 0.92),
                              pointb=(0.75, 0.92))
     if show_grid:

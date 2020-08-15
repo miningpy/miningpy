@@ -2,6 +2,7 @@
 import pandas as pd
 import pytest
 import miningpy
+import vtk
 
 # test data
 testdata = {
@@ -23,4 +24,4 @@ def test_blocks2vtk_1(tmpdir):
         dims=(5, 5, 5),
         rotation=(0, 0, 0)
     )
-    assert output
+    assert isinstance(output, vtk.vtkUnstructuredGrid)
