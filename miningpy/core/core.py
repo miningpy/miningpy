@@ -412,17 +412,23 @@ def group_weighted_average(blockmodel:   pd.DataFrame,
     else:
         raise Exception('Groupby columns parameter must be single column name or list of column names')
 
-    dfs = dict()
-    for count, col in enumerate(average_cols, 1):
-        dfs[col] = blockmodel.groupby(groupby_cols).apply(lambda dfx: (dfx[col] * dfx[weight_col]).sum() / dfx[weight_col].sum())
+    ss = []
+    cols = []
+    for value_col in average_cols:
+        df = blockmodel.copy()
+        prod_name = 'prod_{v}_{w}'.format(v=value_col, w=weight_col)
+        weights_name = 'weights_{w}'.format(w=weight_col)
 
-    col_names = list(dfs.keys())
-    series = list(dfs.values())
-
-    blockmodel = pd.concat(series, axis=1)
-    blockmodel.columns = col_names
-
-    return blockmodel
+        df[prod_name] = df[value_col] * df[weight_col]
+        df[weights_name] = df[weight_col].where(~df[prod_name].isnull())
+        df = df.groupby(groupby_cols).sum()
+        s = df[prod_name] / df[weights_name]
+        s.name = value_col
+        ss.append(s)
+        cols.append(value_col)
+    df = pd.concat(ss, axis=1) if len(ss) > 1 else pd.DataFrame(ss[0])
+    df.columns = cols
+    return df
 
 
 def nblocks_xyz(blockmodel: pd.DataFrame,
