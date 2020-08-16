@@ -93,23 +93,23 @@ def ijk(blockmodel:     pd.DataFrame,
                                          origin=origin,
                                          rotation=rotation,
                                          return_full_model=False,
-                                         inplace=True)['x']
-    if y_rotation == 0:
+                                         inplace=True)[xcol]
+    if y_rotation == 0:  # y rotatation
         bm_ycol = blockmodel[ycol]
     else:
         bm_ycol = blockmodel.rotate_grid(xyz_cols=xyz_cols,
                                          origin=origin,
                                          rotation=rotation,
                                          return_full_model=False,
-                                         inplace=True)['y']
-    if z_rotation == 0:
+                                         inplace=True)[ycol]
+    if z_rotation == 0:  # z rotation
         bm_zcol = blockmodel[zcol]
     else:
         bm_zcol = blockmodel.rotate_grid(xyz_cols=xyz_cols,
                                          origin=origin,
                                          rotation=rotation,
                                          return_full_model=False,
-                                         inplace=True)['z']
+                                         inplace=True)[zcol]
     
     if method in methods_accepted:
         if 'i' in method:
@@ -240,7 +240,7 @@ def xyz(blockmodel:     pd.DataFrame,
                                                   origin=origin,
                                                   rotation=rotation,
                                                   return_full_model=False,
-                                                  inplace=True)['x']
+                                                  inplace=True)[xcol]
     if y_rotation == 0:
         blockmodel[ycol] = bm_ycol
     else:
@@ -248,7 +248,7 @@ def xyz(blockmodel:     pd.DataFrame,
                                                   origin=origin,
                                                   rotation=rotation,
                                                   return_full_model=False,
-                                                  inplace=True)['y']
+                                                  inplace=True)[ycol]
     if z_rotation == 0:
         blockmodel[zcol] = bm_zcol
     else:
@@ -256,7 +256,7 @@ def xyz(blockmodel:     pd.DataFrame,
                                                   origin=origin,
                                                   rotation=rotation,
                                                   return_full_model=False,
-                                                  inplace=True)['z']
+                                                  inplace=True)[zcol]
     
     # check inplace for return
     if not inplace:
@@ -839,18 +839,86 @@ def model_origin(blockmodel: pd.DataFrame,
     return xorigin, yorigin, zorigin
 
 
-def block_dims(blockmodel:     pd.DataFrame,
-               xcol:           str = None,
-               ycol:           str = None,
-               zcol:           str = None,
-               xorigin:        Union[int, float] = None,
-               yorigin:        Union[int, float] = None,
-               zorigin:        Union[int, float] = None,
-               x_rotation:     Union[int, float] = 0,
-               y_rotation:     Union[int, float] = 0,
-               z_rotation:     Union[int, float] = 0,
-               inplace:        bool = False) -> Tuple[float, float, float]:
-    raise Exception("MiningPy function {model_block_size} hasn't been created yet")
+def block_dims(blockmodel:   pd.DataFrame,
+               xyz_cols:     Tuple[str, str, str] = None,
+               origin:       Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+               rotation:     Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0)) -> Tuple[float, float, float]:
+    """
+    estimate the x, y, z dimensions of blocks
+    if the blocks are rotated then they are unrotated first
+    then the x, y, z dimensions are estimated
+
+    note that this function just estimates the dimensions of the blocks
+    it may not always get the perfectly correct answer
+    if there are alot of blocks missing in the grid (i.e. a sparse array of blocks)
+    the estimation is less likely to be correct
+
+    Parameters
+    ----------
+    blockmodel: pd.DataFrame
+        pandas dataframe of block model
+    xyz_cols: tuple of strings
+        names of x,y,z columns in model
+    origin: tuple of floats or ints
+        x,y,z origin of model - this is the corner of the bottom block (not the centroid)
+    rotation: tuple of floats or ints
+        rotation of block model grid around x,y,z axis, -180 to 180 degrees
+
+    Returns
+    -------
+    tuple of floats (xdim, ydim, zdim)
+    """
+
+    # definitions for simplicity
+    xcol, ycol, zcol = xyz_cols[0], xyz_cols[1], xyz_cols[2]
+    x_rotation, y_rotation, z_rotation = rotation[0], rotation[1], rotation[2]
+
+    # make copy of xyz cols
+    mod = blockmodel[list(xyz_cols)].copy()
+
+    # check rotation is within parameters
+    for rot in rotation:
+        if -180 <= rot <= 180:
+            pass
+        else:
+            raise Exception('Rotation is limited to between -180 and +180 degrees')
+
+    if x_rotation != 0:  # x rotation
+        mod[xcol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
+                                           origin=origin,
+                                           rotation=rotation,
+                                           return_full_model=False,
+                                           inplace=True)[xcol]
+    if y_rotation != 0:  # y rotatation
+        mod[ycol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
+                                           origin=origin,
+                                           rotation=rotation,
+                                           return_full_model=False,
+                                           inplace=True)[ycol]
+    if z_rotation != 0:  # z rotation
+        mod[zcol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
+                                           origin=origin,
+                                           rotation=rotation,
+                                           return_full_model=False,
+                                           inplace=True)[zcol]
+
+    # estimate x dimension
+    mod[xcol].sort_values(inplace=True, ignore_index=True)
+    mod['xtemp'] = mod[xcol].shift(1)
+    mod['xdim'] = mod['xtemp'] - mod[xcol]
+    mask = mod['xdim'] > 0
+    xdim = mod.loc[mask, 'xdim'].copy()  # series
+    # take the mode (most common dimension)
+        
+
+    # estimate y dimension
+    mod[ycol].sort_values(inplace=True, ignore_index=True)
+    mod['ytemp'] = mod[ycol].shift(1)
+
+    # estimate z dimension
+    mod[zcol].sort_values(inplace=True, ignore_index=True)
+    mod['ztemp'] = mod[zcol].shift(1)
+
 
 
 def check_regular(blockmodel: pd.DataFrame) -> None:
@@ -883,6 +951,7 @@ def check_internal_blocks_missing(blockmodel: pd.DataFrame):
     -------
     bool
         whether block model contains missing internal blocks
+        returns True if so
     """
     raise Exception("MiningPy function {check_internal_blocks_missing} hasn't been created yet")
 
@@ -1108,14 +1177,6 @@ def index_1Dto3D(blockmodel:    pd.DataFrame,
         return blockmodel
 
 
-def table_to_4D_array():
-    raise Exception("MiningPy function {table_to_4D_array} hasn't been created yet")
-
-
-def table_to_1D_array():
-    raise Exception("MiningPy function {table_to_1D_array} hasn't been created yet")
-
-
 def extend_pandas():
     """
     Extends pandas' PandasObject (Series,
@@ -1137,5 +1198,3 @@ def extend_pandas():
     PandasObject.check_internal_blocks_missing = check_internal_blocks_missing
     PandasObject.index_3Dto1D = index_3Dto1D
     PandasObject.index_1Dto3D = index_1Dto3D
-    PandasObject.table_to_4D_array = table_to_4D_array
-    PandasObject.table_to_1D_array = table_to_1D_array
