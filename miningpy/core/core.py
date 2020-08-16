@@ -918,6 +918,8 @@ def index_3Dto1D(blockmodel:    pd.DataFrame,
                  inplace:       bool = False) -> pd.DataFrame:
     """
     Convert 3D array of xyz block centroids to 1D index that is reversible.
+    Opposite of the function index_1Dto3D()
+
     This is identical to the "ijk" parameter in Datamine block models.
     Note that "ijk" value from this function and from Datamine may be different,
     depending on which axis Datamine uses as the major indexing axis.
@@ -1007,8 +1009,103 @@ def index_3Dto1D(blockmodel:    pd.DataFrame,
         return blockmodel
 
 
-def index_1Dto3D():
-    raise Exception("MiningPy function {index_1D_to_3D} hasn't been created yet")
+def index_1Dto3D(blockmodel:    pd.DataFrame,
+                 indexing:      int = 0,
+                 idxcol:        str = 'ijk',
+                 origin:        Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+                 dims:          Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
+                 rotation:      Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
+                 nblocks_xyz:   Tuple[int, int, int] = None,
+                 xyz_cols:      Tuple[str, str, str] = ('x', 'y', 'z'),
+                 inplace:       bool = False) -> pd.DataFrame:
+    """
+    Convert IJK index back to xyz block centroids.
+    Opposite of the function index_3Dto1D()
+
+    This is identical to the "ijk" parameter in Datamine block models.
+    Note that "ijk" value from this function and from Datamine may be different,
+    depending on which axis Datamine uses as the major indexing axis.
+    Bot "ijk" indexing values are still valid.
+
+    Parameters
+    ----------
+    blockmodel: pd.DataFrame
+        pandas dataframe of block model
+    indexing: int
+        controls whether origin block has coordinates 0,0,0 or 1,1,1
+    xyz_cols: tuple of strings
+        names of x,y,z columns in model
+    origin: tuple of floats or ints
+        x,y,z origin of model - this is the corner of the bottom block (not the centroid)
+    dims: tuple of floats, ints or str
+        x,y,z dimension of regular parent blocks
+        can either be a number or the columns names of the x,y,z
+        columns in the dataframe
+    rotation: tuple of floats or ints
+        rotation of block model grid around x,y,z axis, -180 to 180 degrees
+    nblocks_xyz: tuple of ints or None
+        number of blocks along the x,y,z axis.
+        If the model is rotated, it is unrotated and then the number
+        of blocks in the x,y,z axis is calculated.
+    idxcol: str
+        name of the 1D index column added to the model
+    inplace: bool
+        whether to do calculation inplace on pandas.DataFrame
+
+    Returns
+    -------
+    pandas.DataFrame
+        block model with 1D indexed column
+    """
+
+    if inplace:
+        blockmodel = blockmodel
+    if not inplace:
+        blockmodel = blockmodel.copy()
+
+    # check input indexing
+    indexing_accepted = [0, 1]
+    if indexing in indexing_accepted:
+        pass
+    else:
+        raise ValueError('IJK FAILED - indexing value not accepted - only 1 or 0 can be used')
+
+    # check rotation is within parameters
+    for rot in rotation:
+        if -180 <= rot <= 180:
+            pass
+        else:
+            raise Exception('Rotation is limited to between -180 and +180 degrees')
+
+    # copy ijk column
+    subset = pd.DataFrame(blockmodel[idxcol].copy())
+
+    # definitions for simplicity
+    nx = nblocks_xyz[0]
+    ny = nblocks_xyz[1]
+    nz = nblocks_xyz[2]
+
+    # back calculate i, j, k values
+    subset['i'] = subset[idxcol] % nx
+    subset['j'] = (subset[idxcol] / nx) % ny
+    subset['k'] = ((subset[idxcol] / nx) / ny) % nz
+
+    # back calculate x, y, z values
+    subset.xyz(indexing=indexing,
+               origin=origin,
+               dims=dims,
+               rotation=rotation,
+               xyz_cols=xyz_cols,
+               inplace=True)
+
+    # add xyz columns back to original block model
+    blockmodel.insert(0, xyz_cols[0], subset[xyz_cols[0]])
+    blockmodel.insert(1, xyz_cols[1], subset[xyz_cols[1]])
+    blockmodel.insert(2, xyz_cols[2], subset[xyz_cols[2]])
+
+    # check inplace for return
+    if not inplace:
+        return blockmodel
 
 
 def table_to_4D_array():
