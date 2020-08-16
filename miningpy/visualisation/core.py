@@ -13,7 +13,7 @@ def blocks2vtk(blockmodel:  pd.DataFrame,
                dims:        Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
                rotation:    Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
                cols:        List[str] = None,
-               output_file: bool = True) -> bool:
+               output_file: bool = True) -> vtk.vtkUnstructuredGrid:
     """
     exports blocks and attributes of block model to a vtk file to visualise in paraview
 
@@ -36,7 +36,7 @@ def blocks2vtk(blockmodel:  pd.DataFrame,
 
     Returns
     -------
-    True if .vtu file is exported with no errors
+    vtkUnstructredGrid object if .vtu file is exported with no errors
     """
 
     # definitions for simplicity

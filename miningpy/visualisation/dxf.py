@@ -97,35 +97,26 @@ def __plot_strings(strings):
     Returns a pv.PolyData object
     """
 
-    # extract points and faces from dxf object
-    numLines = len(strings)
-    pointArray = np.zeros((numLines * 2, 2))
-    lineArray = np.zeros((numLines, 3), dtype='int')
-    cellData = []
+    # extract points and lines from dxf object
+    polylines = pv.PolyData()
+    for line in strings:
+        points = np.array([[0, 0, 0]], dtype=np.float64)
+        for row, pnt in enumerate(line.points()):
+            if row == 0:
+                points[0, :] = np.array([[float(pnt[0]), float(pnt[1]), float(pnt[2])]])
+            else:
+                points = np.append(points, np.array([[float(pnt[0]), float(pnt[1]), float(pnt[2])]]), axis=0)
+        poly = pv.PolyData()
+        poly.points = points
+        cells = np.full((len(points), 3), 2, dtype=np.int_)
+        cells[:-1, 1] = np.arange(0, len(points)-1, dtype=np.int_)
+        cells[:-1, 2] = np.arange(1, len(points), dtype=np.int_)
+        cells[-1:, 1] = len(points)-1
+        cells[-1:, 2] = 0
+        poly.lines = cells
+        polylines += poly
 
-    i = 0
-    lineCounter = 0
-    name = []
-    for e in strings:
-        pointArray[i, 0] = e.dxf.vtx0[0]
-        pointArray[i, 1] = e.dxf.vtx0[1]
-        pointArray[i, 2] = e.dxf.vtx0[2]
-
-        pointArray[i + 1, 0] = e.dxf.vtx1[0]
-        pointArray[i + 1, 1] = e.dxf.vtx1[1]
-        pointArray[i + 1, 2] = e.dxf.vtx1[2]
-
-        pointArray[i + 2, 0] = e.dxf.vtx2[0]
-        pointArray[i + 2, 1] = e.dxf.vtx2[1]
-        pointArray[i + 2, 2] = e.dxf.vtx2[2]
-
-        cellArray[faceCounter, :] = [3, i, i + 1, i + 2]  # need the 3 at the start to tell pyvista its a triangulation
-        cellData.append(e.dxf.layer)
-        i = i + 3
-        faceCounter = faceCounter + 1
-
-    cellArray = np.hstack(cellArray)
-    return pv.PolyData(pointArray, cellArray)
+    return polylines
 
 
 def __plot_triangles(faces):
@@ -167,6 +158,42 @@ def __plot_triangles(faces):
 
     cellArray = np.hstack(cellArray)
     return pv.PolyData(pointArray, cellArray)
+
+
+def dxf2vtk(path:      str = None,
+            output:    str = None,
+            colour:    Tuple[float] = (0.666667, 1, 0.498039)) -> pv.PolyData:
+    """
+    save dxf to .vtp (vtk polydata) file format so that
+    it can be opened in paraview for external viewing
+
+    Parameters
+    ----------
+    path: str
+        path of input dxf file
+    output: str
+        path of .vtp file to export
+    colour: tuple of floats
+        default solid colouring of the triangulation
+
+    Returns
+    -------
+    exports .vtp file and returns pyvista.PolyData object
+    """
+
+    # add extension to path name for vtk file
+    # 'vtu' because unstructured grid
+    if output is True:
+        if not output.lower().endswith('.vtp'):
+            output = output + '.vtp'
+
+    polydxf = plot3D_dxf(path=path,
+                     colour=colour,
+                     show_plot=False)
+
+    polydxf.mesh.save(output)
+
+    return polydxf.mesh
 
 
 def face_position_dxf():
