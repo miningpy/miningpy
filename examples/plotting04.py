@@ -1,11 +1,10 @@
 import pandas as pd
 import miningpy
-import json
 
-with open("examples/data_links.json", 'r') as file:
-    data = json.load(file)
+# block model example (zuck small - MineLib)
+url = "https://drive.google.com/uc?export=download&id=1SOrYhqiu5Tg8Zjb7be4fUWhbFDTU1sEk"
 
-url = data['blockmodel']['zuck_small']
+# read in block model from link
 blockModel = pd.read_csv(url, compression='zip')
 
 blockModel.export_html(

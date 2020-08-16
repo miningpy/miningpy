@@ -1,13 +1,10 @@
-import json
 import requests
 import hashlib
 import os
 import miningpy
 
-with open("examples/data_links.json", 'r') as file:
-    data = json.load(file)
-
-url = data['dxf']['wireframe_vulcan']
+# dxf wireframe example
+url = "https://drive.google.com/uc?export=download&id=1RyaNDSV4K_LrjoIiJrFZ4KAbzj7iySuh"
 
 dxf_raw = requests.get(url).text
 dxf_raw = dxf_raw.replace("\r\n", "\n")
