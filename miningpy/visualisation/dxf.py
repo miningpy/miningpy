@@ -4,6 +4,11 @@ from pandas.core.base import PandasObject
 from typing import Union, List, Tuple
 import ezdxf
 import pyvista as pv
+import base64
+import os
+import io
+import vtk
+from miningpy.utilities import vtu_serializer
 
 
 def plot3D_dxf(path:              str = None,
@@ -172,7 +177,7 @@ def dxf2vtk(path:      str = None,
     path: str
         path of input dxf file
     output: str
-        path of .vtp file to export
+        path of html file to export
     colour: tuple of floats
         default solid colouring of the triangulation
 
@@ -194,6 +199,94 @@ def dxf2vtk(path:      str = None,
     polydxf.mesh.save(output)
 
     return polydxf.mesh
+
+
+def export_dxf_html(path:      str = None,
+                    output:    str = None,
+                    data_name:     str = 'DXF',
+                    colour:    Tuple[float] = (0.666667, 1, 0.498039)) -> bool:
+    """
+    exports dxf file and embeds the data in a
+    paraview glance html app to visualise and distribute
+
+    Parameters
+    ----------
+    path: str
+        path of input dxf file
+    output: str
+        path of .vtp file to export
+    data_name: str
+        base name used for dataset in Paraview Glance
+    colour: tuple of floats
+        default solid colouring of the triangulation
+
+    Returns
+    -------
+    True if .html file is exported with no errors
+    """
+
+    # pv glance html template path
+    __location__ = os.path.realpath(
+        os.path.join(os.getcwd(), os.path.dirname(__file__)))
+
+    template = os.path.join(__location__, r'ParaViewGlance.html')
+
+    # get polydata of dxf in memory
+    polydxf = plot3D_dxf(path=path,
+                     colour=colour,
+                     show_plot=False).mesh
+
+    # get camera setting default for viewing in Paraview Glance
+    # estimate rotation centre
+    mapper = vtk.vtkDataSetMapper()
+    mapper.SetInputData(polydxf)
+    mapper.Update()
+
+    actor1 = vtk.vtkActor()
+    actor1.SetMapper(mapper)
+
+    renderer = vtk.vtkRenderer()
+    renderer.AddActor(actor1)
+    renderer.MakeCamera()
+    renderer.ResetCamera()
+
+    activeCamera = renderer.GetActiveCamera()
+
+    camera = dict()
+    camera['focalPoint'] = activeCamera.GetFocalPoint()
+    camera['position'] = activeCamera.GetPosition()
+    camera['viewUp'] = activeCamera.GetViewUp()
+    camera['clippingRange'] = activeCamera.GetClippingRange()
+
+    vtkjs = vtu_serializer(polydxf, data_name, colour, camera, 0)
+    addDataToViewer([vtkjs], template, output)
+
+    return True
+
+
+def addDataToViewer(injectData, srcHtmlPath, dstHtmlPath):
+    # Extract data as base64
+    base64dict = dict()
+    for vtp in injectData:
+        base64Content = base64.b64encode(vtp)
+        base64Content = base64Content.decode().replace('\n', '')
+        base64dict[vtp] = base64Content
+
+    # Create new output file
+    with io.open(srcHtmlPath, mode='r', encoding="utf-8") as srcHtml:
+        with io.open(dstHtmlPath, mode='w', encoding="utf-8") as dstHtml:
+            for line in srcHtml:
+                if '</body>' in line:
+                    for file, content in base64dict.items():
+                        dstHtml.write('<script>\n')
+                        dstHtml.write('var contentToLoad = "%s";\n\n' % content)
+                        dstHtml.write('Glance.importBase64Dataset("%s" , contentToLoad, glanceInstance.proxyManager);\n' % "BBAA.vtkjs")
+                        dstHtml.write('glanceInstance.showApp();\n')
+                        dstHtml.write('</script>\n')
+
+                dstHtml.write(line)
+
+    return True
 
 
 def face_position_dxf():

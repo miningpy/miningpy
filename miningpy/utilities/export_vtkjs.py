@@ -248,7 +248,7 @@ def _write_data_set(scDirs, dataset, newDSName):
     scDirs.append([os.path.join(newDSName, 'index.json'), json.dumps(root, indent=2)])
 
 
-def vtu_serializer(dataset, componentName, colour, camera):
+def vtu_serializer(dataset, componentName, colour, camera, edgeVisiblity):
     """
     Function to convert a vtk render window in a list of 2-tuple where first value
     correspond to a relative file path in the `vtkjs` directory structure and values
@@ -284,7 +284,7 @@ def vtu_serializer(dataset, componentName, colour, camera):
             },
             "property": {
                 "representation": 2,
-                "edgeVisibility": 1,
+                "edgeVisibility": edgeVisiblity,
                 "diffuseColor": colour,
                 "pointSize": 2,
                 "opacity": 1

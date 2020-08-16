@@ -31,7 +31,7 @@ def export_html(blockmodel:    pd.DataFrame,
     blockmodel: pd.DataFrame
         pandas dataframe of block model
     path: str
-        filename for vtk file
+        filename for html file
     xyz_cols: tuple of strings
         names of x,y,z columns in model
     dims: tuple of floats or ints
@@ -143,12 +143,12 @@ def export_html(blockmodel:    pd.DataFrame,
 
     if split_by is None:
         # create byte representation of VTKjs file
-        vtkjs = miningpy.utilities.vtu_serializer(dataset, data_name, colour, camera)
+        vtkjs = miningpy.utilities.vtu_serializer(dataset, data_name, colour, camera, 1)
         # embed vtp into paraview glance html file
         addDataToViewer([vtkjs], template, path)
     else:
         for val in uniqueValues:
-            vtu_dict[val]['vtkjs'] = miningpy.utilities.vtu_serializer(vtu_dict[val]['vtu'], data_name + '_' + str(val), list(vtu_dict[val]['colour']), camera)
+            vtu_dict[val]['vtkjs'] = miningpy.utilities.vtu_serializer(vtu_dict[val]['vtu'], data_name + '_' + str(val), list(vtu_dict[val]['colour']), camera, 1)
 
         vtklist = []
         for val, data in vtu_dict.items():
