@@ -279,9 +279,11 @@ def addDataToViewer(injectData, srcHtmlPath, dstHtmlPath):
                 if '</body>' in line:
                     for file, content in base64dict.items():
                         dstHtml.write('<script>\n')
+                        dstHtml.write('glanceInstance.showApp();\n')
+                        dstHtml.write('</script>\n')
+                        dstHtml.write('<script>\n')
                         dstHtml.write('var contentToLoad = "%s";\n\n' % content)
                         dstHtml.write('Glance.importBase64Dataset("%s" , contentToLoad, glanceInstance.proxyManager);\n' % "BBAA.vtkjs")
-                        dstHtml.write('glanceInstance.showApp();\n')
                         dstHtml.write('</script>\n')
 
                 dstHtml.write(line)

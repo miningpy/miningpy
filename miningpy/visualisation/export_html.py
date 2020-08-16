@@ -70,7 +70,7 @@ def export_html(blockmodel:    pd.DataFrame,
     if split_by is not None:
         vtu_dict = dict()
         uniqueValues = blockmodel[split_by].copy()
-        uniqueValues = uniqueValues.sort_values()  # ascending
+        uniqueValues = uniqueValues.sort_values(ascending=True, ignore_index=True)  # ascending
         uniqueValues = uniqueValues.unique()
 
         uniqueColours = get_colours(uniqueValues, colour_range)
@@ -172,12 +172,17 @@ def addDataToViewer(injectData, srcHtmlPath, dstHtmlPath):
         with io.open(dstHtmlPath, mode='w', encoding="utf-8") as dstHtml:
             for line in srcHtml:
                 if '</body>' in line:
+                    count = 1
                     for file, content in base64dict.items():
+                        if count == 1:
+                            dstHtml.write('<script>\n')
+                            dstHtml.write('glanceInstance.showApp();\n')
+                            dstHtml.write('</script>\n')
                         dstHtml.write('<script>\n')
-                        dstHtml.write('var contentToLoad = "%s";\n\n' % content);
-                        dstHtml.write('Glance.importBase64Dataset("%s" , contentToLoad, glanceInstance.proxyManager);\n' % "BBAA.vtkjs");
-                        dstHtml.write('glanceInstance.showApp();\n');
+                        dstHtml.write('var contentToLoad = "%s";\n\n' % content)
+                        dstHtml.write('Glance.importBase64Dataset("%s" , contentToLoad, glanceInstance.proxyManager);\n' % "BBAA.vtkjs")
                         dstHtml.write('</script>\n')
+                        count += 1
 
                 dstHtml.write(line)
 
