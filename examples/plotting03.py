@@ -6,8 +6,7 @@ with open("examples/data_links.json", 'r') as file:
     data = json.load(file)
 
 url = data['blockmodel']['mclaughlin']
-path = 'https://drive.google.com/uc?export=download&id='+url.split('/')[-2]
-blockModel = pd.read_csv(path, compression='zip')
+blockModel = pd.read_csv(url, compression='zip')
 
 blockModel.plot3D(
     xyz_cols=('x', 'y', 'z'),

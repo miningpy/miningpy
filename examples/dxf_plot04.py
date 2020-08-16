@@ -9,9 +9,7 @@ with open("examples/data_links.json", 'r') as file:
 
 url = data['dxf']['strings_vulcan']
 
-file_id = url.split('/')[-2]
-dwn_url = 'https://drive.google.com/uc?export=download&id=' + file_id
-dxf_raw = requests.get(dwn_url).text
+dxf_raw = requests.get(url).text
 dxf_raw = dxf_raw.replace("\r\n", "\n")
 
 temp_file = 'examples/' + hashlib.md5(dxf_raw.encode(encoding='UTF-8')).hexdigest()
