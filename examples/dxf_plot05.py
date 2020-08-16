@@ -7,7 +7,7 @@ import miningpy
 with open("examples/data_links.json", 'r') as file:
     data = json.load(file)
 
-url = data['dxf']['wireframe_vulcan']
+url = data['dxf']['strings_vulcan']
 
 dxf_raw = requests.get(url).text
 dxf_raw = dxf_raw.replace("\r\n", "\n")
@@ -19,7 +19,7 @@ with open(temp_file, 'w') as file:
     file.write(dxf_raw)
 
 # read temporary dxf file and plot using MiningPy function
-miningpy.export_dxf_html(temp_file, output='dxf_triangulation.html')
+miningpy.export_dxf_html(temp_file, output='dxf_strings.html')
 
 # delete temporary dxf file that was downloaded
 os.remove(temp_file)

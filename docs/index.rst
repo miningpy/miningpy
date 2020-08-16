@@ -217,3 +217,11 @@ MiningPy is licensed under the very liberal MIT-License_.
    visualisation/visualisation
    vulcan/vulcan
 
+.. toctree::
+   :maxdepth: 2
+   :caption: Interactive Visualisation Examples
+   :hidden:
+
+   Block Model<visualisation/blockmodel_pvglance>
+   DXF Triangulation<visualisation/dxf_triangulation_pvglance>
+   DXF Design Strings<visualisation/dxf_strings_pvglance>
