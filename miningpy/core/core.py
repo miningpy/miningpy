@@ -757,26 +757,6 @@ def geometric_reblock(blockmodel: pd.DataFrame):
     raise Exception("MiningPy function {geometric_reblock} hasn't been created yet")
 
 
-def whittle_mod(blockmodel: pd.DataFrame):
-    """
-    create a Whittle 4D .MOD file from a block model
-
-    Parameters
-    ----------
-    blockmodel: pd.DataFrame
-        pandas dataframe of block model
-
-    Returns
-    -------
-    Whittle .MOD text file
-    """
-    raise Exception("MiningPy function {whittle_mod} hasn't been created yet")
-
-
-def whittle_par():
-    raise Exception("MiningPy function {whittle_par} hasn't been created yet")
-
-
 def model_rotation(blockmodel: pd.DataFrame,
                    xyz_cols: Tuple[str, str, str] = None,
                    dims: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
@@ -1288,7 +1268,6 @@ def extend_pandas():
     PandasObject.vulcan_csv = vulcan_csv
     PandasObject.vulcan_bdf = vulcan_bdf
     PandasObject.geometric_reblock = geometric_reblock
-    PandasObject.whittle_mod = whittle_mod
     PandasObject.model_rotation = model_rotation
     PandasObject.model_origin = model_origin
     PandasObject.check_regular = check_regular
