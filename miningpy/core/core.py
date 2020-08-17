@@ -903,22 +903,57 @@ def block_dims(blockmodel:   pd.DataFrame,
                                            inplace=True)[zcol]
 
     # estimate x dimension
-    mod[xcol].sort_values(inplace=True, ignore_index=True)
-    mod['xtemp'] = mod[xcol].shift(1)
-    mod['xdim'] = mod['xtemp'] - mod[xcol]
-    mask = mod['xdim'] > 0
-    xdim = mod.loc[mask, 'xdim'].copy()  # series
-    # take the mode (most common dimension)
-        
+    # select each y-z columm
+    group_yz = mod.groupby([ycol, zcol])
+    xdim_array = pd.Series([])
+    for name, group in group_yz:
+        group.sort_values(by=xcol, inplace=True, ignore_index=True)
+        group['xtemp'] = group[xcol].shift(1)
+        group.fillna(0.0, inplace=True)
+        group['xdim'] = group[xcol] - group['xtemp']
+        mask = group['xdim'] > 0
+        xdim = group.loc[mask, 'xdim'].copy()  # series
+        # take the mode (most common dimension)
+        xdim_array = xdim_array.append(xdim.mode(), ignore_index=True)
+
+    # take the mode (most common dimension) from all groups
+    xdim = xdim_array.mode().max()
 
     # estimate y dimension
-    mod[ycol].sort_values(inplace=True, ignore_index=True)
-    mod['ytemp'] = mod[ycol].shift(1)
+    # select each x-z columm
+    group_xz = mod.groupby([xcol, zcol])
+    ydim_array = pd.Series([])
+    for name, group in group_xz:
+        group.sort_values(by=ycol, inplace=True, ignore_index=True)
+        group['ytemp'] = group[ycol].shift(1)
+        group.fillna(0.0, inplace=True)
+        group['ydim'] = group[ycol] - group['ytemp']
+        mask = group['ydim'] > 0
+        ydim = group.loc[mask, 'ydim'].copy()  # series
+        # take the mode (most common dimension)
+        ydim_array = ydim_array.append(ydim.mode(), ignore_index=True)
+
+    # take the mode (most common dimension) from all groups
+    ydim = ydim_array.mode().max()
 
     # estimate z dimension
-    mod[zcol].sort_values(inplace=True, ignore_index=True)
-    mod['ztemp'] = mod[zcol].shift(1)
+    # select each x-y columm
+    group_xy = mod.groupby([xcol, ycol])
+    zdim_array = pd.Series([])
+    for name, group in group_xy:
+        group.sort_values(by=zcol, inplace=True, ignore_index=True)
+        group['ztemp'] = group[zcol].shift(1)
+        group.fillna(0.0, inplace=True)
+        group['zdim'] = group[zcol] - group['ztemp']
+        mask = group['zdim'] > 0
+        zdim = group.loc[mask, 'zdim'].copy()  # series
+        # take the mode (most common dimension)
+        zdim_array = zdim_array.append(zdim.mode(), ignore_index=True)
 
+    # take the mode (most common dimension) from all groups
+    zdim = zdim_array.mode().max()
+
+    return xdim, ydim, zdim
 
 
 def check_regular(blockmodel: pd.DataFrame) -> None:
@@ -938,7 +973,12 @@ def check_regular(blockmodel: pd.DataFrame) -> None:
     raise Exception("MiningPy function {check_regular} hasn't been created yet")
 
 
-def check_internal_blocks_missing(blockmodel: pd.DataFrame):
+def check_internal_blocks_missing(blockmodel: pd.DataFrame,
+                                  xyz_cols: Tuple[str, str, str] = None,
+                                  dims: Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
+                                  rotation: Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
+                                  origin: Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
+                                  ) -> bool:
     """
     check if there are missing internal blocks (not side blocks) within a regular block model
 
@@ -946,6 +986,17 @@ def check_internal_blocks_missing(blockmodel: pd.DataFrame):
     ----------
     blockmodel: pd.DataFrame
         pandas dataframe of block model
+    xyz_cols: tuple of strings
+        names of x,y,z columns in model
+    dims: tuple of floats, ints or str
+        x,y,z dimension of regular parent blocks
+        can either be a number or the columns names of the x,y,z
+        columns in the dataframe
+    rotation: tuple of floats or ints
+        rotation of block model grid around x,y,z axis, -180 to 180 degrees
+    origin: tuple of floats or ints
+        ONLY NEEDED IF MODEL IS ROTATED
+        x,y,z origin of model - this is the corner of the bottom block (not the centroid)
 
     Returns
     -------
@@ -953,7 +1004,54 @@ def check_internal_blocks_missing(blockmodel: pd.DataFrame):
         whether block model contains missing internal blocks
         returns True if so
     """
-    raise Exception("MiningPy function {check_internal_blocks_missing} hasn't been created yet")
+
+    # definitions for simplicity
+    xcol, ycol, zcol = xyz_cols[0], xyz_cols[1], xyz_cols[2]
+    xsize, ysize, zsize = dims[0], dims[1], dims[2]
+    x_rotation, y_rotation, z_rotation = rotation[0], rotation[1], rotation[2]
+
+    # check rotation is within parameters
+    for rot in rotation:
+        if -180 <= rot <= 180:
+            pass
+        else:
+            raise Exception('Rotation is limited to between -180 and +180 degrees')
+
+    # make copy of xyz cols
+    mod = blockmodel[list(xyz_cols)].copy()
+
+    if x_rotation != 0:  # x rotation
+        mod[xcol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
+                                           origin=origin,
+                                           rotation=rotation,
+                                           return_full_model=False,
+                                           inplace=True)[xcol]
+    if y_rotation != 0:  # y rotatation
+        mod[ycol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
+                                           origin=origin,
+                                           rotation=rotation,
+                                           return_full_model=False,
+                                           inplace=True)[ycol]
+    if z_rotation != 0:  # z rotation
+        mod[zcol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
+                                           origin=origin,
+                                           rotation=rotation,
+                                           return_full_model=False,
+                                           inplace=True)[zcol]
+
+    # select each x-y columm
+    group_xy = mod.groupby([xcol, ycol])
+    for name, group in group_xy:
+        group.sort_values(by=zcol, inplace=True, ignore_index=True)
+        group['ztemp'] = group[zcol].shift(1)
+        group.fillna(0.0, inplace=True)
+        group['zstep'] = group[zcol] - group['ztemp']
+        group.at[0, 'zstep'] = zsize
+        mask = group['zstep'] == zsize
+        if mask.sum() != len(group):
+            return True
+
+    return False
 
 
 def attribute_reblock(blockmodel: pd.DataFrame):
@@ -1196,5 +1294,6 @@ def extend_pandas():
     PandasObject.check_regular = check_regular
     PandasObject.attribute_reblock = attribute_reblock
     PandasObject.check_internal_blocks_missing = check_internal_blocks_missing
+    PandasObject.block_dims = block_dims
     PandasObject.index_3Dto1D = index_3Dto1D
     PandasObject.index_1Dto3D = index_1Dto3D
