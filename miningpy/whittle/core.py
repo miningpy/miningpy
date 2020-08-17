@@ -11,7 +11,7 @@ from typing import Union, List, Tuple
 
 def whittle_mod(blockmodel: pd.DataFrame):
     """
-    create a Whittle 4D .MOD file from a block model
+    create a Whittle 4D .mod file from a block model
 
     Parameters
     ----------
@@ -20,12 +20,24 @@ def whittle_mod(blockmodel: pd.DataFrame):
 
     Returns
     -------
-    Whittle .MOD text file
+    Whittle .mod text file
     """
     raise Exception("MiningPy function {whittle_mod} hasn't been created yet")
 
 
 def whittle_par():
+    """
+    create a Whittle 4D .par file from a .mod file
+    this also allows you to order the parcels if you want
+
+    Parameters
+    ----------
+
+
+    Returns
+    -------
+    Whittle .par text file
+    """
     raise Exception("MiningPy function {whittle_par} hasn't been created yet")
 
 
