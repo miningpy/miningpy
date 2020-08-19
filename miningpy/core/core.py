@@ -852,35 +852,6 @@ def attribute_reblock(blockmodel: pd.DataFrame):
     raise Exception("MiningPy function {attribute_reblock} hasn't been created yet")
 
 
-def model_rotation(blockmodel: pd.DataFrame,
-                   xyz_cols: Tuple[str, str, str] = None,
-                   dims: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
-                   origin: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None) -> Tuple[float, float, float]:
-    """
-    calculate the rotation of a block model grid relative to its current xyz grid
-    rotation is calculated using the right hand rule
-
-    Parameters
-    ----------
-    blockmodel: pd.DataFrame
-        pandas dataframe of block model
-    xyz_cols: tuple of strings
-        names of x,y,z columns in model
-    dims: tuple of floats, ints or str
-        x,y,z dimension of regular parent blocks
-        can either be a number or the columns names of the x,y,z
-        columns in the dataframe
-    origin: tuple of floats or ints
-        x,y,z origin of model - this is the corner of the bottom block (not the centroid)
-
-    Returns
-    -------
-    tuple of floats
-        block model rotation around each axis (x,y,z)
-    """
-    raise Exception("MiningPy function {model_rotation} hasn't been created yet")
-
-
 def model_origin(blockmodel: pd.DataFrame,
                  xyz_cols: Tuple[str, str, str] = None,
                  dims: Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
@@ -1427,7 +1398,6 @@ def extend_pandas():
     PandasObject.vulcan_csv = vulcan_csv
     PandasObject.vulcan_bdf = vulcan_bdf
     PandasObject.geometric_reblock = geometric_reblock
-    PandasObject.model_rotation = model_rotation
     PandasObject.model_origin = model_origin
     PandasObject.check_regular = check_regular
     PandasObject.attribute_reblock = attribute_reblock
