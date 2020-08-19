@@ -161,7 +161,7 @@ def ijk(blockmodel:     pd.DataFrame,
                     indexed_int = np.rint((bm_xcol - xsize/2 - xorigin) / xsize).astype(int)
                     check_float = (indexed_float - indexed_int).abs()
                     if check_float.any() > 0.00001:
-                        warnings.warn("MiningPy WARNING - block centroids not on a regular grid - calculated IJK values may be wrong")
+                        warnings.warn("MiningPy WARNING - xcol block centroids not on a regular grid - calculated IJK values may be wrong")
 
                 icol_float = (bm_xcol - xsize/2 - xorigin) / xsize
                 icol_float = icol_float.round(decimals=0)
@@ -179,7 +179,7 @@ def ijk(blockmodel:     pd.DataFrame,
                     indexed_int = np.rint((bm_ycol - ysize/2 - yorigin) / ysize).astype(int)
                     check_float = (indexed_float - indexed_int).abs()
                     if check_float.any() > 0.00001:
-                        warnings.warn("MiningPy WARNING - block centroids not on a regular grid - calculated IJK values may be wrong")
+                        warnings.warn("MiningPy WARNING - ycol block centroids not on a regular grid - calculated IJK values may be wrong")
 
                 jcol_float = (bm_ycol - ysize/2 - yorigin) / ysize
                 jcol_float = jcol_float.round(decimals=0)
@@ -197,7 +197,7 @@ def ijk(blockmodel:     pd.DataFrame,
                     indexed_int = np.rint((bm_zcol - zsize / 2 - zorigin) / zsize).astype(int)
                     check_float = (indexed_float - indexed_int).abs()
                     if check_float.any() > 0.00001:
-                        warnings.warn("MiningPy WARNING - block centroids not on a regular grid - calculated IJK values may be wrong")
+                        warnings.warn("MiningPy WARNING - zcol block centroids not on a regular grid - calculated IJK values may be wrong")
 
                 kcol_float = (bm_zcol - zsize / 2 - zorigin) / zsize
                 kcol_float = kcol_float.round(decimals=0)
