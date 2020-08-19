@@ -152,7 +152,7 @@ def ijk(blockmodel:     pd.DataFrame,
                 # throw a warning to the user if this is the case
                 # float should be within 0.00001 tolerance of integer
                 indexed_float = ((bm_xcol - xsize/2 - xorigin) / xsize)
-                indexed_int = np.rint((bm_xcol - xsize/2 - xorigin) / xsize)
+                indexed_int = np.rint((bm_xcol - xsize/2 - xorigin) / xsize).astype(int)
                 check_float = (indexed_float - indexed_int).abs()
                 if check_float.any() > 0.00001:
                     warnings.warn("MiningPy WARNING - block centroids not on a regular grid - calculated IJK values may be wrong")
@@ -167,7 +167,7 @@ def ijk(blockmodel:     pd.DataFrame,
                 # throw a warning to the user if this is the case
                 # float should be within 0.00001 tolerance of integer
                 indexed_float = ((bm_ycol - ysize/2 - yorigin) / ysize)
-                indexed_int = np.rint((bm_ycol - ysize/2 - yorigin) / ysize)
+                indexed_int = np.rint((bm_ycol - ysize/2 - yorigin) / ysize).astype(int)
                 check_float = (indexed_float - indexed_int).abs()
                 if check_float.any() > 0.00001:
                     warnings.warn("MiningPy WARNING - block centroids not on a regular grid - calculated IJK values may be wrong")
@@ -182,7 +182,7 @@ def ijk(blockmodel:     pd.DataFrame,
                 # throw a warning to the user if this is the case
                 # float should be within 0.00001 tolerance of integer
                 indexed_float = ((bm_zcol - zsize / 2 - zorigin) / zsize)
-                indexed_int = np.rint((bm_zcol - zsize / 2 - zorigin) / zsize)
+                indexed_int = np.rint((bm_zcol - zsize / 2 - zorigin) / zsize).astype(int)
                 check_float = (indexed_float - indexed_int).abs()
                 if check_float.any() > 0.00001:
                     warnings.warn("MiningPy WARNING - block centroids not on a regular grid - calculated IJK values may be wrong")
