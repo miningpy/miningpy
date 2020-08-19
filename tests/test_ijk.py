@@ -275,5 +275,26 @@ def test_ijk_10():
 
 # test rotation
 
+# test if blocks aren't on a regular grid
+# sees if User Warning is raised
+# test data
+testdata2 = {
+    'x': [5, 5, 15],
+    'y': [5, 15, 25],
+    'z': [5, 4.8, 10.9999],
+}
 
 
+def test_ijk_11():
+    # specifying blocks that arent on a regular grid
+    data = pd.DataFrame(testdata2)
+    with pytest.warns(UserWarning):
+        data.ijk(
+            indexing=1,
+            xyz_cols=('x', 'y', 'z'),
+            origin=(2.5, 2.5, 2.5),
+            dims=(5, 5, 5),
+            rotation=(0, 0, 0),
+            ijk_cols=('i', 'j', 'k'),
+            inplace=True
+        )
