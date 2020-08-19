@@ -163,7 +163,9 @@ def ijk(blockmodel:     pd.DataFrame,
                     if check_float.any() > 0.00001:
                         warnings.warn("MiningPy WARNING - block centroids not on a regular grid - calculated IJK values may be wrong")
 
-                blockmodel[icol] = (np.rint((bm_xcol - xsize/2 - xorigin) / xsize) + indexing).astype(int)
+                icol_float = (bm_xcol - xsize/2 - xorigin) / xsize
+                icol_float = icol_float.round(decimals=0)
+                blockmodel[icol] = (np.rint(icol_float) + indexing).astype(int)
             except ValueError:
                 raise ValueError('IJK FAILED - either xcol, xorigin or xsize not defined properly')
 
@@ -179,7 +181,9 @@ def ijk(blockmodel:     pd.DataFrame,
                     if check_float.any() > 0.00001:
                         warnings.warn("MiningPy WARNING - block centroids not on a regular grid - calculated IJK values may be wrong")
 
-                blockmodel[jcol] = (np.rint((bm_ycol - ysize/2 - yorigin) / ysize) + indexing).astype(int)
+                jcol_float = (bm_ycol - ysize/2 - yorigin) / ysize
+                jcol_float = jcol_float.round(decimals=0)
+                blockmodel[jcol] = (np.rint(jcol_float) + indexing).astype(int)
             except ValueError:
                 raise ValueError('IJK FAILED - either ycol, yorigin or ysize not defined properly')
 
@@ -195,7 +199,9 @@ def ijk(blockmodel:     pd.DataFrame,
                     if check_float.any() > 0.00001:
                         warnings.warn("MiningPy WARNING - block centroids not on a regular grid - calculated IJK values may be wrong")
 
-                blockmodel[kcol] = (np.rint((bm_zcol - zsize / 2 - zorigin) / zsize) + indexing).astype(int)
+                kcol_float = (bm_zcol - zsize / 2 - zorigin) / zsize
+                kcol_float = kcol_float.round(decimals=0)
+                blockmodel[kcol] = (np.rint(kcol_float) + indexing).astype(int)
             except ValueError:
                 raise ValueError('IJK FAILED - either zcol, zorigin or zsize not defined properly')
 
