@@ -826,6 +826,26 @@ def geometric_reblock(blockmodel: pd.DataFrame):
     raise Exception("MiningPy function {geometric_reblock} hasn't been created yet")
 
 
+def attribute_reblock(blockmodel: pd.DataFrame):
+    """
+    bin the attributes & tonnes of a block model for each bench/phase
+    heavily used in mine strategic scheduling
+
+    Parameters
+    ----------
+    blockmodel: pd.DataFrame
+        pandas dataframe of block model
+    xyz_cols: tuple of strings
+        names of x,y,z columns in model
+
+    Returns
+    -------
+    pandas.DataFrame
+        block model with binned attributes & tonnes for each bench
+    """
+    raise Exception("MiningPy function {attribute_reblock} hasn't been created yet")
+
+
 def model_rotation(blockmodel: pd.DataFrame,
                    xyz_cols: Tuple[str, str, str] = None,
                    dims: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
@@ -1185,26 +1205,6 @@ def check_internal_blocks_missing(blockmodel: pd.DataFrame,
             return True
 
     return False
-
-
-def attribute_reblock(blockmodel: pd.DataFrame):
-    """
-    bin the attributes & tonnes of a block model for each bench/phase
-    heavily used in mine strategic scheduling
-
-    Parameters
-    ----------
-    blockmodel: pd.DataFrame
-        pandas dataframe of block model
-    xyz_cols: tuple of strings
-        names of x,y,z columns in model
-
-    Returns
-    -------
-    pandas.DataFrame
-        block model with binned attributes & tonnes for each bench
-    """
-    raise Exception("MiningPy function {attribute_reblock} hasn't been created yet")
 
 
 def index_3Dto1D(blockmodel:    pd.DataFrame,
