@@ -132,7 +132,7 @@ def ijk(blockmodel:     pd.DataFrame,
                                          origin=origin,
                                          rotation=rotation,
                                          return_full_model=False,
-                                         inplace=True)[xcol]
+                                         inplace=False)[xcol]
     if y_rotation == 0:  # y rotatation
         bm_ycol = blockmodel[ycol]
     else:
@@ -140,7 +140,7 @@ def ijk(blockmodel:     pd.DataFrame,
                                          origin=origin,
                                          rotation=rotation,
                                          return_full_model=False,
-                                         inplace=True)[ycol]
+                                         inplace=False)[ycol]
     if z_rotation == 0:  # z rotation
         bm_zcol = blockmodel[zcol]
     else:
@@ -148,7 +148,7 @@ def ijk(blockmodel:     pd.DataFrame,
                                          origin=origin,
                                          rotation=rotation,
                                          return_full_model=False,
-                                         inplace=True)[zcol]
+                                         inplace=False)[zcol]
     
     if method in methods_accepted:
         if 'i' in method:
@@ -309,7 +309,7 @@ def xyz(blockmodel:     pd.DataFrame,
                                                   origin=origin,
                                                   rotation=rotation,
                                                   return_full_model=False,
-                                                  inplace=True)[xcol]
+                                                  inplace=False)[xcol]
     if y_rotation == 0:
         blockmodel[ycol] = bm_ycol
     else:
@@ -317,7 +317,7 @@ def xyz(blockmodel:     pd.DataFrame,
                                                   origin=origin,
                                                   rotation=rotation,
                                                   return_full_model=False,
-                                                  inplace=True)[ycol]
+                                                  inplace=False)[ycol]
     if z_rotation == 0:
         blockmodel[zcol] = bm_zcol
     else:
@@ -325,7 +325,7 @@ def xyz(blockmodel:     pd.DataFrame,
                                                   origin=origin,
                                                   rotation=rotation,
                                                   return_full_model=False,
-                                                  inplace=True)[zcol]
+                                                  inplace=False)[zcol]
     
     # check inplace for return
     if not inplace:
@@ -937,19 +937,19 @@ def block_dims(blockmodel:   pd.DataFrame,
                                            origin=origin,
                                            rotation=rotation,
                                            return_full_model=False,
-                                           inplace=True)[xcol]
+                                           inplace=False)[xcol]
     if y_rotation != 0:  # y rotatation
         mod[ycol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
                                            origin=origin,
                                            rotation=rotation,
                                            return_full_model=False,
-                                           inplace=True)[ycol]
+                                           inplace=False)[ycol]
     if z_rotation != 0:  # z rotation
         mod[zcol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
                                            origin=origin,
                                            rotation=rotation,
                                            return_full_model=False,
-                                           inplace=True)[zcol]
+                                           inplace=False)[zcol]
 
     # estimate x dimension
     # select each y-z columm
@@ -1005,7 +1005,12 @@ def block_dims(blockmodel:   pd.DataFrame,
     return xdim, ydim, zdim
 
 
-def check_regular(blockmodel: pd.DataFrame) -> None:
+def check_regular(blockmodel: pd.DataFrame,
+                  xyz_cols: Tuple[str, str, str] = None,
+                  origin: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+                  dims: Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
+                  rotation: Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
+                  tolerance: Union[int, float] = 0.00001) -> bool:
     """
     check if the blocks in a block model are actually
     on a regular grid (including a rotated grid).
@@ -1015,13 +1020,90 @@ def check_regular(blockmodel: pd.DataFrame) -> None:
     ----------
     blockmodel: pd.DataFrame
         pandas dataframe of block model
+    xyz_cols: tuple of strings
+        names of x,y,z columns in model
+    origin: tuple of floats or ints
+        x,y,z origin of model - this is the corner of the bottom block (not the centroid)
+    dims: tuple of floats, ints or str
+        x,y,z dimension of regular parent blocks
+        can either be a number or the columns names of the x,y,z
+        columns in the dataframe
+    rotation: tuple of floats or ints
+        rotation of block model grid around x,y,z axis, -180 to 180 degrees
+    tolerance: float or int
+        the difference of a blocks centroid from the point on a grid it should be located
+        generally in the range of 0.1 to 0.000001
 
     Returns
     -------
     bool
         whether block model is regular or not. True if regular.
     """
-    raise Exception("MiningPy function {check_regular} hasn't been created yet")
+
+    # definitions for simplicity
+    xcol, ycol, zcol = xyz_cols[0], xyz_cols[1], xyz_cols[2]
+    xorigin, yorigin, zorigin = origin[0], origin[1], origin[2]
+    xsize, ysize, zsize = dims[0], dims[1], dims[2]
+    x_rotation, y_rotation, z_rotation = rotation[0], rotation[1], rotation[2]
+
+    # check rotation is within parameters
+    for rot in rotation:
+        if -180 <= rot <= 180:
+            pass
+        else:
+            raise Exception('Rotation is limited to between -180 and +180 degrees')
+
+    # make copy of xyz cols
+    mod = blockmodel[list(xyz_cols)].copy()
+
+    # deal with rotations
+    if x_rotation != 0:  # x rotation
+        mod[xcol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
+                                           origin=origin,
+                                           rotation=rotation,
+                                           return_full_model=False,
+                                           inplace=False)[xcol]
+    if y_rotation != 0:  # y rotatation
+        mod[ycol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
+                                           origin=origin,
+                                           rotation=rotation,
+                                           return_full_model=False,
+                                           inplace=False)[ycol]
+    if z_rotation != 0:  # z rotation
+        mod[zcol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
+                                           origin=origin,
+                                           rotation=rotation,
+                                           return_full_model=False,
+                                           inplace=False)[zcol]
+
+    # check integer value isn't far from float - this can cause indexing issues
+    # throw a warning to the user if this is the case
+    # float should be within 0.00001 tolerance of integer
+    indexed_float = ((mod[xcol] - xsize / 2 - xorigin) / xsize)
+    indexed_int = np.rint((mod[xcol] - xsize / 2 - xorigin) / xsize).astype(int)
+    check_float = (indexed_float - indexed_int).abs()
+    if check_float.any() > tolerance:
+        return False
+
+    # check integer value isn't far from float - this can cause indexing issues
+    # throw a warning to the user if this is the case
+    # float should be within 0.00001 tolerance of integer
+    indexed_float = ((mod[ycol] - ysize / 2 - yorigin) / ysize)
+    indexed_int = np.rint((mod[ycol] - ysize / 2 - yorigin) / ysize).astype(int)
+    check_float = (indexed_float - indexed_int).abs()
+    if check_float.any() > tolerance:
+        return False
+
+    # check integer value isn't far from float - this can cause indexing issues
+    # throw a warning to the user if this is the case
+    # float should be within 0.00001 tolerance of integer
+    indexed_float = ((mod[zcol] - zsize / 2 - zorigin) / zsize)
+    indexed_int = np.rint((mod[zcol] - zsize / 2 - zorigin) / zsize).astype(int)
+    check_float = (indexed_float - indexed_int).abs()
+    if check_float.any() > tolerance:
+        return False
+
+    return True
 
 
 def check_internal_blocks_missing(blockmodel: pd.DataFrame,
@@ -1076,19 +1158,19 @@ def check_internal_blocks_missing(blockmodel: pd.DataFrame,
                                            origin=origin,
                                            rotation=rotation,
                                            return_full_model=False,
-                                           inplace=True)[xcol]
+                                           inplace=False)[xcol]
     if y_rotation != 0:  # y rotatation
         mod[ycol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
                                            origin=origin,
                                            rotation=rotation,
                                            return_full_model=False,
-                                           inplace=True)[ycol]
+                                           inplace=False)[ycol]
     if z_rotation != 0:  # z rotation
         mod[zcol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
                                            origin=origin,
                                            rotation=rotation,
                                            return_full_model=False,
-                                           inplace=True)[zcol]
+                                           inplace=False)[zcol]
 
     # select each x-y columm
     group_xy = mod.groupby([xcol, ycol])
