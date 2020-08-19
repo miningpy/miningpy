@@ -26,6 +26,7 @@ def ijk(blockmodel:     pd.DataFrame,
         dims:           Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
         rotation:       Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
         ijk_cols:       Tuple[str, str, str] = ('i', 'j', 'k'),
+        print_warnings: bool = True,
         inplace:        bool = False) -> pd.DataFrame:
     """
     Calculate block ijk indexes from their xyz cartesian coordinates
@@ -50,6 +51,10 @@ def ijk(blockmodel:     pd.DataFrame,
         rotation of block model grid around x,y,z axis, -180 to 180 degrees
     ijk_cols: tuple of strings
         name of the i,j,k columns added to the model
+    print_warnings: bool
+        if True then will check if blocks are on a regular grid
+        before the IJK calculation and print a warning to the user if
+        the blocks are not regular (i.e. could get funky IJK values).
     inplace: bool
         whether to do calculation inplace on pandas.DataFrame
 
@@ -148,14 +153,15 @@ def ijk(blockmodel:     pd.DataFrame,
     if method in methods_accepted:
         if 'i' in method:
             try:
-                # check integer value isn't far from float - this can cause indexing issues
-                # throw a warning to the user if this is the case
-                # float should be within 0.00001 tolerance of integer
-                indexed_float = ((bm_xcol - xsize/2 - xorigin) / xsize)
-                indexed_int = np.rint((bm_xcol - xsize/2 - xorigin) / xsize).astype(int)
-                check_float = (indexed_float - indexed_int).abs()
-                if check_float.any() > 0.00001:
-                    warnings.warn("MiningPy WARNING - block centroids not on a regular grid - calculated IJK values may be wrong")
+                if print_warnings:
+                    # check integer value isn't far from float - this can cause indexing issues
+                    # throw a warning to the user if this is the case
+                    # float should be within 0.00001 tolerance of integer
+                    indexed_float = ((bm_xcol - xsize/2 - xorigin) / xsize)
+                    indexed_int = np.rint((bm_xcol - xsize/2 - xorigin) / xsize).astype(int)
+                    check_float = (indexed_float - indexed_int).abs()
+                    if check_float.any() > 0.00001:
+                        warnings.warn("MiningPy WARNING - block centroids not on a regular grid - calculated IJK values may be wrong")
 
                 blockmodel[icol] = (np.rint((bm_xcol - xsize/2 - xorigin) / xsize) + indexing).astype(int)
             except ValueError:
@@ -163,14 +169,15 @@ def ijk(blockmodel:     pd.DataFrame,
 
         if 'j' in method:
             try:
-                # check integer value isn't far from float - this can cause indexing issues
-                # throw a warning to the user if this is the case
-                # float should be within 0.00001 tolerance of integer
-                indexed_float = ((bm_ycol - ysize/2 - yorigin) / ysize)
-                indexed_int = np.rint((bm_ycol - ysize/2 - yorigin) / ysize).astype(int)
-                check_float = (indexed_float - indexed_int).abs()
-                if check_float.any() > 0.00001:
-                    warnings.warn("MiningPy WARNING - block centroids not on a regular grid - calculated IJK values may be wrong")
+                if print_warnings:
+                    # check integer value isn't far from float - this can cause indexing issues
+                    # throw a warning to the user if this is the case
+                    # float should be within 0.00001 tolerance of integer
+                    indexed_float = ((bm_ycol - ysize/2 - yorigin) / ysize)
+                    indexed_int = np.rint((bm_ycol - ysize/2 - yorigin) / ysize).astype(int)
+                    check_float = (indexed_float - indexed_int).abs()
+                    if check_float.any() > 0.00001:
+                        warnings.warn("MiningPy WARNING - block centroids not on a regular grid - calculated IJK values may be wrong")
 
                 blockmodel[jcol] = (np.rint((bm_ycol - ysize/2 - yorigin) / ysize) + indexing).astype(int)
             except ValueError:
@@ -178,14 +185,15 @@ def ijk(blockmodel:     pd.DataFrame,
 
         if 'k' in method:
             try:
-                # check integer value isn't far from float - this can cause indexing issues
-                # throw a warning to the user if this is the case
-                # float should be within 0.00001 tolerance of integer
-                indexed_float = ((bm_zcol - zsize / 2 - zorigin) / zsize)
-                indexed_int = np.rint((bm_zcol - zsize / 2 - zorigin) / zsize).astype(int)
-                check_float = (indexed_float - indexed_int).abs()
-                if check_float.any() > 0.00001:
-                    warnings.warn("MiningPy WARNING - block centroids not on a regular grid - calculated IJK values may be wrong")
+                if print_warnings:
+                    # check integer value isn't far from float - this can cause indexing issues
+                    # throw a warning to the user if this is the case
+                    # float should be within 0.00001 tolerance of integer
+                    indexed_float = ((bm_zcol - zsize / 2 - zorigin) / zsize)
+                    indexed_int = np.rint((bm_zcol - zsize / 2 - zorigin) / zsize).astype(int)
+                    check_float = (indexed_float - indexed_int).abs()
+                    if check_float.any() > 0.00001:
+                        warnings.warn("MiningPy WARNING - block centroids not on a regular grid - calculated IJK values may be wrong")
 
                 blockmodel[kcol] = (np.rint((bm_zcol - zsize / 2 - zorigin) / zsize) + indexing).astype(int)
             except ValueError:
