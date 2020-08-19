@@ -61,14 +61,14 @@ def ijk(blockmodel:     pd.DataFrame,
     --------
     >>> import pandas as pd
     >>> import miningpy
-    >>>
+    ...
     >>> # block model data and framework
     >>> data = {'x': [5, 5, 15],
     ...         'y': [5, 15, 25],
     ...         'z': [5, 5, 5]}
     >>> xdim, ydim, zdim = 5, 5, 5  # regular block dimensions
     >>> xorg, yorg, zorg = 2.5, 2.5, 2.5  # model origin (corner of first block)
-    >>>
+    ...
     >>> # Create block model from data
     >>> blockmodel = pd.DataFrame(data)
     >>> print(blockmodel)
