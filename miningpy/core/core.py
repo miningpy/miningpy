@@ -64,8 +64,8 @@ def ijk(blockmodel:     pd.DataFrame,
     >>>
     >>> # block model data and framework
     >>> data = {'x': [5, 5, 15],
-                'y': [5, 15, 25],
-                'z': [5, 5, 5]}
+    >>>         'y': [5, 15, 25],
+    >>>         'z': [5, 5, 5]}
     >>> xdim, ydim, zdim = 5, 5, 5  # regular block dimensions
     >>> xorg, yorg, zorg = 2.5, 2.5, 2.5  # model origin (corner of first block)
     >>>
@@ -78,10 +78,10 @@ def ijk(blockmodel:     pd.DataFrame,
     2  15  25  5
     >>> # calculate i, j, k indexes
     >>> blockmodel.ijk(indexing=1,  # use ijk function just like any other Pandas function
-                        xyz_cols=('x', 'y', 'z'),  # input the x, y, z column names as a tuple
-                        origin=(xorg, yorg, zorg),
-                        dims=(xdim, ydim, zdim),
-                        inplace=True) # can do inplace True/False like other standard Pandas functions
+    >>>                 xyz_cols=('x', 'y', 'z'),  # input the x, y, z column names as a tuple
+    >>>                 origin=(xorg, yorg, zorg),
+    >>>                 dims=(xdim, ydim, zdim),
+    >>>                 inplace=True) # can do inplace True/False like other standard Pandas functions
     >>> # print results of ijk calculation
     >>> print(blockmodel)
         x   y  z  i  j  k
