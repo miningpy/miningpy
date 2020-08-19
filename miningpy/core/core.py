@@ -971,7 +971,9 @@ def block_dims(blockmodel:   pd.DataFrame,
 
 def check_regular(blockmodel: pd.DataFrame) -> None:
     """
-    check if the blocks in a block model are actually on a regular grid (including a rotated grid)
+    check if the blocks in a block model are actually
+    on a regular grid (including a rotated grid).
+    note this is just an estimatimation of regularity, it is not perfect
 
     Parameters
     ----------
