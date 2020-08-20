@@ -285,28 +285,26 @@ def xyz(blockmodel:     pd.DataFrame,
     if method in methods_accepted:
         if 'x' in method:
             try:
-                bm_xcol = ((blockmodel[icol] - indexing) * xsize) + xorigin + (xsize/2)
+                blockmodel[xcol] = ((blockmodel[icol] - indexing) * xsize) + xorigin + (xsize/2)
             except ValueError:
                 raise ValueError('XYZ FAILED - either icol, xorigin or xsize not defined properly')
 
         if 'y' in method:
             try:
-                bm_ycol = ((blockmodel[jcol] - indexing) * ysize) + yorigin + (ysize/2)
+                blockmodel[ycol] = ((blockmodel[jcol] - indexing) * ysize) + yorigin + (ysize/2)
             except ValueError:
                 raise ValueError('XYZ FAILED - either jcol, yorigin or ysize not defined properly')
 
         if 'z' in method:
             try:
-                bm_zcol = ((blockmodel[kcol] - indexing) * zsize) + zorigin + (zsize/2)
+                blockmodel[zcol] = ((blockmodel[kcol] - indexing) * zsize) + zorigin + (zsize/2)
             except ValueError:
                 raise ValueError('XYZ FAILED - either kcol, zorigin or zsize not defined properly')
 
     else:
         raise ValueError('XYZ FAILED - XYZ method not accepted')
 
-    if x_rotation == 0 and y_rotation == 0 and z_rotation == 0:
-        pass
-    else:
+    if x_rotation != 0 or y_rotation != 0 or z_rotation != 0:
         blockmodel[xcol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
                                                   origin=origin,
                                                   rotation=rotation,
