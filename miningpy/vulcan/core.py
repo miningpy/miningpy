@@ -31,6 +31,7 @@ def bdf_from_bmf(input_bmf_path,
     subprocess.call(args, shell=True)
     return
 
+
 def create_bdf(output_bdf_path):
     """
     Create a basic regular Vulcan bdf that defines a block model framework.
