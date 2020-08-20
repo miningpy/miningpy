@@ -137,19 +137,19 @@ def ijk(blockmodel:     pd.DataFrame,
                                          origin=origin,
                                          rotation=unrotation,
                                          return_full_model=False,
-                                         inplace=False)[xcol]
+                                         inplace=False)[xcol].copy()
 
         bm_ycol = blockmodel.rotate_grid(xyz_cols=xyz_cols,
                                          origin=origin,
                                          rotation=unrotation,
                                          return_full_model=False,
-                                         inplace=False)[ycol]
+                                         inplace=False)[ycol].copy()
 
         bm_zcol = blockmodel.rotate_grid(xyz_cols=xyz_cols,
                                          origin=origin,
                                          rotation=unrotation,
                                          return_full_model=False,
-                                         inplace=False)[zcol]
+                                         inplace=False)[zcol].copy()
 
     if method in methods_accepted:
         if 'i' in method:
@@ -305,23 +305,15 @@ def xyz(blockmodel:     pd.DataFrame,
         raise ValueError('XYZ FAILED - XYZ method not accepted')
 
     if x_rotation != 0 or y_rotation != 0 or z_rotation != 0:
-        blockmodel[xcol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
-                                                  origin=origin,
-                                                  rotation=rotation,
-                                                  return_full_model=False,
-                                                  inplace=False)[xcol]
+        mod_rotated = blockmodel.rotate_grid(xyz_cols=xyz_cols,
+                                             origin=origin,
+                                             rotation=rotation,
+                                             return_full_model=False,
+                                             inplace=False)
 
-        blockmodel[ycol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
-                                                  origin=origin,
-                                                  rotation=rotation,
-                                                  return_full_model=False,
-                                                  inplace=False)[ycol]
-
-        blockmodel[zcol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
-                                                  origin=origin,
-                                                  rotation=rotation,
-                                                  return_full_model=False,
-                                                  inplace=False)[zcol]
+        blockmodel[xcol] = mod_rotated[xcol].copy()
+        blockmodel[ycol] = mod_rotated[ycol].copy()
+        blockmodel[zcol] = mod_rotated[zcol].copy()
 
     # check inplace for return
     if not inplace:
@@ -923,23 +915,15 @@ def block_dims(blockmodel:   pd.DataFrame,
     unrotation = ((-1.0 * rotation[0]), (-1.0 * rotation[1]), (-1.0 * rotation[2]))
 
     if x_rotation != 0 or y_rotation != 0 or z_rotation != 0:
-        mod[xcol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
-                                           origin=origin,
-                                           rotation=unrotation,
-                                           return_full_model=False,
-                                           inplace=False)[xcol]
+        mod_rotated = blockmodel.rotate_grid(xyz_cols=xyz_cols,
+                                             origin=origin,
+                                             rotation=unrotation,
+                                             return_full_model=False,
+                                             inplace=False)
 
-        mod[ycol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
-                                           origin=origin,
-                                           rotation=unrotation,
-                                           return_full_model=False,
-                                           inplace=False)[ycol]
-
-        mod[zcol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
-                                           origin=origin,
-                                           rotation=unrotation,
-                                           return_full_model=False,
-                                           inplace=False)[zcol]
+        mod[xcol] = mod_rotated[xcol].copy()
+        mod[ycol] = mod_rotated[ycol].copy()
+        mod[zcol] = mod_rotated[zcol].copy()
 
     # estimate x dimension
     # select each y-z columm
@@ -1050,23 +1034,15 @@ def check_regular(blockmodel: pd.DataFrame,
     unrotation = ((-1.0 * rotation[0]), (-1.0 * rotation[1]), (-1.0 * rotation[2]))
 
     if x_rotation != 0 or y_rotation != 0 or z_rotation != 0:
-        mod[xcol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
-                                           origin=origin,
-                                           rotation=unrotation,
-                                           return_full_model=False,
-                                           inplace=False)[xcol]
+        mod_rotated = blockmodel.rotate_grid(xyz_cols=xyz_cols,
+                                             origin=origin,
+                                             rotation=unrotation,
+                                             return_full_model=False,
+                                             inplace=False)
 
-        mod[ycol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
-                                           origin=origin,
-                                           rotation=unrotation,
-                                           return_full_model=False,
-                                           inplace=False)[ycol]
-
-        mod[zcol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
-                                           origin=origin,
-                                           rotation=unrotation,
-                                           return_full_model=False,
-                                           inplace=False)[zcol]
+        mod[xcol] = mod_rotated[xcol].copy()
+        mod[ycol] = mod_rotated[ycol].copy()
+        mod[zcol] = mod_rotated[zcol].copy()
 
     # check integer value isn't far from float - this can cause indexing issues
     # throw a warning to the user if this is the case
@@ -1149,23 +1125,15 @@ def check_internal_blocks_missing(blockmodel: pd.DataFrame,
     unrotation = ((-1.0 * rotation[0]), (-1.0 * rotation[1]), (-1.0 * rotation[2]))
 
     if x_rotation != 0 or y_rotation != 0 or z_rotation != 0:
-        mod[xcol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
-                                           origin=origin,
-                                           rotation=unrotation,
-                                           return_full_model=False,
-                                           inplace=False)[xcol]
+        mod_rotated = blockmodel.rotate_grid(xyz_cols=xyz_cols,
+                                             origin=origin,
+                                             rotation=unrotation,
+                                             return_full_model=False,
+                                             inplace=False)
 
-        mod[ycol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
-                                           origin=origin,
-                                           rotation=unrotation,
-                                           return_full_model=False,
-                                           inplace=False)[ycol]
-
-        mod[zcol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
-                                           origin=origin,
-                                           rotation=unrotation,
-                                           return_full_model=False,
-                                           inplace=False)[zcol]
+        mod[xcol] = mod_rotated[xcol].copy()
+        mod[ycol] = mod_rotated[ycol].copy()
+        mod[zcol] = mod_rotated[zcol].copy()
 
     # select each x-y columm
     group_xy = mod.groupby([xcol, ycol])
