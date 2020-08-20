@@ -125,31 +125,32 @@ def ijk(blockmodel:     pd.DataFrame,
         else:
             raise Exception('Rotation is limited to between -180 and +180 degrees')
 
-    if x_rotation == 0:  # x rotation
+    # inverse rotations to unrotate grid
+    unrotation = ((-1.0 * rotation[0]), (-1.0 * rotation[1]), (-1.0 * rotation[2]))
+
+    if x_rotation == 0 and y_rotation == 0 and z_rotation == 0:
         bm_xcol = blockmodel[xcol]
+        bm_ycol = blockmodel[ycol]
+        bm_zcol = blockmodel[zcol]
     else:
         bm_xcol = blockmodel.rotate_grid(xyz_cols=xyz_cols,
                                          origin=origin,
-                                         rotation=rotation,
+                                         rotation=unrotation,
                                          return_full_model=False,
                                          inplace=False)[xcol]
-    if y_rotation == 0:  # y rotatation
-        bm_ycol = blockmodel[ycol]
-    else:
+
         bm_ycol = blockmodel.rotate_grid(xyz_cols=xyz_cols,
                                          origin=origin,
-                                         rotation=rotation,
+                                         rotation=unrotation,
                                          return_full_model=False,
                                          inplace=False)[ycol]
-    if z_rotation == 0:  # z rotation
-        bm_zcol = blockmodel[zcol]
-    else:
+
         bm_zcol = blockmodel.rotate_grid(xyz_cols=xyz_cols,
                                          origin=origin,
-                                         rotation=rotation,
+                                         rotation=unrotation,
                                          return_full_model=False,
                                          inplace=False)[zcol]
-    
+
     if method in methods_accepted:
         if 'i' in method:
             try:
@@ -281,11 +282,6 @@ def xyz(blockmodel:     pd.DataFrame,
         else:
             raise Exception('Rotation is limited to between -180 and +180 degrees')
 
-    # change sign of rotation - reversing rotation applied to ijk calculation
-    x_rotation = 0 - x_rotation
-    y_rotation = 0 - y_rotation
-    z_rotation = 0 - z_rotation
-
     if method in methods_accepted:
         if 'x' in method:
             try:
@@ -308,31 +304,27 @@ def xyz(blockmodel:     pd.DataFrame,
     else:
         raise ValueError('XYZ FAILED - XYZ method not accepted')
 
-    if x_rotation == 0:
-        blockmodel[xcol] = bm_xcol
+    if x_rotation == 0 and y_rotation == 0 and z_rotation == 0:
+        pass
     else:
         blockmodel[xcol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
                                                   origin=origin,
                                                   rotation=rotation,
                                                   return_full_model=False,
                                                   inplace=False)[xcol]
-    if y_rotation == 0:
-        blockmodel[ycol] = bm_ycol
-    else:
+
         blockmodel[ycol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
                                                   origin=origin,
                                                   rotation=rotation,
                                                   return_full_model=False,
                                                   inplace=False)[ycol]
-    if z_rotation == 0:
-        blockmodel[zcol] = bm_zcol
-    else:
+
         blockmodel[zcol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
                                                   origin=origin,
                                                   rotation=rotation,
                                                   return_full_model=False,
                                                   inplace=False)[zcol]
-    
+
     # check inplace for return
     if not inplace:
         return blockmodel
@@ -929,22 +921,25 @@ def block_dims(blockmodel:   pd.DataFrame,
         else:
             raise Exception('Rotation is limited to between -180 and +180 degrees')
 
-    if x_rotation != 0:  # x rotation
+    # inverse rotations to unrotate grid
+    unrotation = ((-1.0 * rotation[0]), (-1.0 * rotation[1]), (-1.0 * rotation[2]))
+
+    if x_rotation != 0 or y_rotation != 0 or z_rotation != 0:
         mod[xcol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
                                            origin=origin,
-                                           rotation=rotation,
+                                           rotation=unrotation,
                                            return_full_model=False,
                                            inplace=False)[xcol]
-    if y_rotation != 0:  # y rotatation
+
         mod[ycol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
                                            origin=origin,
-                                           rotation=rotation,
+                                           rotation=unrotation,
                                            return_full_model=False,
                                            inplace=False)[ycol]
-    if z_rotation != 0:  # z rotation
+
         mod[zcol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
                                            origin=origin,
-                                           rotation=rotation,
+                                           rotation=unrotation,
                                            return_full_model=False,
                                            inplace=False)[zcol]
 
@@ -1053,23 +1048,25 @@ def check_regular(blockmodel: pd.DataFrame,
     # make copy of xyz cols
     mod = blockmodel[list(xyz_cols)].copy()
 
-    # deal with rotations
-    if x_rotation != 0:  # x rotation
+    # inverse rotations to unrotate grid
+    unrotation = ((-1.0 * rotation[0]), (-1.0 * rotation[1]), (-1.0 * rotation[2]))
+
+    if x_rotation != 0 or y_rotation != 0 or z_rotation != 0:
         mod[xcol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
                                            origin=origin,
-                                           rotation=rotation,
+                                           rotation=unrotation,
                                            return_full_model=False,
                                            inplace=False)[xcol]
-    if y_rotation != 0:  # y rotatation
+
         mod[ycol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
                                            origin=origin,
-                                           rotation=rotation,
+                                           rotation=unrotation,
                                            return_full_model=False,
                                            inplace=False)[ycol]
-    if z_rotation != 0:  # z rotation
+
         mod[zcol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
                                            origin=origin,
-                                           rotation=rotation,
+                                           rotation=unrotation,
                                            return_full_model=False,
                                            inplace=False)[zcol]
 
@@ -1150,22 +1147,25 @@ def check_internal_blocks_missing(blockmodel: pd.DataFrame,
     # make copy of xyz cols
     mod = blockmodel[list(xyz_cols)].copy()
 
-    if x_rotation != 0:  # x rotation
+    # inverse rotations to unrotate grid
+    unrotation = ((-1.0 * rotation[0]), (-1.0 * rotation[1]), (-1.0 * rotation[2]))
+
+    if x_rotation != 0 or y_rotation != 0 or z_rotation != 0:
         mod[xcol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
                                            origin=origin,
-                                           rotation=rotation,
+                                           rotation=unrotation,
                                            return_full_model=False,
                                            inplace=False)[xcol]
-    if y_rotation != 0:  # y rotatation
+
         mod[ycol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
                                            origin=origin,
-                                           rotation=rotation,
+                                           rotation=unrotation,
                                            return_full_model=False,
                                            inplace=False)[ycol]
-    if z_rotation != 0:  # z rotation
+
         mod[zcol] = blockmodel.rotate_grid(xyz_cols=xyz_cols,
                                            origin=origin,
-                                           rotation=rotation,
+                                           rotation=unrotation,
                                            return_full_model=False,
                                            inplace=False)[zcol]
 
