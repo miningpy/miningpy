@@ -1361,6 +1361,7 @@ def extend_pandas():
     PandasObject.xyz = xyz
     PandasObject.rotate_grid = rotate_grid
     PandasObject.group_weighted_average = group_weighted_average
+    PandasObject.nblocks_xyz = nblocks_xyz
     PandasObject.vulcan_csv = vulcan_csv
     PandasObject.vulcan_bdf = vulcan_bdf
     PandasObject.geometric_reblock = geometric_reblock
