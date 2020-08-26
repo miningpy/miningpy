@@ -55,3 +55,40 @@ jobs:
         python -c "import miningpy"
       displayName: Test MiningPy Import
 
+  - job: WindowsInstallCondaStable_AnacondaBase
+    pool:
+      vmImage: 'VS2017-Win2016'
+    strategy:
+      matrix:
+        Python36:
+          python.version: '3.6'
+        Python37:
+          python.version: '3.7'
+        Python38:
+          python.version: '3.8'
+
+    steps:
+    - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
+      displayName: Add conda to PATH
+
+    - script: |
+        conda update conda
+      displayName: Update conda
+
+    - script: conda create --yes --quiet --name baseAnaconda python=$(python.version) anaconda
+      displayName: Create Anaconda environment
+
+    - script: |
+        call activate baseAnaconda
+        conda config --add channels conda-forge
+      displayName: Add Conda Forge Channel
+
+    - script: |
+        call activate baseAnaconda
+        conda install --yes --quiet --name baseAnaconda -c conda-forge miningpy
+      displayName: Install Nightly MiningPy
+
+    - script: |
+        call activate baseAnaconda
+        python -c "import miningpy"
+      displayName: Test MiningPy Import
