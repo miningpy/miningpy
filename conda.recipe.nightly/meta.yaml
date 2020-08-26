@@ -27,7 +27,7 @@ requirements:
     - pandas
     - python
     - pyvista
-    - vtk >=8.0
+    - vtk >=8.0,<9.0
     - matplotlib
 
 test:
