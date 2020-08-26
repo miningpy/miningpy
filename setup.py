@@ -8,6 +8,7 @@ install_requires = ['ezdxf>=0.13.1',
                     'numpy',
                     'pandas',
                     'pyvista',
+                    'vtk>=8.0',
                     'matplotlib'
                     ]
 
