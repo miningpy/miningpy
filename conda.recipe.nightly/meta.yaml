@@ -29,6 +29,8 @@ requirements:
     - pyvista
     - vtk >=8.0
     - matplotlib
+  run_constrained:
+    - anaconda ==custom
 
 test:
   imports:
