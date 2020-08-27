@@ -28,10 +28,6 @@ requirements:
     - python
     - matplotlib
 
-test:
-  imports:
-    - miningpy
-
 about:
   home: https://pypi.org/project/miningpy/
   summary: python tools for mining engineering
