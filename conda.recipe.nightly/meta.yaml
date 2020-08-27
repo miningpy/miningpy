@@ -26,7 +26,12 @@ requirements:
     - numpy
     - pandas
     - python
+    - pyvista
     - matplotlib
+
+test:
+  imports:
+    - miningpy
 
 about:
   home: https://pypi.org/project/miningpy/
