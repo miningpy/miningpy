@@ -165,7 +165,7 @@ def plot3D(blockmodel:  pd.DataFrame,
     if show_plot:
         p.show(full_screen=True)
 
-    return p
+    return p  # pv.Plotter
 
 
 def extend_pandas_plot():
