@@ -28,7 +28,7 @@ requirements:
     - python
     - pyvista
     - vtk >=8.0
-    - matplotlib
+    - matplotlib-base
 
 test:
   imports:
