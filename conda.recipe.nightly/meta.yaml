@@ -29,7 +29,6 @@ requirements:
     - pyvista
     - vtk >=8.0
     - matplotlib
-    - anaconda !=2020*|2019*|2018*|5*
 
 test:
   imports:
