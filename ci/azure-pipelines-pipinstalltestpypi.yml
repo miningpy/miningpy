@@ -1,0 +1,48 @@
+# Azure devops pipeline to test installing MiningPy from the test release to TestPyPi
+
+
+trigger: none
+
+schedules:
+- cron: "0 20 * * *"
+  displayName: Daily build
+  branches:
+    include:
+    - master
+- cron: "0 18 * * 0"
+  displayName: Weekly Sunday build
+  branches:
+    include:
+    - master
+  always: true
+
+jobs:
+  - job: WindowsInstallMiningPy_TestPyPi
+    pool:
+      vmImage: 'VS2017-Win2016'
+    strategy:
+      matrix:
+        Python36:
+          python.version: '3.6'
+        Python37:
+          python.version: '3.7'
+        Python38:
+          python.version: '3.8'
+
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '$(python.version)'
+        addToPath: true
+      displayName: 'Use Python $(python.version)'
+
+    - script: |
+        pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ miningpy 
+      displayName: Install Nightly MiningPy
+
+    - task: PythonScript@0
+      inputs:
+        scriptSource: inline
+        failOnStderr: true
+        script: |
+          import miningpy
