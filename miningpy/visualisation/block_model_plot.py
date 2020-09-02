@@ -4,6 +4,7 @@ import pandas as pd
 from pandas.core.base import PandasObject
 import numpy as np
 from typing import Union, Tuple
+import vtk
 
 
 def plot3D(blockmodel:  pd.DataFrame,
@@ -15,6 +16,7 @@ def plot3D(blockmodel:  pd.DataFrame,
            min_max:     Tuple[Union[int, float], Union[int, float]] = None,
            show_edges:  bool = True,
            show_grid:   bool = True,
+           shadows:     bool = True,
            show_plot:   bool = True) -> pv.Plotter:
     """
     create activate 3D vtk plot of block model that is fully interactive
@@ -31,15 +33,18 @@ def plot3D(blockmodel:  pd.DataFrame,
         x,y,z dimension of regular parent blocks
     rotation: tuple of floats or ints
         rotation of block model grid around x,y,z axis, -180 to 180 degrees
-    widget: {"COG","section"}
+    widget: {"COG","section", "orthogonal-section"}
         add widgets such as slider (cut off grade) or cross-section.
     min_max: tuple of floats or ints
         minimum and maximum to colour by
-        values above/below these values will just be coloured red/blue
+        values above/below these values will just be coloured the max/min colours
     show_edges: bool
         whether to show the edges of blocks or not
     show_grid: bool
         add x,y,z grid to see coordinates on plot
+    shadows: bool
+        whether to model shadows with a light source from the users perspective.
+        if False, it is like the block model has been lit up with lights from all angles.
     show_plot: bool
         whether to open active window or just return pyvista.Plotter object
         to .show() later
@@ -50,8 +55,15 @@ def plot3D(blockmodel:  pd.DataFrame,
     """
 
     # check col data to plot is int or float data - not string or bool
-    if blockmodel[col].dtype != 'int64' and blockmodel[col].dtype != 'float64':
-        raise Exception(f'MiningPy ERROR - column to plot: {col} must be Pandas int64 or float64')
+    data_types = blockmodel.dtypes
+    _dtype = str(data_types[col])
+
+    if _dtype[0:3] != 'int' and \
+       _dtype[0:5] != 'float' and \
+       _dtype != 'object' and \
+       _dtype != 'string' and \
+       _dtype != 'bool':
+        raise Exception(f'MiningPy ERROR - column to plot: {col} must be one of Pandas dtypes: int, float, object, string, boolean.')
 
     # check for duplicate blocks and return warning
     dup_check = list(blockmodel.duplicated(subset=[xyz_cols[0], xyz_cols[1], xyz_cols[2]]).unique())
@@ -70,7 +82,8 @@ def plot3D(blockmodel:  pd.DataFrame,
     # make copy of required columns
     xyz_cols = list(xyz_cols)
     cols = list(xyz_cols)
-    cols.append(col)
+    if col not in xyz_cols:
+        cols.append(col)
     block_model = blockmodel[cols].copy()
 
     # Create the spatial reference
@@ -117,7 +130,24 @@ def plot3D(blockmodel:  pd.DataFrame,
     block_model['idx'] = cell_coords['idx']
     block_model.sort_values(by=['idx'], inplace=True)
 
-    grid.cell_arrays[col] = block_model[col].values  # add the data values to visualise
+    block_model = block_model.reset_index()
+
+    # inject data into VTK cells
+    # handle string columns
+    # (anything that isnt an int or float becomes a string)
+
+    # non-int / float column
+    if _dtype[0:3] != 'int' and \
+       _dtype[0:5] != 'float':
+        vtk_array = vtk.vtkStringArray()
+        for idx in block_model[col].values:
+            vtk_array.InsertNextValue(str(idx))
+        vtk_array.SetName(str(col))
+
+        grid.GetCellData().AddArray(vtk_array)
+
+    else:  # int or float column
+        grid.cell_arrays[col] = block_model[col].values  # add the data values to visualise
 
     # set theme
     pv.set_plot_theme("ParaView")  # just changes colour scheme
@@ -129,12 +159,13 @@ def plot3D(blockmodel:  pd.DataFrame,
 
     # add mesh to plot
     if widget is None:
-        p.add_mesh(grid,
+        p.add_mesh(mesh=grid,
                    style='surface',
                    show_edges=show_edges,
                    scalars=col,
                    scalar_bar_args=sargs,
                    cmap='bwr',
+                   lighting=shadows,
                    clim=min_max)
 
     if widget == "section":
@@ -144,6 +175,7 @@ def plot3D(blockmodel:  pd.DataFrame,
                               scalars=col,
                               scalar_bar_args=sargs,
                               cmap='bwr',
+                              lighting=shadows,
                               clim=min_max)
 
     if widget == "COG":
@@ -155,8 +187,20 @@ def plot3D(blockmodel:  pd.DataFrame,
                              scalar_bar_args=sargs,
                              cmap='bwr',
                              clim=min_max,
+                             lighting=shadows,
                              pointa=(0.25, 0.92),
                              pointb=(0.75, 0.92))
+
+    if widget == "orthogonal-section":
+        p.add_mesh_slice_orthogonal(mesh=grid,
+                                    style='surface',
+                                    scalars=col,
+                                    show_edges=show_edges,
+                                    scalar_bar_args=sargs,
+                                    cmap='bwr',
+                                    lighting=shadows,
+                                    clim=min_max)
+
     if show_grid:
         p.show_grid()
 
@@ -165,7 +209,8 @@ def plot3D(blockmodel:  pd.DataFrame,
     if show_plot:
         p.show(full_screen=True)
 
-    return p  # pv.Plotter
+    if not show_plot:
+        return p  # pv.Plotter
 
 
 def extend_pandas_plot():
