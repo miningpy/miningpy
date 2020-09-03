@@ -410,20 +410,6 @@ def add_slider(dtype, plot, mesh, style, show_edges, scalars, scalar_bar_args,
     return actor
 
 
-
-    # plot.add_mesh_threshold(mesh=grid,
-    #                         style='surface',
-    #                         title='Cut-Off Grade Slider',
-    #                         show_edges=show_edges,
-    #                         scalars=col,
-    #                         scalar_bar_args=sargs,
-    #                         cmap=legend_colour,
-    #                         clim=(_min, _max),
-    #                         lighting=shadows,
-    #                         pointa=(0.25, 0.92),
-    #                         pointb=(0.75, 0.92))
-
-
 def extend_pandas_plot():
     """
     Extends pandas' PandasObject (Series,
