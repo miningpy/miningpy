@@ -5,19 +5,21 @@ from pandas.core.base import PandasObject
 import numpy as np
 from typing import Union, Tuple
 import vtk
+import secrets
 
 
-def plot3D(blockmodel:  pd.DataFrame,
-           xyz_cols:    Tuple[str, str, str] = ('x', 'y', 'z'),
-           col:         str = None,
-           dims:        Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
-           rotation:    Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
-           widget:      str = None,
-           min_max:     Tuple[Union[int, float], Union[int, float]] = None,
-           show_edges:  bool = True,
-           show_grid:   bool = True,
-           shadows:     bool = True,
-           show_plot:   bool = True) -> pv.Plotter:
+def plot3D(blockmodel:      pd.DataFrame,
+           xyz_cols:        Tuple[str, str, str] = ('x', 'y', 'z'),
+           col:             str = None,
+           dims:            Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+           rotation:        Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
+           widget:          str = None,
+           min_max:         Tuple[Union[int, float], Union[int, float]] = None,
+           legend_colour:   str = 'bwr',
+           show_edges:      bool = True,
+           show_grid:       bool = True,
+           shadows:         bool = True,
+           show_plot:       bool = True) -> pv.Plotter:
     """
     create activate 3D vtk plot of block model that is fully interactive
 
@@ -38,16 +40,18 @@ def plot3D(blockmodel:  pd.DataFrame,
     min_max: tuple of floats or ints
         minimum and maximum to colour by
         values above/below these values will just be coloured the max/min colours
+    legend_colour: str
+        set the legend colour scale. can be any matplotlib cmap colour spectrum.
     show_edges: bool
-        whether to show the edges of blocks or not
+        whether to show the edges of blocks or not.
     show_grid: bool
-        add x,y,z grid to see coordinates on plot
+        add x,y,z grid to see coordinates on plot.
     shadows: bool
         whether to model shadows with a light source from the users perspective.
         if False, it is like the block model has been lit up with lights from all angles.
     show_plot: bool
         whether to open active window or just return pyvista.Plotter object
-        to .show() later
+        to .show() later.
 
     Returns
     -------
@@ -68,6 +72,12 @@ def plot3D(blockmodel:  pd.DataFrame,
     # check for duplicate blocks and return warning
     dup_check = list(blockmodel.duplicated(subset=[xyz_cols[0], xyz_cols[1], xyz_cols[2]]).unique())
     assert True not in dup_check, 'MiningPy ERROR - duplicate blocks in dataframe'
+
+    # check widget choice is allowed
+    _widgets = ['COG', 'section', 'orthogonal-section']
+    if widget is not None:
+        if widget not in _widgets:
+            raise Exception(f'MiningPy ERROR - widget not allowed - can be either "COG", "section" or "orthogonal-section".')
 
     # definitions for simplicity
     x_rotation, y_rotation, z_rotation = rotation[0], rotation[1], rotation[2]
@@ -104,6 +114,7 @@ def plot3D(blockmodel:  pd.DataFrame,
     nz = int((block_model[xyz_cols[2]].max() - block_model[xyz_cols[2]].min()) / grid.spacing[2]) + 1  # number of blocks in z dimension
     grid.dimensions = [nx+1, ny+1, nz+1]  # need extra dimension - 4th dimension is for data (x,y,z,data)
 
+    # rotate grid if rotation exists
     if x_rotation > 0:
         grid.rotate_x(x_rotation)
     if y_rotation > 0:
@@ -111,24 +122,33 @@ def plot3D(blockmodel:  pd.DataFrame,
     if z_rotation > 0:
         grid.rotate_z(z_rotation)
 
+    # create temporary column for
+    # also check if random column name exists as column
+    # and if so create a different name
+    _temp_idx = secrets.token_hex(nbytes=16)  # create random string
+
+    # check if string is a column in model and create a new string
+    while _temp_idx in block_model.columns:
+        _temp_idx = secrets.token_hex(nbytes=16)  # update string
+
     # only keep blocks actually in block model dataframe
     centers = np.array(grid.cell_centers().points)
     cell_coords = pd.DataFrame(data=centers)
     cell_coords.columns = xyz_cols
-    cell_coords['idx'] = cell_coords.index
+    cell_coords[_temp_idx] = cell_coords.index
     mask = pd.merge(cell_coords, block_model, on=xyz_cols, how='inner')
 
-    grid = grid.extract_cells(mask['idx'].values)
+    grid = grid.extract_cells(mask[_temp_idx].values)
 
     centers = np.array(grid.cell_centers().points)
     cell_coords = pd.DataFrame(data=centers)
     cell_coords.columns = xyz_cols
-    cell_coords['idx'] = cell_coords.index
+    cell_coords[_temp_idx] = cell_coords.index
 
     cell_coords.set_index(xyz_cols, inplace=True)
     block_model.set_index(xyz_cols, inplace=True)
-    block_model['idx'] = cell_coords['idx']
-    block_model.sort_values(by=['idx'], inplace=True)
+    block_model[_temp_idx] = cell_coords[_temp_idx]
+    block_model.sort_values(by=[_temp_idx], inplace=True)
 
     block_model = block_model.reset_index()
 
@@ -158,48 +178,67 @@ def plot3D(blockmodel:  pd.DataFrame,
     sargs = dict(interactive=True)
 
     # add mesh to plot
+    # no widget
     if widget is None:
         p.add_mesh(mesh=grid,
                    style='surface',
                    show_edges=show_edges,
                    scalars=col,
                    scalar_bar_args=sargs,
-                   cmap='bwr',
+                   cmap=legend_colour,
                    lighting=shadows,
                    clim=min_max)
 
+    # section widget
     if widget == "section":
         p.add_mesh_clip_plane(mesh=grid,
                               style='surface',
                               show_edges=show_edges,
                               scalars=col,
                               scalar_bar_args=sargs,
-                              cmap='bwr',
+                              cmap=legend_colour,
                               lighting=shadows,
                               clim=min_max)
 
-    if widget == "COG":
-        p.add_mesh_threshold(mesh=grid,
-                             style='surface',
-                             title='Cut-Off Grade Slider',
-                             show_edges=show_edges,
-                             scalars=col,
-                             scalar_bar_args=sargs,
-                             cmap='bwr',
-                             clim=min_max,
-                             lighting=shadows,
-                             pointa=(0.25, 0.92),
-                             pointb=(0.75, 0.92))
-
+    # tri-section widget
     if widget == "orthogonal-section":
         p.add_mesh_slice_orthogonal(mesh=grid,
                                     style='surface',
                                     scalars=col,
                                     show_edges=show_edges,
                                     scalar_bar_args=sargs,
-                                    cmap='bwr',
+                                    cmap=legend_colour,
                                     lighting=shadows,
                                     clim=min_max)
+
+    # COG widget
+    if widget == "COG":
+        if min_max is None:
+            _min = block_model[col].min()
+            _max = block_model[col].max()
+            p.add_mesh_threshold(mesh=grid,
+                                 style='surface',
+                                 title='Cut-Off Grade Slider',
+                                 show_edges=show_edges,
+                                 scalars=col,
+                                 scalar_bar_args=sargs,
+                                 cmap=legend_colour,
+                                 clim=(_min, _max),
+                                 lighting=shadows,
+                                 pointa=(0.25, 0.92),
+                                 pointb=(0.75, 0.92))
+        else:
+            p.add_mesh_threshold(mesh=grid,
+                                 style='surface',
+                                 title='Cut-Off Grade Slider',
+                                 show_edges=show_edges,
+                                 scalars=col,
+                                 scalar_bar_args=sargs,
+                                 cmap=legend_colour,
+                                 clim=min_max,
+                                 lighting=shadows,
+                                 pointa=(0.25, 0.92),
+                                 pointb=(0.75, 0.92))
 
     if show_grid:
         p.show_grid()

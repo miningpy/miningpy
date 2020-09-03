@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import miningpy
 import pyvista as pv
 import matplotlib
@@ -55,8 +56,24 @@ test2 = blockModel['bool'].values
 # p.show_axes()
 # p.show(full_screen=True)
 
-blockModel.plot3D(col='value',
-                  dims=(1, 1, 1),
-                  show_edges=False,
-                  shadows=False,
-                  widget="section")
+
+def callback(value, widget):
+    _rounded_value = int(round(float(value), 0))
+    print(_rounded_value)
+    widget.GetRepresentation().SetValue(_rounded_value)
+
+
+plot = blockModel.plot3D(col='period',
+                         dims=(1, 1, 1),
+                         show_plot=False)
+
+range = (blockModel['period'].min(), blockModel['period'].max())
+
+plot.add_slider_widget(callback=callback,
+                       rng=range,
+                       title='int-test',
+                       value=range[0],
+                       event_type='always',
+                       pass_widget=True)
+
+plot.show(full_screen=True)
