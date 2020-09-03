@@ -56,6 +56,13 @@ test2 = blockModel['bool'].values
 # p.show_axes()
 # p.show(full_screen=True)
 
+plot = blockModel.plot3D(col='period',
+                         dims=(1, 1, 1),
+                         show_plot=True,
+                         widget='slider')
+
+
+
 
 def callback(value, widget):
     _rounded_value = int(round(float(value), 0))
@@ -76,4 +83,4 @@ plot.add_slider_widget(callback=callback,
                        event_type='always',
                        pass_widget=True)
 
-plot.show(full_screen=True)
+# plot.show(full_screen=True)
