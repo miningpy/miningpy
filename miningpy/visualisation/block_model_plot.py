@@ -247,7 +247,12 @@ def plot3D(blockmodel:      pd.DataFrame,
     if show_grid:
         plot.show_grid()
 
-    plot.show_axes()
+    plot.show_axes()  # add xyz arrows to plot
+
+    # add quick keys to plot for people
+    hotkeys = 'q - quit   v - reset view'
+    plot.add_text(text=hotkeys,
+                  font_size=6)
 
     if show_plot:
         plot.show(full_screen=True)
@@ -363,29 +368,34 @@ def add_slider(dtype, plot, mesh, style, show_edges, scalars, scalar_bar_args,
     threshold_mesh = pv.wrap(alg.GetOutput())
     plot.threshold_meshes.append(threshold_mesh)
 
-    def callback(value, widget):
+    def callback_float(value, widget):
+        alg.ThresholdByUpper(value)
+        alg.Update()
+        threshold_mesh.shallow_copy(alg.GetOutput())
 
+    def callback_int(value, widget):
+        _rounded_value = int(round(float(value), 0))
+        widget.GetRepresentation().SetValue(_rounded_value)
+
+        alg.ThresholdByUpper(_rounded_value)
+        alg.Update()
+        threshold_mesh.shallow_copy(alg.GetOutput())
+
+    if dtype[0:3] == 'int' or dtype[0:5] == 'float':
         if dtype[0:3] == 'int':
-            _rounded_value = int(round(float(value), 0))
-            widget.GetRepresentation().SetValue(_rounded_value)
+            callback = callback_int
+        if dtype[0:5] == 'float':
+            callback = callback_float
 
-            alg.ThresholdByUpper(_rounded_value)
-            alg.Update()
-            threshold_mesh.shallow_copy(alg.GetOutput())
-        else:
-            alg.ThresholdByUpper(value)
-            alg.Update()
-            threshold_mesh.shallow_copy(alg.GetOutput())
-
-    plot.add_slider_widget(callback=callback,
-                           rng=clim,
-                           title=f'{scalars} slider',
-                           color=None,
-                           pointa=(0.25, 0.92),
-                           pointb=(0.75, 0.92),
-                           value=clim[0],
-                           event_type='always',
-                           pass_widget=True)
+        plot.add_slider_widget(callback=callback,
+                               rng=clim,
+                               title=f'{scalars} slider',
+                               color=None,
+                               pointa=(0.25, 0.92),
+                               pointb=(0.75, 0.92),
+                               value=clim[0],
+                               event_type='always',
+                               pass_widget=True)
 
     actor = plot.add_mesh(mesh=threshold_mesh,
                           scalars=scalars,
