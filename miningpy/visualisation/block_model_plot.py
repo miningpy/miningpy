@@ -191,11 +191,13 @@ def plot3D(blockmodel:      pd.DataFrame,
                      title_font_size=26,
                      label_font_size=20,
                      fmt="%.2f")
+
     elif _dtype[0:3] == 'int':
         sargs = dict(interactive=True,
                      title_font_size=26,
                      label_font_size=20,
                      fmt="%.0f")
+
     else:
         sargs = dict(interactive=True,
                      title_font_size=26,
