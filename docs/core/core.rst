@@ -72,4 +72,4 @@ index_3Dto1D
 index_1Dto3D
 ------------
 
-.. autofunction:: index_3Dto1D
+.. autofunction:: index_1Dto3D

@@ -3,7 +3,7 @@
 Maptek Vulcan Integration
 =========================
 
-This page describes the core functions in MiningPy
+This page describes the functions built into MiningPy for integration with Maptek Vulcan
 
 .. currentmodule:: miningpy.vulcan
 
