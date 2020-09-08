@@ -36,7 +36,7 @@ def plot3D(blockmodel:      pd.DataFrame,
         x,y,z dimension of regular parent blocks
     rotation: tuple of floats or ints
         rotation of block model grid around x,y,z axis, -180 to 180 degrees
-    widget: {"slider","section", "orthogonal-section"}
+    widget: {"slider","section"}
         add widgets such as slider (cut off grade) or cross-section.
     min_max: tuple of floats or ints
         minimum and maximum to colour by
@@ -77,8 +77,7 @@ def plot3D(blockmodel:      pd.DataFrame,
     # check widget choice is allowed
     _widgets = ['slider',
                 'COG',
-                'section',
-                'orthogonal-section']
+                'section']
     for orientation in ['+x', '-x', '+y', '-y', '+z', '-z']:
         for section_type in ['free', 'box']:
             _widgets.append(f'section {orientation} {section_type}')
@@ -231,17 +230,6 @@ def plot3D(blockmodel:      pd.DataFrame,
             else:
                 add_section_string(widget=widget,
                                    plot=plot,
-                                   mesh=grid,
-                                   style='surface',
-                                   show_edges=show_edges,
-                                   scalars=col,
-                                   scalar_bar_args=sargs,
-                                   cmap=legend_colour,
-                                   lighting=shadows,
-                                   clim=min_max)
-
-        if widget == "orthogonal-section":
-            add_orthogonal_section(plot=plot,
                                    mesh=grid,
                                    style='surface',
                                    show_edges=show_edges,
@@ -440,19 +428,6 @@ def add_section_string(widget, plot, mesh, style, show_edges, scalars, scalar_ba
                           clim=clim)
 
     return actor
-
-
-def add_orthogonal_section(plot, mesh, style, show_edges, scalars, scalar_bar_args,
-                           cmap, lighting, clim):
-
-    plot.add_mesh_slice_orthogonal(mesh=mesh,
-                                   style=style,
-                                   scalars=scalars,
-                                   show_edges=show_edges,
-                                   scalar_bar_args=scalar_bar_args,
-                                   cmap=cmap,
-                                   lighting=lighting,
-                                   clim=clim)
 
 
 def add_slider_num(dtype, plot, mesh, style, show_edges, scalars, scalar_bar_args,
