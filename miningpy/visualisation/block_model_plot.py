@@ -43,7 +43,9 @@ def plot3D(blockmodel:      pd.DataFrame,
         values above/below these values will just be coloured the max/min colours
     legend_colour: str, default 'bwr'
         set the legend colour scale. can be any matplotlib cmap colour spectrum.
+
         see: https://matplotlib.org/3.1.1/gallery/color/colormap_reference.html
+
         see: https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html
     show_edges: bool, default True
         whether to show the edges of blocks or not.
