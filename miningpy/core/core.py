@@ -35,9 +35,9 @@ def ijk(blockmodel:     pd.DataFrame,
     ----------
     blockmodel: pd.DataFrame
         pandas dataframe of block model
-    method: str
+    method: str, default 'ijk'
         can be used to only calculate i, or j, or k
-    indexing: int
+    indexing: int, default 0
         controls whether origin block has coordinates 0,0,0 or 1,1,1
     xyz_cols: tuple of strings
         names of x,y,z columns in model
@@ -47,15 +47,15 @@ def ijk(blockmodel:     pd.DataFrame,
         x,y,z dimension of regular parent blocks
         can either be a number or the columns names of the x,y,z
         columns in the dataframe
-    rotation: tuple of floats or ints
+    rotation: tuple of floats or ints, default (0,0,0)
         rotation of block model grid around x,y,z axis, -180 to 180 degrees
-    ijk_cols: tuple of strings
+    ijk_cols: tuple of strings, default ('i', 'j', 'k')
         name of the i,j,k columns added to the model
-    print_warnings: bool
+    print_warnings: bool, default True
         if True then will check if blocks are on a regular grid
         before the IJK calculation and print a warning to the user if
         the blocks are not regular (i.e. could get funky IJK values).
-    inplace: bool
+    inplace: bool, default False
         whether to do calculation inplace on pandas.DataFrame
 
     Returns
@@ -229,11 +229,11 @@ def xyz(blockmodel:     pd.DataFrame,
     ----------
     blockmodel: pd.DataFrame
         pandas dataframe of block model
-    method: str
+    method: str, default 'xyz'
         can be used to only calculate i, or j, or k
-    indexing: int
+    indexing: int, default 0
         controls whether origin block has coordinates 0,0,0 or 1,1,1
-    ijk_cols: tuple of strings
+    ijk_cols: tuple of strings, default ('i', 'j', 'k')
         name of the i,j,k columns added to the model
     origin: tuple of floats or ints
         x,y,z origin of model - this is the corner of the bottom block (not the centroid)
@@ -241,11 +241,11 @@ def xyz(blockmodel:     pd.DataFrame,
         x,y,z dimension of regular parent blocks
         can either be a number or the columns names of the x,y,z
         columns in the dataframe
-    rotation: tuple of floats or ints
+    rotation: tuple of floats or ints, default (0,0,0)
         rotation of block model grid around x,y,z axis, -180 to 180 degrees
-    xyz_cols: tuple of strings
+    xyz_cols: tuple of strings, default ('x', 'y', 'z')
         names of x,y,z columns in model
-    inplace: bool
+    inplace: bool, default False
         whether to do calculation inplace on pandas.DataFrame
 
     Returns
@@ -335,15 +335,15 @@ def rotate_grid(blockmodel:         pd.DataFrame,
     ----------
     blockmodel: pd.DataFrame
         pandas dataframe of block model
-    xyz_cols: tuple of strings
+    xyz_cols: tuple of strings, default ('x', 'y', 'z')
         names of x,y,z columns in model
     origin: tuple of floats or ints
         x,y,z origin of model - this is the corner of the bottom block (not the centroid)
-    rotation: tuple of floats or ints
+    rotation: tuple of floats or ints, default (0,0,0)
         rotation of block model grid around x,y,z axis, -180 to 180 degrees
-    return_full_model: bool
+    return_full_model: bool, default True
         whether to return the full block model or just a dict of the rotated x,y,z coordinates
-    inplace: bool
+    inplace: bool, default False
         whether to do calculation inplace on pandas.DataFrame
 
     Returns
@@ -431,7 +431,7 @@ def rotate_grid(blockmodel:         pd.DataFrame,
 def group_weighted_average(blockmodel:   pd.DataFrame,
                            avg_cols:     Union[str, List[str]],
                            weight_col:   str,
-                           group_cols:    Union[str, List[str]]) -> pd.DataFrame:
+                           group_cols:   Union[str, List[str]]) -> pd.DataFrame:
     """
     weighted average of block model attribute(s)
 
@@ -511,7 +511,7 @@ def nblocks_xyz(blockmodel: pd.DataFrame,
         columns in the dataframe
     origin: tuple of floats or ints
         x,y,z origin of model - this is the corner of the bottom block (not the centroid)
-    rotation: tuple of floats or ints
+    rotation: tuple of floats or ints, default (0,0,0)
         rotation of block model grid around x,y,z axis, -180 to 180 degrees
 
     Returns
@@ -567,7 +567,7 @@ def vulcan_csv(blockmodel: pd.DataFrame,
         x,y,z dimension of regular parent blocks
         can either be a number or the columns names of the x,y,z
         columns in the dataframe
-    inplace: bool
+    inplace: bool, default False
         whether to do calculation inplace (i.e. add Vulcan headers inplace) or return pandas.DataFrame with Vulcan headers
 
     Returns
@@ -671,11 +671,11 @@ def vulcan_bdf(blockmodel: pd.DataFrame,
         x,y,z dimension of regular parent blocks
         can either be a number or the columns names of the x,y,z
         columns in the dataframe
-    start_offset: tuple of floats or ints
+    start_offset: tuple of floats or ints, default (0.0, 0.0, 0.0)
         minimum offset along the x,y,z axes
     end_offset: tuple of floats or ints
         maximum offset along the x,y,z axes
-    format: str
+    format: {'C', 'T'}, default 'T'
         block model file format (classic = C, extended = T)
 
     Returns
@@ -889,7 +889,7 @@ def block_dims(blockmodel:   pd.DataFrame,
         names of x,y,z columns in model
     origin: tuple of floats or ints
         x,y,z origin of model - this is the corner of the bottom block (not the centroid)
-    rotation: tuple of floats or ints
+    rotation: tuple of floats or ints, default (0,0,0)
         rotation of block model grid around x,y,z axis, -180 to 180 degrees
 
     Returns
@@ -1002,9 +1002,9 @@ def check_regular(blockmodel: pd.DataFrame,
         x,y,z dimension of regular parent blocks
         can either be a number or the columns names of the x,y,z
         columns in the dataframe
-    rotation: tuple of floats or ints
+    rotation: tuple of floats or ints, default (0,0,0)
         rotation of block model grid around x,y,z axis, -180 to 180 degrees
-    tolerance: float or int
+    tolerance: float or int, default 0.00001
         the difference of a blocks centroid from the point on a grid it should be located
         generally in the range of 0.1 to 0.000001
 
@@ -1093,9 +1093,9 @@ def check_internal_blocks_missing(blockmodel: pd.DataFrame,
         x,y,z dimension of regular parent blocks
         can either be a number or the columns names of the x,y,z
         columns in the dataframe
-    rotation: tuple of floats or ints
+    rotation: tuple of floats or ints, default (0,0,0)
         rotation of block model grid around x,y,z axis, -180 to 180 degrees
-    origin: tuple of floats or ints
+    origin: tuple of floats or ints, default (0,0,0)
         ONLY NEEDED IF MODEL IS ROTATED
         x,y,z origin of model - this is the corner of the bottom block (not the centroid)
 
@@ -1172,7 +1172,7 @@ def index_3Dto1D(blockmodel:    pd.DataFrame,
     ----------
     blockmodel: pd.DataFrame
         pandas dataframe of block model
-    indexing: int
+    indexing: int, default 0
         controls whether origin block has coordinates 0,0,0 or 1,1,1
     xyz_cols: tuple of strings
         names of x,y,z columns in model
@@ -1182,14 +1182,14 @@ def index_3Dto1D(blockmodel:    pd.DataFrame,
         x,y,z dimension of regular parent blocks
         can either be a number or the columns names of the x,y,z
         columns in the dataframe
-    rotation: tuple of floats or ints
+    rotation: tuple of floats or ints, default (0,0,0)
         rotation of block model grid around x,y,z axis, -180 to 180 degrees
     nblocks_xyz: tuple of ints or None
         number of blocks along the x,y,z axis.
         If the model is rotated, it is unrotated and then the number
         of blocks in the x,y,z axis is calculated.
         If "None" (default value) then the nx,ny,nz is automatically estimated
-    idxcol: str
+    idxcol: str, default 'ijk'
         name of the 1D index column added to the model
     inplace: bool
         whether to do calculation inplace on pandas.DataFrame
@@ -1274,24 +1274,24 @@ def index_1Dto3D(blockmodel:    pd.DataFrame,
     ----------
     blockmodel: pd.DataFrame
         pandas dataframe of block model
-    indexing: int
+    indexing: int, default 0
         controls whether origin block has coordinates 0,0,0 or 1,1,1
-    xyz_cols: tuple of strings
-        names of x,y,z columns in model
+    idxcol: str, default 'ijk'
+        name of the 1D index column added to the model
     origin: tuple of floats or ints
         x,y,z origin of model - this is the corner of the bottom block (not the centroid)
     dims: tuple of floats, ints or str
         x,y,z dimension of regular parent blocks
         can either be a number or the columns names of the x,y,z
         columns in the dataframe
-    rotation: tuple of floats or ints
+    rotation: tuple of floats or ints, default (0,0,0)
         rotation of block model grid around x,y,z axis, -180 to 180 degrees
     nblocks_xyz: tuple of ints or None
         number of blocks along the x,y,z axis.
         If the model is rotated, it is unrotated and then the number
         of blocks in the x,y,z axis is calculated.
-    idxcol: str
-        name of the 1D index column added to the model
+    xyz_cols: tuple of strings, default ('x', 'y', 'z')
+        names of x,y,z columns in model
     inplace: bool
         whether to do calculation inplace on pandas.DataFrame
 
