@@ -1,5 +1,6 @@
 # import libraries
 import pyvista as pv
+from pyvista.utilities import generate_plane, get_array
 import pandas as pd
 from pandas.core.base import PandasObject
 import numpy as np
@@ -35,7 +36,7 @@ def plot3D(blockmodel:      pd.DataFrame,
         x,y,z dimension of regular parent blocks
     rotation: tuple of floats or ints
         rotation of block model grid around x,y,z axis, -180 to 180 degrees
-    widget: {"COG","section", "orthogonal-section"}
+    widget: {"slider","section"}
         add widgets such as slider (cut off grade) or cross-section.
     min_max: tuple of floats or ints
         minimum and maximum to colour by
@@ -74,10 +75,19 @@ def plot3D(blockmodel:      pd.DataFrame,
     assert True not in dup_check, 'MiningPy ERROR - duplicate blocks in dataframe'
 
     # check widget choice is allowed
-    _widgets = ['COG', 'section', 'orthogonal-section']
+    _widgets = ['slider',
+                'COG',
+                'section']
+    for orientation in ['+x', '-x', '+y', '-y', '+z', '-z']:
+        for section_type in ['free', 'box']:
+            _widgets.append(f'section {orientation} {section_type}')
+            _widgets.append(f'section {section_type} {orientation}')
+            _widgets.append(f'section {orientation}')
+            _widgets.append(f'section {section_type}')
+
     if widget is not None:
         if widget not in _widgets:
-            raise Exception(f'MiningPy ERROR - widget not allowed - can be either "COG", "section" or "orthogonal-section".')
+            raise Exception(f'MiningPy ERROR - widget naming not parsable.')
 
     # definitions for simplicity
     x_rotation, y_rotation, z_rotation = rotation[0], rotation[1], rotation[2]
@@ -172,84 +182,413 @@ def plot3D(blockmodel:      pd.DataFrame,
     # set theme
     pv.set_plot_theme("ParaView")  # just changes colour scheme
 
-    p = pv.Plotter(notebook=False, title="Block Model 3D Plot")
+    plot = pv.Plotter(notebook=False, title="Block Model 3D Plot")
 
     # legend settings
-    sargs = dict(interactive=True)
+    if _dtype[0:5] == 'float':
+        sargs = dict(interactive=True,
+                     title_font_size=26,
+                     label_font_size=20,
+                     fmt="%.2f")
+
+    elif _dtype[0:3] == 'int':
+        sargs = dict(interactive=True,
+                     title_font_size=26,
+                     label_font_size=20,
+                     fmt="%.0f")
+
+    else:
+        sargs = dict(interactive=True,
+                     title_font_size=26,
+                     label_font_size=5)
 
     # add mesh to plot
-    # no widget
     if widget is None:
-        p.add_mesh(mesh=grid,
-                   style='surface',
-                   show_edges=show_edges,
-                   scalars=col,
-                   scalar_bar_args=sargs,
-                   cmap=legend_colour,
-                   lighting=shadows,
-                   clim=min_max)
+        plot.add_mesh(mesh=grid,
+                      style='surface',
+                      show_edges=show_edges,
+                      scalars=col,
+                      scalar_bar_args=sargs,
+                      cmap=legend_colour,
+                      lighting=shadows,
+                      clim=min_max)
 
-    # section widget
-    if widget == "section":
-        p.add_mesh_clip_plane(mesh=grid,
-                              style='surface',
-                              show_edges=show_edges,
-                              scalars=col,
-                              scalar_bar_args=sargs,
-                              cmap=legend_colour,
-                              lighting=shadows,
-                              clim=min_max)
+    # call appropriate function for widget
+    if widget is not None:
+        if widget[0:7] == "section":
+            if _dtype[0:3] == 'int' or _dtype[0:5] == 'float':
+                add_section_num(widget=widget,
+                                plot=plot,
+                                mesh=grid,
+                                style='surface',
+                                show_edges=show_edges,
+                                scalars=col,
+                                scalar_bar_args=sargs,
+                                cmap=legend_colour,
+                                lighting=shadows,
+                                clim=min_max)
+            else:
+                add_section_string(widget=widget,
+                                   plot=plot,
+                                   mesh=grid,
+                                   style='surface',
+                                   show_edges=show_edges,
+                                   scalars=col,
+                                   scalar_bar_args=sargs,
+                                   cmap=legend_colour,
+                                   lighting=shadows,
+                                   clim=min_max)
 
-    # tri-section widget
-    if widget == "orthogonal-section":
-        p.add_mesh_slice_orthogonal(mesh=grid,
-                                    style='surface',
-                                    scalars=col,
-                                    show_edges=show_edges,
-                                    scalar_bar_args=sargs,
-                                    cmap=legend_colour,
-                                    lighting=shadows,
-                                    clim=min_max)
-
-    # COG widget
-    if widget == "COG":
-        if min_max is None:
-            _min = block_model[col].min()
-            _max = block_model[col].max()
-            p.add_mesh_threshold(mesh=grid,
-                                 style='surface',
-                                 title='Cut-Off Grade Slider',
-                                 show_edges=show_edges,
-                                 scalars=col,
-                                 scalar_bar_args=sargs,
-                                 cmap=legend_colour,
-                                 clim=(_min, _max),
-                                 lighting=shadows,
-                                 pointa=(0.25, 0.92),
-                                 pointb=(0.75, 0.92))
-        else:
-            p.add_mesh_threshold(mesh=grid,
-                                 style='surface',
-                                 title='Cut-Off Grade Slider',
-                                 show_edges=show_edges,
-                                 scalars=col,
-                                 scalar_bar_args=sargs,
-                                 cmap=legend_colour,
-                                 clim=min_max,
-                                 lighting=shadows,
-                                 pointa=(0.25, 0.92),
-                                 pointb=(0.75, 0.92))
+        if widget == "slider" or widget == "COG":
+            if _dtype[0:3] == 'int' or _dtype[0:5] == 'float':
+                if min_max is None:
+                    _min = block_model[col].min()
+                    _max = block_model[col].max()
+                else:
+                    _min = min_max[0]
+                    _max = min_max[1]
+                add_slider_num(dtype=_dtype,
+                               plot=plot,
+                               mesh=grid,
+                               style='surface',
+                               show_edges=show_edges,
+                               scalars=col,
+                               scalar_bar_args=sargs,
+                               cmap=legend_colour,
+                               lighting=shadows,
+                               clim=(_min, _max))
+            else:
+                add_slider_string(plot=plot,
+                                  mesh=grid,
+                                  style='surface',
+                                  show_edges=show_edges,
+                                  scalars=col,
+                                  scalar_bar_args=sargs,
+                                  cmap=legend_colour,
+                                  lighting=shadows)
 
     if show_grid:
-        p.show_grid()
+        plot.show_grid()
 
-    p.show_axes()
+    plot.show_axes()  # add xyz arrows to plot
+
+    # add quick keys to plot for people
+    hotkeys = 'q - quit   v - reset view'
+    plot.add_text(text=hotkeys,
+                  font_size=6)
 
     if show_plot:
-        p.show(full_screen=True)
+        plot.show(full_screen=True)
 
     if not show_plot:
-        return p  # pv.Plotter
+        return plot  # pv.Plotter
+
+
+def add_section_num(widget, plot, mesh, style, show_edges, scalars, scalar_bar_args,
+                    cmap, lighting, clim):
+
+    # parse widget parameters from user input
+    params = widget.split(' ')
+    normal = (-1, 0, 0)  # default
+    implicit = True  # default
+
+    if 'free' in params: implicit = False
+    if 'box' in params:  implicit = True
+    if '-x' in params:   normal = (-1, 0, 0)
+    if '+x' in params:   normal = (1, 0, 0)
+    if '-y' in params:   normal = (0, -1, 0)
+    if '+y' in params:   normal = (0, 1, 0)
+    if '-z' in params:   normal = (0, 0, -1)
+    if '+z' in params:   normal = (0, 0, 1)
+
+    # add section
+    name = mesh.memory_address
+    rng = mesh.get_data_range(scalars)
+    if clim is None:
+        clim = rng
+    # mesh.set_active_scalars(scalars)
+
+    plot.add_mesh(mesh.outline(), name=name + "outline", opacity=0.0)
+
+    if isinstance(mesh, vtk.vtkPolyData):
+        alg = vtk.vtkClipPolyData()
+    else:
+        alg = vtk.vtkTableBasedClipDataSet()
+    alg.SetInputDataObject(mesh)  # Use the grid as the data we desire to cut
+    # alg.SetValue(0.0)
+
+    if not hasattr(plot, "plane_clipped_meshes"):
+        plot.plane_clipped_meshes = []
+    plane_clipped_mesh = pv.wrap(alg.GetOutput())
+    plot.plane_clipped_meshes.append(plane_clipped_mesh)
+
+    def callback(normal, origin):
+        function = generate_plane(normal, origin)
+        alg.SetClipFunction(function)  # the implicit function
+        alg.Update()  # Perform the Cut
+        plane_clipped_mesh.shallow_copy(alg.GetOutput())
+
+    plane = plot.add_plane_widget(callback=callback, bounds=mesh.bounds,
+                                  factor=1.25, normal=normal,
+                                  color=None, tubing=False,
+                                  assign_to_axis=None,
+                                  origin_translation=True,
+                                  outline_translation=False,
+                                  implicit=implicit, origin=mesh.center)
+
+    actor = plot.add_mesh(plane_clipped_mesh,
+                          style=style,
+                          scalars=scalars,
+                          show_edges=show_edges,
+                          scalar_bar_args=scalar_bar_args,
+                          cmap=cmap,
+                          lighting=lighting,
+                          clim=clim)
+
+    return actor
+
+
+def add_section_string(widget, plot, mesh, style, show_edges, scalars, scalar_bar_args,
+                       cmap, lighting, clim):
+
+    # parse widget parameters from user input
+    params = widget.split(' ')
+    normal = (-1, 0, 0)  # default
+    implicit = True  # default
+
+    if 'free' in params: implicit = False
+    if 'box' in params:  implicit = True
+    if '-x' in params:   normal = (-1, 0, 0)
+    if '+x' in params:   normal = (1, 0, 0)
+    if '-y' in params:   normal = (0, -1, 0)
+    if '+y' in params:   normal = (0, 1, 0)
+    if '-z' in params:   normal = (0, 0, -1)
+    if '+z' in params:   normal = (0, 0, 1)
+
+    # add section
+    name = mesh.memory_address
+
+    plot.add_mesh(mesh.outline(), name=name + "outline", opacity=0.0)
+    plot.add_mesh(mesh=mesh,
+                  style=style,
+                  scalars=scalars,
+                  show_edges=show_edges,
+                  scalar_bar_args=scalar_bar_args,
+                  cmap=cmap,
+                  lighting=lighting,
+                  clim=clim,
+                  opacity=0.0)
+
+    strings = mesh.get_array(scalars)
+    strings_unique = set(strings)
+    strings_unique = sorted(strings_unique)
+    for idx, string in enumerate(strings_unique):
+        strings[strings == string] = idx
+
+    strings = strings.astype(int)
+    mesh.cell_arrays[scalars+'_int'] = strings
+
+    rng = mesh.get_data_range(scalars+'_int')
+    if clim is None:
+        clim = rng
+
+    if isinstance(mesh, vtk.vtkPolyData):
+        alg = vtk.vtkClipPolyData()
+    else:
+        alg = vtk.vtkTableBasedClipDataSet()
+    alg.SetInputDataObject(mesh)  # Use the grid as the data we desire to cut
+    # alg.SetValue(0.0)
+
+    if not hasattr(plot, "plane_clipped_meshes"):
+        plot.plane_clipped_meshes = []
+    plane_clipped_mesh = pv.wrap(alg.GetOutput())
+    plot.plane_clipped_meshes.append(plane_clipped_mesh)
+
+    def callback(normal, origin):
+        function = generate_plane(normal, origin)
+        alg.SetClipFunction(function)  # the implicit function
+        alg.Update()  # Perform the Cut
+        plane_clipped_mesh.shallow_copy(alg.GetOutput())
+
+    plane = plot.add_plane_widget(callback=callback, bounds=mesh.bounds,
+                                  factor=1.25, normal=normal,
+                                  color=None, tubing=False,
+                                  assign_to_axis=None,
+                                  origin_translation=True,
+                                  outline_translation=False,
+                                  implicit=implicit, origin=mesh.center)
+
+    actor = plot.add_mesh(plane_clipped_mesh,
+                          style=style,
+                          scalars=scalars+'_int',
+                          show_edges=show_edges,
+                          show_scalar_bar=False,
+                          cmap=cmap,
+                          lighting=lighting,
+                          clim=clim)
+
+    return actor
+
+
+def add_slider_num(dtype, plot, mesh, style, show_edges, scalars, scalar_bar_args,
+                   cmap, lighting, clim):
+
+    name = mesh.memory_address
+
+    if scalars is None:
+        field, scalars = mesh.active_scalars_info
+    arr, field = get_array(mesh, scalars, preference='cell', info=True)
+
+    if arr is None:
+        raise ValueError('No arrays present to threshold.')
+
+    # rng = mesh.get_data_range(scalars)  # get clim
+    # if clim is None:
+    #     clim = rng
+
+    mesh.set_active_scalars(scalars)
+
+    plot.add_mesh(mesh.outline(), name=name + "outline", opacity=0.0)
+
+    alg = vtk.vtkThreshold()
+    alg.SetInputDataObject(mesh)
+    alg.SetInputArrayToProcess(0, 0, 0, field.value, scalars)  # args: (idx, port, connection, field, name)
+    alg.SetUseContinuousCellRange(False)
+
+    if not hasattr(plot, "threshold_meshes"):
+        plot.threshold_meshes = []
+    threshold_mesh = pv.wrap(alg.GetOutput())
+    plot.threshold_meshes.append(threshold_mesh)
+
+    def callback_float(value, widget):
+        alg.ThresholdByUpper(value)
+        alg.Update()
+        threshold_mesh.shallow_copy(alg.GetOutput())
+
+    def callback_int(value, widget):
+        _rounded_value = int(round(float(value), 0))
+        widget.GetRepresentation().SetValue(_rounded_value)
+
+        alg.ThresholdByUpper(_rounded_value)
+        alg.Update()
+        threshold_mesh.shallow_copy(alg.GetOutput())
+
+    if dtype[0:3] == 'int' or dtype[0:5] == 'float':
+        if dtype[0:3] == 'int':
+            callback = callback_int
+        if dtype[0:5] == 'float':
+            callback = callback_float
+
+        plot.add_slider_widget(callback=callback,
+                               rng=clim,
+                               title=f'{scalars} slider',
+                               color=None,
+                               pointa=(0.25, 0.92),
+                               pointb=(0.75, 0.92),
+                               value=clim[0],
+                               event_type='always',
+                               pass_widget=True)
+
+    actor = plot.add_mesh(mesh=threshold_mesh,
+                          scalars=scalars,
+                          reset_camera=False,
+                          show_edges=show_edges,
+                          scalar_bar_args=scalar_bar_args,
+                          cmap=cmap,
+                          lighting=lighting,
+                          style=style,
+                          clim=clim)
+
+    return actor
+
+
+def add_slider_string(plot, mesh, style, show_edges, scalars, scalar_bar_args,
+                      cmap, lighting):
+
+    name = mesh.memory_address
+
+    arr, field = get_array(mesh, scalars, preference='cell', info=True)
+
+    data = set(mesh.cell_arrays[scalars])
+    data = list(sorted(data))
+
+    plot.add_mesh(mesh.outline(), name=name + "outline", opacity=0.0)
+    plot.add_mesh(mesh=mesh,
+                  style=style,
+                  scalars=scalars,
+                  show_edges=show_edges,
+                  scalar_bar_args=scalar_bar_args,
+                  cmap=cmap,
+                  lighting=lighting,
+                  opacity=0.0)
+
+    strings = mesh.get_array(scalars)
+    strings_unique = set(strings)
+    strings_unique = sorted(strings_unique)
+    for idx, string in enumerate(strings_unique):
+        strings[strings == string] = idx
+
+    strings = strings.astype(int)
+    mesh.cell_arrays[scalars+'_int'] = strings
+
+    alg = vtk.vtkThreshold()
+    alg.SetInputDataObject(mesh)
+    alg.SetInputArrayToProcess(0, 0, 0, field.value, scalars+'_int')  # args: (idx, port, connection, field, name)
+    alg.SetUseContinuousCellRange(False)
+
+    if not hasattr(plot, "threshold_meshes"):
+        plot.threshold_meshes = []
+    threshold_mesh = pv.wrap(alg.GetOutput())
+    plot.threshold_meshes.append(threshold_mesh)
+
+    n_states = len(data)
+    if n_states == 0:
+        raise ValueError("The input list of values is empty")
+    delta = (n_states - 1) / float(n_states)
+    # avoid division by zero in case there is only one element
+    delta = 1 if delta == 0 else delta
+
+    def callback(value, widget):
+        _rounded_value = int(round(float(value), 0))
+        widget.GetRepresentation().SetValue(_rounded_value)
+        alg.ThresholdByUpper(_rounded_value)
+        alg.Update()
+        threshold_mesh.shallow_copy(alg.GetOutput())
+
+    slider_widget = plot.add_slider_widget(callback=callback,
+                                           rng=[0, n_states - 1],
+                                           value=0,
+                                           pointa=(0.25, 0.92),
+                                           pointb=(0.75, 0.92),
+                                           color=None,
+                                           event_type='always',
+                                           pass_widget=True)
+
+    slider_rep = slider_widget.GetRepresentation()
+    slider_rep.ShowSliderLabelOff()
+
+    def title_callback(widget, event):
+        value = widget.GetRepresentation().GetValue()
+        idx = int(value / delta)
+        # handle limit index
+        if idx == n_states:
+            idx = n_states - 1
+        slider_rep.SetTitleText(data[idx])
+
+    slider_widget.AddObserver(vtk.vtkCommand.InteractionEvent, title_callback)
+
+    title_callback(slider_widget, None)
+
+    actor = plot.add_mesh(mesh=threshold_mesh,
+                          scalars=scalars,
+                          reset_camera=False,
+                          show_edges=show_edges,
+                          show_scalar_bar=False,
+                          cmap=cmap,
+                          lighting=lighting,
+                          style=style)
+
+    return actor
 
 
 def extend_pandas_plot():
