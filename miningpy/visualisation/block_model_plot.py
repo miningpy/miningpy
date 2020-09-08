@@ -28,29 +28,31 @@ def plot3D(blockmodel:      pd.DataFrame,
     ----------
     blockmodel: pd.DataFrame
         pandas dataframe of block model
-    xyz_cols: tuple of strings
+    xyz_cols: tuple of strings, default ('x', 'y', 'z')
         names of x,y,z columns in model
     col: str
         attribute column to plot (i.e. tonnage, grade, etc)
     dims: tuple of floats or ints
         x,y,z dimension of regular parent blocks
-    rotation: tuple of floats or ints
+    rotation: tuple of floats or ints, default (0, 0, 0)
         rotation of block model grid around x,y,z axis, -180 to 180 degrees
     widget: {"slider","section"}
         add widgets such as slider (cut off grade) or cross-section.
     min_max: tuple of floats or ints
         minimum and maximum to colour by
         values above/below these values will just be coloured the max/min colours
-    legend_colour: str
+    legend_colour: str, default 'bwr'
         set the legend colour scale. can be any matplotlib cmap colour spectrum.
-    show_edges: bool
+        see: https://matplotlib.org/3.1.1/gallery/color/colormap_reference.html
+        see: https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html
+    show_edges: bool, default True
         whether to show the edges of blocks or not.
-    show_grid: bool
+    show_grid: bool, default True
         add x,y,z grid to see coordinates on plot.
-    shadows: bool
+    shadows: bool, default True
         whether to model shadows with a light source from the users perspective.
         if False, it is like the block model has been lit up with lights from all angles.
-    show_plot: bool
+    show_plot: bool, default True
         whether to open active window or just return pyvista.Plotter object
         to .show() later.
 

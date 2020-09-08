@@ -25,15 +25,15 @@ def plot3D_dxf(path:              str = None,
     ----------
     path: str
         path to dxf file to visualise
-    colour: tuple of floats
+    colour: tuple of floats, default (0.666667, 1, 0.498039)
         default solid colouring of the triangulation
-    show_wireframe: bool
+    show_wireframe: bool, default False
         whether to show the edges/lines of a wireframe or not
-    show_grid: bool
+    show_grid: bool, default False
         add x,y,z grid to see coordinates on plot
-    cross_section: bool
+    cross_section: bool, default False
         add widget cross-section to plot
-    show_plot: bool
+    show_plot: bool, default True
         whether to open active window or just return pyvista.Plotter object
         to .show() later
 
@@ -178,7 +178,7 @@ def dxf2vtk(path:      str = None,
         path of input dxf file
     output: str
         path of html file to export
-    colour: tuple of floats
+    colour: tuple of floats, default (0.666667, 1, 0.498039)
         default solid colouring of the triangulation
 
     Returns
@@ -203,7 +203,7 @@ def dxf2vtk(path:      str = None,
 
 def export_dxf_html(path:      str = None,
                     output:    str = None,
-                    data_name:     str = 'DXF',
+                    data_name: str = 'DXF',
                     colour:    Tuple[float] = (0.666667, 1, 0.498039)) -> bool:
     """
     exports dxf file and embeds the data in a
@@ -215,10 +215,10 @@ def export_dxf_html(path:      str = None,
         path of input dxf file
     output: str
         path of .vtp file to export
-    data_name: str
+    data_name: str, default 'DXF'
         base name used for dataset in Paraview Glance
-    colour: tuple of floats
-        default solid colouring of the triangulation
+    colour: tuple of floats, default (0.666667, 1, 0.498039)
+        default solid colouring of the triangulation - RGB ranges 0 to 1
 
     Returns
     -------

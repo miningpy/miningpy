@@ -23,15 +23,16 @@ def blocks2vtk(blockmodel:  pd.DataFrame,
         pandas dataframe of block model
     path: str
         filename for vtk file
-    xyz_cols: tuple of strings
+    xyz_cols: tuple of strings, default ('x', 'y', 'z')
         names of x,y,z columns in model
     dims: tuple of floats or ints
         x,y,z dimension of regular parent blocks
-    rotation: tuple of floats or ints
+    rotation: tuple of floats or ints, default (0, 0, 0)
         rotation of block model grid around x,y,z axis, -180 to 180 degrees
-    cols: list of strings
+    cols: list of str
         columns of attributes to visualise using vtk. If None then exports all columns
-    output_file: whether to output .vtu (vtk unstructured grid file) or
+    output_file: bool, default True
+        whether to output .vtu (vtk unstructured grid file) or
         to just return vtu object to user
 
     Returns
@@ -259,16 +260,16 @@ def blocks2dxf(blockmodel:   pd.DataFrame,
         column to split dxf files by.
         for example, could be the year mined column from minemax
         if None then one dxf is made of every block in blockmodel
-    facetype: {'3DFACE', 'MESH', None}
+    facetype: {'3DFACE', 'MESH', None}, default '3DFACE'
         type of face for the blocks
         3DFACE will create standard dxf faces which are understood by most software
         MESH is a newer type which requires less space but might not work well
         None will create no face (could be useful when we add line drawing functionality in the function)
-    xyz_cols: tuple of strings
+    xyz_cols: tuple of strings, default ('x', 'y', 'z')
         names of x,y,z columns in model
     dims: tuple of floats or ints
         x,y,z dimension of regular parent blocks
-    rotation: tuple of floats or ints
+    rotation: tuple of floats or ints, default (0, 0, 0)
         rotation of block model grid around x,y,z axis, -180 to 180 degrees
 
     Returns

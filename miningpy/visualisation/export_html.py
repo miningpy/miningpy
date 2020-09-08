@@ -32,25 +32,25 @@ def export_html(blockmodel:    pd.DataFrame,
         pandas dataframe of block model
     path: str
         filename for html file
-    xyz_cols: tuple of strings
+    xyz_cols: tuple of strings, default ('x', 'y', 'z')
         names of x,y,z columns in model
     dims: tuple of floats or ints
         x,y,z dimension of regular parent blocks
-    rotation: tuple of floats or ints
+    rotation: tuple of floats or ints, default (0, 0, 0)
         rotation of block model grid around x,y,z axis, -180 to 180 degrees
     cols: list of strings
         columns of attributes to visualise using vtk. If None then exports all columns
-    data_name: str
+    data_name: str, default 'blockModel'
         base name used for dataset in Paraview Glance
         if the split_by column is specified then the unique values in
         the split_by colum are appended to the base name
-    colour: tuple of floats
+    colour: tuple of floats, default (0.666667, 1, 0.498039)
         default solid colouring of blocks
         if a column is chosen to split by then this colouring is not considered.
     split_by: str
         column that is used to split up the block model into components in the Paraview Glance
         app HTML file. The maximum number of unique values in this column is 256.
-    colour_range: tuple of strings
+    colour_range: tuple of two strings, default ('blue', 'red')
         colouring range of values in the split_by column
         if no split_by then colour_range is ignored.
         accepted colours are: 'red', 'blue', 'green', 'white', 'black'
