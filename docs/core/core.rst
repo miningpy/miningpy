@@ -27,6 +27,33 @@ group_weighted_average
 
 .. autofunction:: group_weighted_average
 
+nblocks_xyz
+-----------
+
+.. autofunction:: nblocks_xyz
+
+model_origin
+------------
+
+.. autofunction:: model_origin
+
+block_dims
+----------
+
+.. autofunction:: block_dims
+
+check_regular
+-------------
+
+.. autofunction:: check_regular
+
+check_internal_blocks_missing
+-----------------------------
+
+.. autofunction:: check_internal_blocks_missing
+
+
+
 vulcan_csv
 ----------
 
@@ -37,8 +64,12 @@ vulcan_bdf
 
 .. autofunction:: vulcan_bdf
 
-index_3D_to_1D
+index_3Dto1D
 --------------
 
 .. autofunction:: index_3Dto1D
 
+index_1Dto3D
+------------
+
+.. autofunction:: index_3Dto1D
