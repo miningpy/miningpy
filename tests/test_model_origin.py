@@ -14,10 +14,6 @@ xblocks = [5, 10, 15, 20, 25, 30]
 yblocks = [5, 15, 25, 35, 45]
 zblocks = [5, 10, 15, 20]
 
-nblocks_x1 = 6
-nblocks_y1 = 5
-nblocks_z1 = 4
-
 for x in xblocks:
     for y in yblocks:
         for z in zblocks:
@@ -26,13 +22,11 @@ for x in xblocks:
             testdata1['z'].append(z)
 
 
-def test_nblocks_xyz_1():
+def test_model_origin_1():
     data = pd.DataFrame(testdata1)
-    nx, ny, nz = data.nblocks_xyz(
+    xorigin, yorigin, zorigin = data.model_origin(
         xyz_cols=('x', 'y', 'z'),
-        dims=(5, 10, 5),
-        origin=(2.5, 0.0, 2.5),
-        rotation=(0, 0, 0),
+        dims=(5, 10, 5)
     )
-    assert (nx == nblocks_x1) & (ny == nblocks_y1) & (nz == nblocks_z1)
+    assert (xorigin == 2.5) & (yorigin == 0.0) & (zorigin == 2.5)
 

@@ -860,9 +860,9 @@ def model_origin(blockmodel: pd.DataFrame,
         origin of a block model for each axis (x,y,z)
     """
 
-    xorigin = blockmodel[xyz_cols[0]].min() - dims[0]
-    yorigin = blockmodel[xyz_cols[1]].min() - dims[1]
-    zorigin = blockmodel[xyz_cols[2]].min() - dims[2]
+    xorigin = blockmodel[xyz_cols[0]].min() - (dims[0]/2)
+    yorigin = blockmodel[xyz_cols[1]].min() - (dims[1]/2)
+    zorigin = blockmodel[xyz_cols[2]].min() - (dims[2]/2)
 
     return xorigin, yorigin, zorigin
 
@@ -1329,9 +1329,9 @@ def index_1Dto3D(blockmodel:    pd.DataFrame,
     nz = nblocks_xyz[2]
 
     # back calculate i, j, k values
-    subset['i'] = subset[idxcol] % nx
-    subset['j'] = (subset[idxcol] / nx) % ny
-    subset['k'] = ((subset[idxcol] / nx) / ny) % nz
+    subset['i'] = (subset[idxcol] % nx).astype(int)
+    subset['j'] = ((subset[idxcol] / nx) % ny).astype(int)
+    subset['k'] = (((subset[idxcol] / nx) / ny) % nz).astype(int)
 
     # back calculate x, y, z values
     subset.xyz(indexing=indexing,
