@@ -325,6 +325,7 @@ def rotate_grid(blockmodel:         pd.DataFrame,
                 origin:             Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
                 rotation:           Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
                 return_full_model:  bool = True,
+                derotate:           bool = False,
                 inplace:            bool = False) -> Union[pd.DataFrame, dict]:
     """
     Rotate block model relative to cartesian grid
@@ -343,6 +344,9 @@ def rotate_grid(blockmodel:         pd.DataFrame,
         rotation of block model grid around x,y,z axis, -180 to 180 degrees
     return_full_model: bool, default True
         whether to return the full block model or just a dict of the rotated x,y,z coordinates
+    derotate: bool
+        whether to rotate a model or derotate it back to it's normal orthogonal coordinate system
+        this parameter exists because using the reverse angles in more than one dimension will not derotate a model
     inplace: bool, default False
         whether to do calculation inplace on pandas.DataFrame
 
@@ -406,6 +410,9 @@ def rotate_grid(blockmodel:         pd.DataFrame,
     rotation_matrix[2][0] = -1.0 * y_sin
     rotation_matrix[2][1] = y_cos * x_sin
     rotation_matrix[2][2] = y_cos * x_cos
+
+    if derotate:
+        rotation_matrix = np.transpose(rotation_matrix)
 
     # rotation matrix multiplication
     xrot = (trxx * (rotation_matrix[0][0])) + (tryy * (rotation_matrix[0][1])) + (trzz * (rotation_matrix[0][2]))
@@ -642,6 +649,122 @@ def vulcan_csv(blockmodel: pd.DataFrame,
 
     if not inplace:
         return blockmodel
+
+
+def check_regular_extents(  blockmodel: pd.DataFrame,
+                    end_offset: Tuple[Union[int, float], Union[int, float], Union[int, float]],
+                    dims: Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]],
+                    origin: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+                    original_rotation: Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = (0,0,0),
+                    xyz_cols: Tuple[str, str, str] = None,
+                    start_offset: Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0.0, 0.0, 0.0),
+                    ):
+    """Verify if the model's blocks are physically within the extents specified.
+
+    Parameters
+    ----------
+    blockmodel: pd.DataFrame
+        pandas dataframe of block model
+    end_offset: {required} tuple of ints or floats
+        furthest distance of the unrotated block model edges from the origin in the x, y and z directions.
+    dims: {required} tuple of floats, ints or str
+        x,y,z dimension of regular parent blocks
+        can either be a number or the columns names of the x,y,z
+        columns in the dataframe
+    origin: {optional} tuple of floats or ints
+        x,y,z origin of model - this is the corner of the bottom block (not the centroid)
+    original_rotation: {optional} tuple of ints and floats
+        rotation which has already been applied to the block model
+        the script will de-rotate the bm with these values to orientate it back to the orthonormal xyz axes
+    xyz_cols: {optional} tuple of strings
+        names of x,y,z columns in model
+        defaults to None
+    start_offset: {optional} tuple of ints or floats
+        closest distance of the unrotated block model edges from the origin in the x, y and z directions.
+        defaults to 0,0,0
+
+    Returns
+    -------
+    bool
+        True if test succeeds, False if it doesn't
+    """
+
+    #TODO make this better, or cancel this error checking entirely
+    bm = pd.DataFrame()
+    try:
+        bm = blockmodel[[xyz_cols[0], xyz_cols[1], xyz_cols[2]]]
+    except :
+        try:
+            bm = blockmodel[['centroid_x', 'centroid_y', 'centroid_z']]
+        except:
+            try:
+                bm = blockmodel[['x', 'y', 'z']]
+            except:
+                try:
+                    bm = blockmodel[['east', 'north', 'elev']]
+                except:
+                    try:
+                        bm = blockmodel[['easting', 'northing', 'elevation']]
+                    except:
+                        raise Exception("Could not determine wich columns of the Block Model are the xyz coordinates")
+
+    bm.columns = ['x', 'y', 'z']
+
+    #Checks if the block model is a vulcan formatted block model
+    if bm.at[0, 'x'] == 'Variable descriptions:':
+        bm = bm.iloc[3:, :]
+        bm = bm.astype('float64')
+
+    #TODO make sure this actually derotates a model
+    bm = bm.rotate_grid(origin=origin,
+                        rotation=original_rotation,
+                        derotate=True)
+
+    bm_xmax = bm['x'].max()
+    bm_ymax = bm['y'].max()
+    bm_zmax = bm['z'].max()
+    bm_xmin = bm['x'].min()
+    bm_ymin = bm['y'].min()
+    bm_zmin = bm['z'].min()
+
+    th_xmax = origin[0] + end_offset[0] - dims[0]/2
+    th_ymax = origin[1] + end_offset[1] - dims[1]/2
+    th_zmax = origin[2] + end_offset[2] - dims[2]/2
+    th_xmin = origin[0] + start_offset[0] + dims[0]/2
+    th_ymin = origin[1] + start_offset[1] + dims[1]/2
+    th_zmin = origin[2] + start_offset[2] + dims[2]/2
+
+    out_xmax = abs(bm_xmax - th_xmax)/dims[0] > 0.01
+    out_ymax = abs(bm_ymax - th_ymax)/dims[1] > 0.01
+    out_zmax = abs(bm_zmax - th_zmax)/dims[2] > 0.01
+    out_xmin = abs(bm_xmin - th_xmin)/dims[0] > 0.01
+    out_ymin = abs(bm_ymin - th_ymin)/dims[1] > 0.01
+    out_zmin = abs(bm_zmin - th_zmin)/dims[2] > 0.01
+    blocks_outside = out_xmax or out_ymax or out_zmax or\
+                     out_xmin or out_ymin or out_zmin
+
+    in_xmax = abs(bm_xmax - th_xmax)/dims[0] > 0.01
+    in_ymax = abs(bm_ymax - th_ymax)/dims[1] > 0.01
+    in_zmax = abs(bm_zmax - th_zmax)/dims[2] > 0.01
+    in_xmin = abs(bm_xmin - th_xmin)/dims[0] > 0.01
+    in_ymin = abs(bm_ymin - th_ymin)/dims[1] > 0.01
+    in_zmin = abs(bm_zmin - th_zmin)/dims[2] > 0.01
+    blocks_inside = in_xmax or in_ymax or in_zmax or\
+                     in_xmin or in_ymin or in_zmin
+
+
+    if blocks_outside:
+        warnings.warn('Big Warning, blocks appears to exist outside the bm extents!\n')
+
+    if blocks_inside:
+        warnings.warn('Small Warning, blocks appears to not reach the bm extents!\n')
+
+    if not (blocks_outside or blocks_inside):
+        return True
+    else:
+        return False
+
+
 
 
 def vulcan_bdf(blockmodel: pd.DataFrame,
@@ -1372,3 +1495,4 @@ def extend_pandas():
     PandasObject.block_dims = block_dims
     PandasObject.index_3Dto1D = index_3Dto1D
     PandasObject.index_1Dto3D = index_1Dto3D
+    PandasObject.check_regular_extents = check_regular_extents
