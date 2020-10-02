@@ -4,6 +4,9 @@
 
 trigger: none
 
+# no PR triggers
+pr: none
+
 schedules:
 - cron: "0 8 * * *"
   displayName: Daily build
