@@ -1,7 +1,10 @@
 # Azure devops pipeline to test installing MiningPy from the test release to TestPyPi
 
-
+# A pipeline with no CI trigger
 trigger: none
+
+# no PR triggers
+pr: none
 
 schedules:
 - cron: "0 20 * * *"
