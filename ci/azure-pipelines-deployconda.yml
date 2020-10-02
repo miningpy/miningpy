@@ -3,6 +3,8 @@
 
 trigger: none
 
+# no PR triggers
+pr: none
 
 jobs:
   - job: WindowsDeployConda
