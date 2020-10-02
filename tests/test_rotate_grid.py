@@ -35,7 +35,30 @@ def test_rotate_grid_1():
 
     assert check
 
+def test_rotate_grid_2():
+    # test rotate_grid
+    # rotates then derotates grid
+    data = pd.DataFrame(testdata)
 
-if __name__ == '__main':
+    rot_data = data.rotate_grid(
+        origin=(2.5, 2.5, 2.5),
+        rotation=(43, 74, 45),
+    )
+    rot_data = rot_data.astype(float)  # make sure dtypes are float
+    derot_data = rot_data.rotate_grid(
+        origin=(2.5, 2.5, 2.5),
+        rotation=(43, 74, 45),
+        derotate = True
+    )
+
+    # compare float values
+    test = abs(data - derot_data)
+    check = (test < 0.0001).all(axis=None)
+
+    assert check
+
+
+if __name__ == '__main__':
     test_rotate_grid_1()
+    test_rotate_grid_2()
 
