@@ -44,6 +44,7 @@ Testing Pipelines (Azure DevOps): https://dev.azure.com/Iain123/MiningPy
 About
 -----
 MiningPy is intended to help mining engineers harness the full power of the Python ecosystem to solve routine mine planning problems.
+MiningPy was developed at `IMC Mining <https://www.imcm.com.au/>`_. For any support or enquiries, please feel free to get in contact with the engineers at `IMC Mining <https://www.imcm.com.au/>`_.
 This package includes tools to help with:
 
 * Block model manipulation:
@@ -195,11 +196,10 @@ The MiningPy API currently includes:
 * :ref:`visualisation-api`.
 * :ref:`vulcan-api`.
 
-
 Author
 ------
-The creator of MiningPy is a mining engineer that primarly works in long-term strategic mine planning.
-
+The creator of MiningPy is a mining engineer that primarly works in long-term strategic mine planning at `IMC Mining <https://www.imcm.com.au/>`_.
+For any support or enquiries, please feel free to get in contact with the engineers at `IMC Mining <https://www.imcm.com.au/>`_.
 
 License
 -------
