@@ -45,7 +45,7 @@ to help us address the issue.
 
 ### Feature Requests
 
-We encourage users to submit ideas for improvements to PyVista code base!
+We encourage users to submit ideas for improvements to MiningPy code base!
 Please create an issue on the [issues page](https://bitbucket.org/incitron/miningpy/issues)
 with a *feature* component to suggest an improvement.
 Please use a descriptive title and provide ample background information to help
@@ -91,9 +91,9 @@ There are two important copyright guidelines:
    stackoverflow) or commercial use is prohibited. Those can undermine
    the license of the whole projects.
    
-### Contributing to pyvista through Bitbucket
+### Contributing to MiningPy through Bitbucket
 
-To submit new code to pyvista, first fork the [MiningPy Bitbucket Repo](https://bitbucket.org/incitron/miningpy) 
+To submit new code to MiningPy, first fork the [MiningPy Bitbucket Repo](https://bitbucket.org/incitron/miningpy) 
 and then clone the forked repository to your computer. Then, create a new branch based on the
 [Branch Naming Conventions Section](#branch-naming-conventions) in your local repository.
 
@@ -154,7 +154,7 @@ Once you have tested your branch locally, create a pull request on
 master.
 
 To ensure someone else reviews your code, at least one other member of
-the pyvista contributors group must review and verify your code meets
+the MiningPy contributors group must review and verify your code meets
 our community's standards.  Once approved, if you have write
 permission you may merge the branch.  If you don't have write
 permission, the reviewer or someone else with write permission will
