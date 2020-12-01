@@ -21,7 +21,7 @@ schedules:
 jobs:
   - job: WindowsPip
     pool:
-      vmImage: 'VS2017-Win2016'
+      vmImage: 'windows-latest'
     strategy:
       matrix:
         Python36:
@@ -30,6 +30,8 @@ jobs:
           python.version: '3.7'
         Python38:
           python.version: '3.8'
+        Python39:
+          python.version: '3.9'
 
     steps:
     - task: UsePythonVersion@0
@@ -50,7 +52,7 @@ jobs:
 
   - job: WindowsAnaconda
     pool:
-      vmImage: 'VS2017-Win2016'
+      vmImage: 'windows-latest'
     strategy:
       matrix:
         Python36:
@@ -59,6 +61,8 @@ jobs:
           python.version: '3.7'
         Python38:
           python.version: '3.8'
+        Python39:
+          python.version: '3.9'
 
     steps:
     - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
