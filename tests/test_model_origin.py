@@ -30,3 +30,16 @@ def test_model_origin_1():
     )
     assert (xorigin == 2.5) & (yorigin == 0.0) & (zorigin == 2.5)
 
+
+# test with dimensions as columns in the block model
+def test_model_origin_2():
+    data = pd.DataFrame(testdata1)
+    data['xdim'] = 5
+    data['ydim'] = 10
+    data['zdim'] = 5
+    xorigin, yorigin, zorigin = data.model_origin(
+        xyz_cols=('x', 'y', 'z'),
+        dims=('xdim', 'ydim', 'zdim')
+    )
+    assert (xorigin == 2.5) & (yorigin == 0.0) & (zorigin == 2.5)
+

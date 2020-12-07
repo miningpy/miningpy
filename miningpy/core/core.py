@@ -983,9 +983,29 @@ def model_origin(blockmodel: pd.DataFrame,
         origin of a block model for each axis (x,y,z)
     """
 
-    xorigin = blockmodel[xyz_cols[0]].min() - (dims[0]/2)
-    yorigin = blockmodel[xyz_cols[1]].min() - (dims[1]/2)
-    zorigin = blockmodel[xyz_cols[2]].min() - (dims[2]/2)
+    # x origin
+    if type(dims[0]) is int or type(dims[0]) is float:
+        xorigin = blockmodel[xyz_cols[0]].min() - (dims[0]/2)
+    elif type(dims[0]) is str:
+        xorigin = (blockmodel[xyz_cols[0]] - (blockmodel[dims[0]]/2)).min()
+    else:
+        raise Exception("x dimension must be int, float or str (block model column name).")
+
+    # y origin
+    if type(dims[1]) is int or type(dims[1]) is float:
+        yorigin = blockmodel[xyz_cols[1]].min() - (dims[1]/2)
+    elif type(dims[1]) is str:
+        yorigin = (blockmodel[xyz_cols[1]] - (blockmodel[dims[1]]/2)).min()
+    else:
+        raise Exception("y dimension must be int, float or str (block model column name).")
+
+    # z origin
+    if type(dims[2]) is int or type(dims[2]) is float:
+        zorigin = blockmodel[xyz_cols[2]].min() - (dims[2]/2)
+    elif type(dims[2]) is str:
+        zorigin = (blockmodel[xyz_cols[2]] - (blockmodel[dims[2]]/2)).min()
+    else:
+        raise Exception("z dimension must be int, float or str (block model column name).")
 
     return xorigin, yorigin, zorigin
 
