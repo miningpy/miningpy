@@ -438,7 +438,7 @@ def rotate_grid(blockmodel:         pd.DataFrame,
 def group_weighted_average(blockmodel:   pd.DataFrame,
                            avg_cols:     Union[str, List[str]],
                            weight_col:   str,
-                           group_cols:   Union[str, List[str]]) -> pd.DataFrame:
+                           group_cols:   Union[str, List[str]] = None) -> pd.DataFrame:
     """
     weighted average of block model attribute(s)
 
@@ -460,7 +460,8 @@ def group_weighted_average(blockmodel:   pd.DataFrame,
     """
 
     average_cols = []
-    groupby_cols = []
+    if group_cols is not None:  # group cols can be None if doing weight average over all data
+        groupby_cols = []
 
     if isinstance(avg_cols, str):
         average_cols.append(avg_cols)
@@ -469,31 +470,45 @@ def group_weighted_average(blockmodel:   pd.DataFrame,
     else:
         raise Exception('Average columns parameter must be single column name or list of column names')
 
-    if isinstance(group_cols, str):
-        groupby_cols.append(group_cols)
-    elif isinstance(group_cols, list):
-        groupby_cols = group_cols
-    else:
-        raise Exception('Groupby columns parameter must be single column name or list of column names')
+    if group_cols is not None:
+        if isinstance(group_cols, str):
+            groupby_cols.append(group_cols)
+        elif isinstance(group_cols, list):
+            groupby_cols = group_cols
+        else:
+            raise Exception('Groupby columns parameter must be single column name or list of column names')
 
     # make a copy of input dataframe so we don't alter the original model
     # only copy columns we need to do group weight average
-    data_in = blockmodel[average_cols + [weight_col] + groupby_cols].copy()
+    if group_cols is not None:
+        data_in = blockmodel[average_cols + [weight_col] + groupby_cols].copy()
+    else:
+        data_in = blockmodel[average_cols + [weight_col]].copy()
 
-    # set index for data in based on group cols
-    data_in.set_index(groupby_cols, inplace=True)
-    # mass multiply all the grade by the weight col
-    data_units = data_in[average_cols].multiply(data_in[weight_col], axis='index')
-    data_units.reset_index(inplace=True)
-    data_units = data_units.groupby(groupby_cols)[average_cols].sum()
-    # sum the weights
-    data_weights = pd.DataFrame(data_in.groupby(groupby_cols)[weight_col].sum())
-    data_units[weight_col] = data_weights[weight_col]  # paste the weight col back into the units DF
-    # mass divide the units by the weight col and presto
-    data_out = data_units[average_cols].divide(data_units[weight_col], axis='index')
-    data_out.fillna(0, inplace=True)  # in case of zero weights
-
-    return data_out
+    if group_cols is not None:
+        # set index for data in based on group cols
+        data_in = data_in.set_index(groupby_cols)
+        # mass multiply all the grade by the weight col
+        data_units = data_in[average_cols].multiply(data_in[weight_col], axis='index')
+        data_units = data_units.reset_index()
+        data_units = data_units.groupby(groupby_cols)[average_cols].sum()
+        # sum the weights
+        data_weights = pd.DataFrame(data_in.groupby(groupby_cols)[weight_col].sum())
+        data_units[weight_col] = data_weights[weight_col]  # paste the weight col back into the units DF
+        # mass divide the units by the weight col and presto
+        data_out = data_units[average_cols].divide(data_units[weight_col], axis='index')
+        data_out = data_out.fillna(0.0)  # in case of zero weights
+        return data_out
+    else:  # not grouping by any attributes
+        # mass multiply all the grade by the weight col
+        data_units = data_in[average_cols].multiply(data_in[weight_col], axis='index')
+        data_units = data_units[average_cols].sum()
+        # sum the weights
+        data_weights = data_in[weight_col].sum()
+        # mass divide the units by the weight col and presto
+        data_out = data_units/data_weights
+        data_out = data_out.fillna(0.0)  # in case of zero weights
+        return data_out
 
 
 def nblocks_xyz(blockmodel: pd.DataFrame,

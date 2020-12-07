@@ -15,8 +15,6 @@ testdata1 = {
 
 
 def test_group_weighted_average_1():
-    # test rotate_grid
-    # 45 degree rotation around the z-axis (i.e. rotation of the xy plane)
     data = pd.DataFrame(testdata1)
     result = {
         'cu': {'ox': 8.33333333, 'sulph': 41.66666667},
@@ -50,8 +48,6 @@ testdata2 = {
 
 
 def test_group_weighted_average_2():
-    # test rotate_grid
-    # 45 degree rotation around the z-axis (i.e. rotation of the xy plane)
     data = pd.DataFrame(testdata2)
     result = {
         'cu': {'ox': 8.33333333, 'sulph': 41.66666667},
@@ -73,6 +69,29 @@ def test_group_weighted_average_2():
     assert check
 
 
+# test with no grouping column
+def test_group_weighted_average_3():
+    data = pd.DataFrame(testdata2)
+    result = {
+        'cu': 25.0,
+        'au': 2.66666667
+    }
+    result = pd.Series(result)
+    data_group = data.group_weighted_average(
+        avg_cols=['cu', 'au'],
+        weight_col='tonnage'
+    )
+    data_group = data_group.astype(float)  # make sure dtypes are float
+    result = result.astype(float)  # make sure dtypes are float
+
+    # compare float values
+    test = abs(data_group - result)
+    check = (test < 0.0001).all(axis=None)
+
+    assert check
+
+
 if __name__ == '__main':
     test_group_weighted_average_1()
     test_group_weighted_average_2()
+    test_group_weighted_average_3()
