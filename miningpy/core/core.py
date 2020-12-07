@@ -476,23 +476,24 @@ def group_weighted_average(blockmodel:   pd.DataFrame,
     else:
         raise Exception('Groupby columns parameter must be single column name or list of column names')
 
-    ss = []
-    cols = []
-    for value_col in average_cols:
-        df = blockmodel.copy()
-        prod_name = 'prod_{v}_{w}'.format(v=value_col, w=weight_col)
-        weights_name = 'weights_{w}'.format(w=weight_col)
+    # make a copy of input dataframe so we don't alter the original model
+    # only copy columns we need to do group weight average
+    data_in = blockmodel[average_cols + [weight_col] + groupby_cols].copy()
 
-        df[prod_name] = df[value_col] * df[weight_col]
-        df[weights_name] = df[weight_col].where(~df[prod_name].isnull())
-        df = df.groupby(groupby_cols).sum()
-        s = df[prod_name] / df[weights_name]
-        s.name = value_col
-        ss.append(s)
-        cols.append(value_col)
-    df = pd.concat(ss, axis=1) if len(ss) > 1 else pd.DataFrame(ss[0])
-    df.columns = cols
-    return df
+    # set index for data in based on group cols
+    data_in.set_index(groupby_cols, inplace=True)
+    # mass multiply all the grade by the weight col
+    data_units = data_in[average_cols].multiply(data_in[weight_col], axis='index')
+    data_units.reset_index(inplace=True)
+    data_units = data_units.groupby(groupby_cols)[average_cols].sum()
+    # sum the weights
+    data_weights = pd.DataFrame(data_in.groupby(groupby_cols)[weight_col].sum())
+    data_units[weight_col] = data_weights[weight_col]  # paste the weight col back into the units DF
+    # mass divide the units by the weight col and presto
+    data_out = data_units[average_cols].divide(data_units[weight_col], axis='index')
+    data_out.fillna(0, inplace=True)  # in case of zero weights
+
+    return data_out
 
 
 def nblocks_xyz(blockmodel: pd.DataFrame,
