@@ -23,7 +23,7 @@ schedules:
 jobs:
   - job: WindowsCondaVtk
     pool:
-      vmImage: 'VS2017-Win2016'
+      vmImage: 'windows-latest'
     strategy:
       matrix:
         Python38:
@@ -44,7 +44,7 @@ jobs:
 
   - job: WindowsCondaVtk_condaForge
     pool:
-      vmImage: 'VS2017-Win2016'
+      vmImage: 'windows-latest'
     strategy:
       matrix:
         Python38:

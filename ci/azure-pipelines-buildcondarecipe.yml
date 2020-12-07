@@ -18,7 +18,7 @@ schedules:
 jobs:
   - job: WindowsBuildCondaRecipe
     pool:
-      vmImage: 'VS2017-Win2016'
+      vmImage: 'windows-latest'
     strategy:
       matrix:
         Python38:

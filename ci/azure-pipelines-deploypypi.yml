@@ -9,7 +9,7 @@ pr: none
 jobs:
   - job: Test_PyPi_Deploy
     pool:
-      vmImage: 'VS2017-Win2016'
+      vmImage: 'windows-latest'
     strategy:
       matrix:
         Python38:

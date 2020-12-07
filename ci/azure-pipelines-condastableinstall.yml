@@ -22,7 +22,7 @@ schedules:
 jobs:
   - job: WindowsInstallCondaStable
     pool:
-      vmImage: 'VS2017-Win2016'
+      vmImage: 'windows-latest'
     strategy:
       matrix:
         Python36:
@@ -60,7 +60,7 @@ jobs:
 
   - job: WindowsInstallCondaStable_AnacondaBase
     pool:
-      vmImage: 'VS2017-Win2016'
+      vmImage: 'windows-latest'
     strategy:
       matrix:
         Python36:
