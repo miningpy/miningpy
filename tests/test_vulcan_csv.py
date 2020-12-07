@@ -39,3 +39,23 @@ def test_vulcan_csv_1(tmpdir):
     )
     assert output.equals(result)
 
+
+# test with dimensions as columns in the block model
+def test_vulcan_csv_2(tmpdir):
+    # test blocks2vtk
+    # all params specified
+    file = tmpdir.mkdir("data").join("vulcan.csv")
+    data = pd.DataFrame(testdata1)
+    data['xs'] = 5
+    data['ys'] = 5
+    data['zs'] = 5
+    result = pd.DataFrame(testresult1)
+    output = data.vulcan_csv(
+        path=str(file),
+        xyz_cols=('x', 'y', 'z'),
+        dims=('xs', 'ys', 'zs'),
+    )
+    assert output.equals(result)
+
+
+

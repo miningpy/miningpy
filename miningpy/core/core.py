@@ -594,10 +594,28 @@ def vulcan_csv(blockmodel: pd.DataFrame,
         blockmodel = blockmodel.copy()
 
     # create columns required for vulcan
-    blockmodel['dim_x'] = xsize
-    blockmodel['dim_y'] = ysize
-    blockmodel['dim_z'] = zsize
-    blockmodel['volume'] = xsize * ysize * zsize
+    if type(xsize) is int or type(xsize) is float:
+        blockmodel['dim_x'] = xsize
+    elif type(xsize) is str:
+        blockmodel = blockmodel.rename(columns={xsize: "dim_x"}, errors="raise")
+    else:
+        raise Exception("x dimension must be int, float or str (block model column name).")
+
+    if type(ysize) is int or type(ysize) is float:
+        blockmodel['dim_y'] = ysize
+    elif type(ysize) is str:
+        blockmodel = blockmodel.rename(columns={ysize: "dim_y"}, errors="raise")
+    else:
+        raise Exception("y dimension must be int, float or str (block model column name).")
+
+    if type(zsize) is int or type(zsize) is float:
+        blockmodel['dim_z'] = zsize
+    elif type(zsize) is str:
+        blockmodel = blockmodel.rename(columns={zsize: "dim_z"}, errors="raise")
+    else:
+        raise Exception("z dimension must be int, float or str (block model column name).")
+
+    blockmodel['volume'] = blockmodel['dim_x'] * blockmodel['dim_y'] * blockmodel['dim_z']
 
     # order fields correctly for Vulcan
     vulcan_fields = [xcol, ycol, zcol, 'dim_x', 'dim_y', 'dim_z', 'volume']
