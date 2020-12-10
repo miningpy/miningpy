@@ -1,5 +1,5 @@
 {% set name = "miningpy" %}
-{% set version = "0.3.0" %}
+{% set version = "0.4.0" %}
 
 
 package:
@@ -23,10 +23,10 @@ requirements:
     - python
   run:
     - ezdxf >=0.13.1
-    - numpy
-    - pandas
+    - numpy !=1.19.4
+    - pandas >=1.0
     - python
-    - pyvista
+    - pyvista >=0.25
     - vtk >=8.0
     - matplotlib-base
 
