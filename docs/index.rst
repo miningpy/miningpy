@@ -179,9 +179,12 @@ hosts and runs and the testing pipelines.
 
 MiningPy is tested to be compatible with the following versions of Python:
 
-* Python 3.6
 * Python 3.7
 * Python 3.8
+
+Offical testing and support has been removed for the following versions of Python (although MiningPy might still work with them):
+
+* Python 3.6
 
 VTK is a dependency of MiningPy and there are known issues with the current Linux version of VTK published on `PyPi <https://pypi.org/project/vtk/>`_.
 

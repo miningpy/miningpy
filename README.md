@@ -141,11 +141,14 @@ The package is built and tested nightly using environments based on [Virtualenv]
 
 [Azure DevOps](https://dev.azure.com/Iain123/MiningPy) hosts and runs and the testing pipelines.
 
-MiningPy is tested to be compatible with the following versions of Python:
+MiningPy is tested to be fully tested with the following versions of Python:
 
-- Python 3.6
 - Python 3.7
 - Python 3.8
+
+Offical testing and support has been removed for the following versions of Python (although MiningPy might still work with them):
+
+- Python 3.6
 
 VTK is a dependency of MiningPy and there are known issues with the current Linux version of VTK published on [PyPi](https://pypi.org/project/vtk/).
 
