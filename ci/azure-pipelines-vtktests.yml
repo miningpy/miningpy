@@ -21,29 +21,6 @@ schedules:
   always: true
 
 jobs:
-  - job: WindowsCondaVtk
-    pool:
-      vmImage: 'windows-latest'
-    strategy:
-      matrix:
-        Python37:
-          python.version: '3.7'
-        Python38:
-          python.version: '3.8'
-
-    steps:
-    - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
-      displayName: Add conda to PATH
-
-    - script: conda create --yes --quiet --name baseAnaconda python=$(python.version) anaconda
-      displayName: Create Anaconda environment & Install packages
-
-    - script: |
-        call activate baseAnaconda
-        conda install vtk
-        python setup.py install
-      displayName: Install miningpy package in conda env
-
   - job: WindowsCondaVtk_condaForge
     pool:
       vmImage: 'windows-latest'
