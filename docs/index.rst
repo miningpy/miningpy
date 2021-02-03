@@ -54,7 +54,7 @@ This package includes tools to help with:
    * Calculating the model framework (origin, dimensions, rotation, extents, etc...)
    * Validating the block model (missing internal blocks, checking the model is regular, etc...)
    * Creating bench reserves
-   * Aggregatng blocks for scheduling
+   * Aggregating blocks for scheduling
    * Haulage modelling & encoding to the block model
 * Interfacing with commercial mine planning packages, such as:
    * Maptek Vulcan
