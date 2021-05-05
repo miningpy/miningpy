@@ -78,8 +78,8 @@ def plot3D(blockmodel:      pd.DataFrame,
     dup_check = list(blockmodel.duplicated(subset=[xyz_cols[0], xyz_cols[1], xyz_cols[2]]).unique())
 
     if len(dup_check) > 0:
-        warnings.warn("There are duplicate blocks in dataframe, removing duplicates")
-        blockmodel = blockmodel.drop_duplicates(subset=[xyz_cols[0], xyz_cols[1], xyz_cols[2]])
+        warnings.warn("There are duplicate blocks in dataframe, dropping all duplicates")
+        blockmodel = blockmodel.drop_duplicates(subset=[xyz_cols[0], xyz_cols[1], xyz_cols[2]], keep=False)
 
     # assert True not in dup_check, 'MiningPy ERROR - duplicate blocks in dataframe'
 
