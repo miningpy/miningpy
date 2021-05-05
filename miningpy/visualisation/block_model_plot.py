@@ -81,8 +81,6 @@ def plot3D(blockmodel:      pd.DataFrame,
         warnings.warn("There are duplicate blocks in dataframe, dropping duplicates except for the first occurrence.")
         blockmodel = blockmodel.drop_duplicates(subset=[xyz_cols[0], xyz_cols[1], xyz_cols[2]], keep='first')
 
-    # assert True not in dup_check, 'MiningPy ERROR - duplicate blocks in dataframe'
-
     # check widget choice is allowed
     _widgets = ['slider',
                 'COG',
