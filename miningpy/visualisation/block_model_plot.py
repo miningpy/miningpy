@@ -439,9 +439,8 @@ def add_slider_num(dtype, plot, mesh, style, show_edges, scalars, scalar_bar_arg
 
     name = mesh.memory_address
 
-    if scalars is None:
-        field, scalars = mesh.active_scalars_info
-    arr, field = get_array(mesh, scalars, preference='cell')
+    field, scalars = mesh.active_scalars_info
+    arr = get_array(mesh=mesh, name=scalars, preference='cell', err=True)
 
     if arr is None:
         raise ValueError('No arrays present to threshold.')

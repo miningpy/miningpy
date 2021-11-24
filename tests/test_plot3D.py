@@ -64,8 +64,9 @@ def test_plot3D_3():
         dims=(5, 5, 5),
         col='ton',
         show_plot=True,
-        widget='slider'
+        widget='section'
     )
 
     # assert isinstance(plot, pv.Plotter)
 test_plot3D_3()
+print('hello')
