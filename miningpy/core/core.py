@@ -951,7 +951,11 @@ def vulcan_bdf(blockmodel: pd.DataFrame,
     return True
 
 
-def geometric_reblock(blockmodel: pd.DataFrame):
+def geometric_reblock(blockmodel: pd.DataFrame,
+                      xyz_cols: Tuple[str, str, str] = None,
+                      origin: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+                      dims: Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
+                      ):
     """
     reblock regular block model into larger or smaller blocks (split or aggregate blocks)
     can be used as a tool for geometrically aggregating blocks in bench-phases
@@ -968,7 +972,18 @@ def geometric_reblock(blockmodel: pd.DataFrame):
     pandas.DataFrame
         reblocked block model
     """
-    raise Exception("MiningPy function {geometric_reblock} hasn't been created yet")
+    #raise Exception("MiningPy function {geometric_reblock} hasn't been created yet")
+    # make ijks
+    blockmodel = blockmodel.ijk(xyz_cols=xyz_cols,
+                                origin=origin,
+                                dims=dims)
+
+    # check for duplicates
+    if blockmodel.duplicated(subset=['i', 'j', 'k']).sum() > 0:
+        blockmodel = blockmodel.drop_duplicates(subset=['i', 'j', 'k'])  # remove duplicate blocks
+        warnings.UserWarning("duplicate blocks removed")
+
+    return blockmodel
 
 
 def attribute_reblock(blockmodel: pd.DataFrame):
