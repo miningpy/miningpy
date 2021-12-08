@@ -9,7 +9,6 @@ url = "https://drive.google.com/uc?export=download&id=1SOrYhqiu5Tg8Zjb7be4fUWhbF
 
 # read in block model from link
 data = pd.read_csv(url, compression='zip')
-
 varlist_agg = {
     'rock_tonnes': ['cost', 'value'],
     'ore_tonnes': [],
@@ -28,3 +27,4 @@ reblock = data.geometric_reblock(
     max_cols=max_cols,
 )
 
+print('ho')

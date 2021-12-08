@@ -696,7 +696,7 @@ def check_regular_extents(blockmodel: pd.DataFrame,
                               Union[int, float, str], Union[int, float, str], Union[int, float, str]] = (0, 0, 0),
                           xyz_cols: Tuple[str, str, str] = None,
                           start_offset: Tuple[Union[int, float], Union[int, float], Union[int, float]] = (
-                          0.0, 0.0, 0.0),
+                                  0.0, 0.0, 0.0),
                           ):
     """Verify if the model's blocks are physically within the extents specified.
 
@@ -962,7 +962,7 @@ def geometric_reblock(blockmodel: pd.DataFrame,
                       min_cols: list = None,
                       max_cols: list = None,
                       ):
-# TODO add xyz, check for regularity, handle odd input of multiplier
+    # TODO handle odd input of multiplier and in diff dimensions
     """
     reblock regular block model into larger or smaller blocks (split or aggregate blocks)
     can be used as a tool for geometrically aggregating blocks in bench-phases
@@ -1025,6 +1025,14 @@ def geometric_reblock(blockmodel: pd.DataFrame,
     # join average grades / total tonnages
     inv_all = pd.concat([inv_tonnes] + inv_grades, axis='columns')
     blockmodel = inv_all
+
+    # add back xyz coordinates
+    blockmodel = blockmodel.reset_index()
+    blockmodel = blockmodel.rename(columns={'i2': 'i', 'j2': 'j', 'k2': 'k'})
+
+    new_dims = (dims[0] * reblock_multiplier, dims[1] * reblock_multiplier, dims[2] * reblock_multiplier,)
+    blockmodel = blockmodel.xyz(origin=origin, dims=new_dims,)
+
     return blockmodel
 
 
