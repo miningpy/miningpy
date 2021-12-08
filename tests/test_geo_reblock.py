@@ -17,14 +17,14 @@ varlist_agg = {
 }
 
 varlist_no_agg = {
-'id': [],
+    'id': [],
     'x': [],
     'y': [],
     'z': [],
 }
 
 min_cols = ['final_pit']
-max_cols = []
+max_cols = ['period']
 
 reblock = data.geometric_reblock(
     dims=(1, 1, 1),

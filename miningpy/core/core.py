@@ -18,16 +18,16 @@ import datetime
 import warnings
 
 
-def ijk(blockmodel:     pd.DataFrame,
-        method:         str = 'ijk',
-        indexing:       int = 0,
-        xyz_cols:       Tuple[str, str, str] = None,
-        origin:         Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
-        dims:           Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
-        rotation:       Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
-        ijk_cols:       Tuple[str, str, str] = ('i', 'j', 'k'),
+def ijk(blockmodel: pd.DataFrame,
+        method: str = 'ijk',
+        indexing: int = 0,
+        xyz_cols: Tuple[str, str, str] = None,
+        origin: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+        dims: Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
+        rotation: Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
+        ijk_cols: Tuple[str, str, str] = ('i', 'j', 'k'),
         print_warnings: bool = True,
-        inplace:        bool = False) -> pd.DataFrame:
+        inplace: bool = False) -> pd.DataFrame:
     """
     Calculate block ijk indexes from their xyz cartesian coordinates
 
@@ -158,13 +158,14 @@ def ijk(blockmodel:     pd.DataFrame,
                     # check integer value isn't far from float - this can cause indexing issues
                     # throw a warning to the user if this is the case
                     # float should be within 0.00001 tolerance of integer
-                    indexed_float = ((bm_xcol - xsize/2 - xorigin) / xsize)
-                    indexed_int = np.rint((bm_xcol - xsize/2 - xorigin) / xsize).astype(int)
+                    indexed_float = ((bm_xcol - xsize / 2 - xorigin) / xsize)
+                    indexed_int = np.rint((bm_xcol - xsize / 2 - xorigin) / xsize).astype(int)
                     check_float = (indexed_float - indexed_int).abs()
                     if check_float.any() > 0.00001:
-                        warnings.warn("MiningPy WARNING - xcol block centroids not on a regular grid - calculated IJK values may be wrong")
+                        warnings.warn(
+                            "MiningPy WARNING - xcol block centroids not on a regular grid - calculated IJK values may be wrong")
 
-                icol_float = (bm_xcol - xsize/2 - xorigin) / xsize
+                icol_float = (bm_xcol - xsize / 2 - xorigin) / xsize
                 icol_float = icol_float.round(decimals=0)
                 blockmodel[icol] = (np.rint(icol_float) + indexing).astype(int)
             except ValueError:
@@ -176,13 +177,14 @@ def ijk(blockmodel:     pd.DataFrame,
                     # check integer value isn't far from float - this can cause indexing issues
                     # throw a warning to the user if this is the case
                     # float should be within 0.00001 tolerance of integer
-                    indexed_float = ((bm_ycol - ysize/2 - yorigin) / ysize)
-                    indexed_int = np.rint((bm_ycol - ysize/2 - yorigin) / ysize).astype(int)
+                    indexed_float = ((bm_ycol - ysize / 2 - yorigin) / ysize)
+                    indexed_int = np.rint((bm_ycol - ysize / 2 - yorigin) / ysize).astype(int)
                     check_float = (indexed_float - indexed_int).abs()
                     if check_float.any() > 0.00001:
-                        warnings.warn("MiningPy WARNING - ycol block centroids not on a regular grid - calculated IJK values may be wrong")
+                        warnings.warn(
+                            "MiningPy WARNING - ycol block centroids not on a regular grid - calculated IJK values may be wrong")
 
-                jcol_float = (bm_ycol - ysize/2 - yorigin) / ysize
+                jcol_float = (bm_ycol - ysize / 2 - yorigin) / ysize
                 jcol_float = jcol_float.round(decimals=0)
                 blockmodel[jcol] = (np.rint(jcol_float) + indexing).astype(int)
             except ValueError:
@@ -198,7 +200,8 @@ def ijk(blockmodel:     pd.DataFrame,
                     indexed_int = np.rint((bm_zcol - zsize / 2 - zorigin) / zsize).astype(int)
                     check_float = (indexed_float - indexed_int).abs()
                     if check_float.any() > 0.00001:
-                        warnings.warn("MiningPy WARNING - zcol block centroids not on a regular grid - calculated IJK values may be wrong")
+                        warnings.warn(
+                            "MiningPy WARNING - zcol block centroids not on a regular grid - calculated IJK values may be wrong")
 
                 kcol_float = (bm_zcol - zsize / 2 - zorigin) / zsize
                 kcol_float = kcol_float.round(decimals=0)
@@ -213,15 +216,15 @@ def ijk(blockmodel:     pd.DataFrame,
         raise ValueError('IJK FAILED - IJK method not accepted')
 
 
-def xyz(blockmodel:     pd.DataFrame,
-        method:         str = 'xyz',
-        indexing:       int = 0,
-        ijk_cols:       Tuple[str, str, str] = ('i', 'j', 'k'),
-        origin:         Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
-        dims:           Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
-        rotation:       Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
-        xyz_cols:       Tuple[str, str, str] = ('x', 'y', 'z'),
-        inplace:        bool = False) -> pd.DataFrame:
+def xyz(blockmodel: pd.DataFrame,
+        method: str = 'xyz',
+        indexing: int = 0,
+        ijk_cols: Tuple[str, str, str] = ('i', 'j', 'k'),
+        origin: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+        dims: Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
+        rotation: Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
+        xyz_cols: Tuple[str, str, str] = ('x', 'y', 'z'),
+        inplace: bool = False) -> pd.DataFrame:
     """
     Calculate xyz cartesian cooridinates of blocks from their ijk indexes
 
@@ -259,7 +262,7 @@ def xyz(blockmodel:     pd.DataFrame,
     if not inplace:
         blockmodel = blockmodel.copy()
 
-    methods_accepted = ['xyz', 'xy', 'xz', 'yz', 'x',  'y', 'z']
+    methods_accepted = ['xyz', 'xy', 'xz', 'yz', 'x', 'y', 'z']
     indexing_accepted = [0, 1]
 
     # check input indexing
@@ -285,19 +288,19 @@ def xyz(blockmodel:     pd.DataFrame,
     if method in methods_accepted:
         if 'x' in method:
             try:
-                blockmodel[xcol] = ((blockmodel[icol] - indexing) * xsize) + xorigin + (xsize/2)
+                blockmodel[xcol] = ((blockmodel[icol] - indexing) * xsize) + xorigin + (xsize / 2)
             except ValueError:
                 raise ValueError('XYZ FAILED - either icol, xorigin or xsize not defined properly')
 
         if 'y' in method:
             try:
-                blockmodel[ycol] = ((blockmodel[jcol] - indexing) * ysize) + yorigin + (ysize/2)
+                blockmodel[ycol] = ((blockmodel[jcol] - indexing) * ysize) + yorigin + (ysize / 2)
             except ValueError:
                 raise ValueError('XYZ FAILED - either jcol, yorigin or ysize not defined properly')
 
         if 'z' in method:
             try:
-                blockmodel[zcol] = ((blockmodel[kcol] - indexing) * zsize) + zorigin + (zsize/2)
+                blockmodel[zcol] = ((blockmodel[kcol] - indexing) * zsize) + zorigin + (zsize / 2)
             except ValueError:
                 raise ValueError('XYZ FAILED - either kcol, zorigin or zsize not defined properly')
 
@@ -320,13 +323,13 @@ def xyz(blockmodel:     pd.DataFrame,
         return blockmodel
 
 
-def rotate_grid(blockmodel:         pd.DataFrame,
-                xyz_cols:           Tuple[str, str, str] = ('x', 'y', 'z'),
-                origin:             Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
-                rotation:           Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
-                return_full_model:  bool = True,
-                derotate:           bool = False,
-                inplace:            bool = False) -> Union[pd.DataFrame, dict]:
+def rotate_grid(blockmodel: pd.DataFrame,
+                xyz_cols: Tuple[str, str, str] = ('x', 'y', 'z'),
+                origin: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+                rotation: Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
+                return_full_model: bool = True,
+                derotate: bool = False,
+                inplace: bool = False) -> Union[pd.DataFrame, dict]:
     """
     Rotate block model relative to cartesian grid
     This method uses a rotation matrix method
@@ -390,12 +393,12 @@ def rotate_grid(blockmodel:         pd.DataFrame,
     else:
         return blockmodel
 
-    x_sin = sin(x_rotation*(pi/180.0))
-    x_cos = cos(x_rotation*(pi/180.0))
-    y_sin = sin(y_rotation*(pi/180.0))
-    y_cos = cos(y_rotation*(pi/180.0))
-    z_sin = sin(z_rotation*(pi/180.0))
-    z_cos = cos(z_rotation*(pi/180.0))
+    x_sin = sin(x_rotation * (pi / 180.0))
+    x_cos = cos(x_rotation * (pi / 180.0))
+    y_sin = sin(y_rotation * (pi / 180.0))
+    y_cos = cos(y_rotation * (pi / 180.0))
+    z_sin = sin(z_rotation * (pi / 180.0))
+    z_cos = cos(z_rotation * (pi / 180.0))
 
     # define rotation matrix
     rotation_matrix = np.zeros((3, 3), dtype=np.float64)
@@ -435,10 +438,10 @@ def rotate_grid(blockmodel:         pd.DataFrame,
                     'z': blockmodel[zcol]}
 
 
-def group_weighted_average(blockmodel:   pd.DataFrame,
-                           avg_cols:     Union[str, List[str]],
-                           weight_col:   str,
-                           group_cols:   Union[str, List[str]] = None) -> pd.DataFrame:
+def group_weighted_average(blockmodel: pd.DataFrame,
+                           avg_cols: Union[str, List[str]],
+                           weight_col: str,
+                           group_cols: Union[str, List[str]] = None) -> pd.DataFrame:
     """
     weighted average of block model attribute(s)
 
@@ -506,7 +509,7 @@ def group_weighted_average(blockmodel:   pd.DataFrame,
         # sum the weights
         data_weights = data_in[weight_col].sum()
         # mass divide the units by the weight col and presto
-        data_out = data_units/data_weights
+        data_out = data_units / data_weights
         data_out = data_out.fillna(0.0)  # in case of zero weights
         return data_out
 
@@ -685,14 +688,16 @@ def vulcan_csv(blockmodel: pd.DataFrame,
         return blockmodel
 
 
-def check_regular_extents(  blockmodel: pd.DataFrame,
-                    end_offset: Tuple[Union[int, float], Union[int, float], Union[int, float]],
-                    dims: Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]],
-                    origin: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
-                    original_rotation: Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = (0,0,0),
-                    xyz_cols: Tuple[str, str, str] = None,
-                    start_offset: Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0.0, 0.0, 0.0),
-                    ):
+def check_regular_extents(blockmodel: pd.DataFrame,
+                          end_offset: Tuple[Union[int, float], Union[int, float], Union[int, float]],
+                          dims: Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]],
+                          origin: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+                          original_rotation: Tuple[
+                              Union[int, float, str], Union[int, float, str], Union[int, float, str]] = (0, 0, 0),
+                          xyz_cols: Tuple[str, str, str] = None,
+                          start_offset: Tuple[Union[int, float], Union[int, float], Union[int, float]] = (
+                          0.0, 0.0, 0.0),
+                          ):
     """Verify if the model's blocks are physically within the extents specified.
 
     Parameters
@@ -723,11 +728,11 @@ def check_regular_extents(  blockmodel: pd.DataFrame,
         True if test succeeds, False if it doesn't
     """
 
-    #TODO make this better, or cancel this error checking entirely
+    # TODO make this better, or cancel this error checking entirely
     bm = pd.DataFrame()
     try:
         bm = blockmodel[[xyz_cols[0], xyz_cols[1], xyz_cols[2]]]
-    except :
+    except:
         try:
             bm = blockmodel[['centroid_x', 'centroid_y', 'centroid_z']]
         except:
@@ -744,12 +749,12 @@ def check_regular_extents(  blockmodel: pd.DataFrame,
 
     bm.columns = ['x', 'y', 'z']
 
-    #Checks if the block model is a vulcan formatted block model
+    # Checks if the block model is a vulcan formatted block model
     if bm.at[0, 'x'] == 'Variable descriptions:':
         bm = bm.iloc[3:, :]
         bm = bm.astype('float64')
 
-    #TODO make sure this actually derotates a model
+    # TODO make sure this actually derotates a model
     bm = bm.rotate_grid(origin=origin,
                         rotation=original_rotation,
                         derotate=True)
@@ -761,31 +766,30 @@ def check_regular_extents(  blockmodel: pd.DataFrame,
     bm_ymin = bm['y'].min()
     bm_zmin = bm['z'].min()
 
-    th_xmax = origin[0] + end_offset[0] - dims[0]/2
-    th_ymax = origin[1] + end_offset[1] - dims[1]/2
-    th_zmax = origin[2] + end_offset[2] - dims[2]/2
-    th_xmin = origin[0] + start_offset[0] + dims[0]/2
-    th_ymin = origin[1] + start_offset[1] + dims[1]/2
-    th_zmin = origin[2] + start_offset[2] + dims[2]/2
+    th_xmax = origin[0] + end_offset[0] - dims[0] / 2
+    th_ymax = origin[1] + end_offset[1] - dims[1] / 2
+    th_zmax = origin[2] + end_offset[2] - dims[2] / 2
+    th_xmin = origin[0] + start_offset[0] + dims[0] / 2
+    th_ymin = origin[1] + start_offset[1] + dims[1] / 2
+    th_zmin = origin[2] + start_offset[2] + dims[2] / 2
 
-    out_xmax = abs(bm_xmax - th_xmax)/dims[0] > 0.01
-    out_ymax = abs(bm_ymax - th_ymax)/dims[1] > 0.01
-    out_zmax = abs(bm_zmax - th_zmax)/dims[2] > 0.01
-    out_xmin = abs(bm_xmin - th_xmin)/dims[0] > 0.01
-    out_ymin = abs(bm_ymin - th_ymin)/dims[1] > 0.01
-    out_zmin = abs(bm_zmin - th_zmin)/dims[2] > 0.01
-    blocks_outside = out_xmax or out_ymax or out_zmax or\
+    out_xmax = abs(bm_xmax - th_xmax) / dims[0] > 0.01
+    out_ymax = abs(bm_ymax - th_ymax) / dims[1] > 0.01
+    out_zmax = abs(bm_zmax - th_zmax) / dims[2] > 0.01
+    out_xmin = abs(bm_xmin - th_xmin) / dims[0] > 0.01
+    out_ymin = abs(bm_ymin - th_ymin) / dims[1] > 0.01
+    out_zmin = abs(bm_zmin - th_zmin) / dims[2] > 0.01
+    blocks_outside = out_xmax or out_ymax or out_zmax or \
                      out_xmin or out_ymin or out_zmin
 
-    in_xmax = abs(bm_xmax - th_xmax)/dims[0] > 0.01
-    in_ymax = abs(bm_ymax - th_ymax)/dims[1] > 0.01
-    in_zmax = abs(bm_zmax - th_zmax)/dims[2] > 0.01
-    in_xmin = abs(bm_xmin - th_xmin)/dims[0] > 0.01
-    in_ymin = abs(bm_ymin - th_ymin)/dims[1] > 0.01
-    in_zmin = abs(bm_zmin - th_zmin)/dims[2] > 0.01
-    blocks_inside = in_xmax or in_ymax or in_zmax or\
-                     in_xmin or in_ymin or in_zmin
-
+    in_xmax = abs(bm_xmax - th_xmax) / dims[0] > 0.01
+    in_ymax = abs(bm_ymax - th_ymax) / dims[1] > 0.01
+    in_zmax = abs(bm_zmax - th_zmax) / dims[2] > 0.01
+    in_xmin = abs(bm_xmin - th_xmin) / dims[0] > 0.01
+    in_ymin = abs(bm_ymin - th_ymin) / dims[1] > 0.01
+    in_zmin = abs(bm_zmin - th_zmin) / dims[2] > 0.01
+    blocks_inside = in_xmax or in_ymax or in_zmax or \
+                    in_xmin or in_ymin or in_zmin
 
     if blocks_outside:
         warnings.warn('Big Warning, blocks appears to exist outside the bm extents!\n')
@@ -797,8 +801,6 @@ def check_regular_extents(  blockmodel: pd.DataFrame,
         return True
     else:
         return False
-
-
 
 
 def vulcan_bdf(blockmodel: pd.DataFrame,
@@ -889,7 +891,7 @@ def vulcan_bdf(blockmodel: pd.DataFrame,
         bdf.write(" ")
         bdf.write("description=' '\n")
         bdf.write(" ")
-        bdf.write(f"name='{variables[count-1]}'\n")
+        bdf.write(f"name='{variables[count - 1]}'\n")
         bdf.write(" ")
         bdf.write("type='double'\n")
         bdf.write(f"END$DEF variable_{count}\n")
@@ -1001,7 +1003,7 @@ def geometric_reblock(blockmodel: pd.DataFrame,
     for ton_var in tonne_cols:
         if len(varlist_agg[ton_var]) > 0:  # check the tonnage actually has associated grades
             inv_grades.append(blockmodel.group_weighted_average(avg_cols=varlist_agg[ton_var], weight_col=ton_var,
-                                                                   group_cols=group_cols))
+                                                                group_cols=group_cols))
 
     # calculate total tonnage/volumes
     inv_tonnes = blockmodel.groupby(group_cols)[tonne_cols].sum()
@@ -1009,19 +1011,15 @@ def geometric_reblock(blockmodel: pd.DataFrame,
     # take highest value
     if len(max_cols) > 0:
         inv_max = blockmodel.groupby(group_cols)[max_cols].max()
+        inv_grades.append(inv_max)
 
     # take lowest value
     if len(min_cols) > 0:
         inv_min = blockmodel.groupby(group_cols)[min_cols].min()
-
-    # concat for final reblock
-    concat_list = ['inv_tonnes'] + inv_grades # always want inv_tonnes
-
-    if len(inv_min) >0:
-        concat_list.append('inv_min')
+        inv_grades.append(inv_min)
 
     # join average grades / total tonnages
-    inv_all = pd.concat(concat_list + inv_grades , axis='columns')
+    inv_all = pd.concat([inv_tonnes] + inv_grades, axis='columns')
     blockmodel = inv_all
     return blockmodel
 
@@ -1050,7 +1048,6 @@ def model_origin(blockmodel: pd.DataFrame,
                  xyz_cols: Tuple[str, str, str] = None,
                  dims: Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
                  ) -> Tuple[float, float, float]:
-
     """
     calculate the origin of a block model grid relative to its current xyz grid
     origin is the corner of the block with min xyz coordinates
@@ -1074,35 +1071,36 @@ def model_origin(blockmodel: pd.DataFrame,
 
     # x origin
     if type(dims[0]) is int or type(dims[0]) is float:
-        xorigin = blockmodel[xyz_cols[0]].min() - (dims[0]/2)
+        xorigin = blockmodel[xyz_cols[0]].min() - (dims[0] / 2)
     elif type(dims[0]) is str:
-        xorigin = (blockmodel[xyz_cols[0]] - (blockmodel[dims[0]]/2)).min()
+        xorigin = (blockmodel[xyz_cols[0]] - (blockmodel[dims[0]] / 2)).min()
     else:
         raise Exception("x dimension must be int, float or str (block model column name).")
 
     # y origin
     if type(dims[1]) is int or type(dims[1]) is float:
-        yorigin = blockmodel[xyz_cols[1]].min() - (dims[1]/2)
+        yorigin = blockmodel[xyz_cols[1]].min() - (dims[1] / 2)
     elif type(dims[1]) is str:
-        yorigin = (blockmodel[xyz_cols[1]] - (blockmodel[dims[1]]/2)).min()
+        yorigin = (blockmodel[xyz_cols[1]] - (blockmodel[dims[1]] / 2)).min()
     else:
         raise Exception("y dimension must be int, float or str (block model column name).")
 
     # z origin
     if type(dims[2]) is int or type(dims[2]) is float:
-        zorigin = blockmodel[xyz_cols[2]].min() - (dims[2]/2)
+        zorigin = blockmodel[xyz_cols[2]].min() - (dims[2] / 2)
     elif type(dims[2]) is str:
-        zorigin = (blockmodel[xyz_cols[2]] - (blockmodel[dims[2]]/2)).min()
+        zorigin = (blockmodel[xyz_cols[2]] - (blockmodel[dims[2]] / 2)).min()
     else:
         raise Exception("z dimension must be int, float or str (block model column name).")
 
     return xorigin, yorigin, zorigin
 
 
-def block_dims(blockmodel:   pd.DataFrame,
-               xyz_cols:     Tuple[str, str, str] = None,
-               origin:       Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
-               rotation:     Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0)) -> Tuple[float, float, float]:
+def block_dims(blockmodel: pd.DataFrame,
+               xyz_cols: Tuple[str, str, str] = None,
+               origin: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+               rotation: Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0)) -> Tuple[
+    float, float, float]:
     """
     estimate the x, y, z dimensions of blocks
     if the blocks are rotated then they are unrotated first
@@ -1308,7 +1306,8 @@ def check_regular(blockmodel: pd.DataFrame,
 
 def check_internal_blocks_missing(blockmodel: pd.DataFrame,
                                   xyz_cols: Tuple[str, str, str] = None,
-                                  dims: Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
+                                  dims: Tuple[
+                                      Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
                                   rotation: Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
                                   origin: Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
                                   ) -> bool:
@@ -1382,15 +1381,15 @@ def check_internal_blocks_missing(blockmodel: pd.DataFrame,
     return False
 
 
-def index_3Dto1D(blockmodel:    pd.DataFrame,
-                 indexing:      int = 0,
-                 xyz_cols:      Tuple[str, str, str] = None,
-                 origin:        Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
-                 dims:          Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
-                 rotation:      Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
-                 nblocks_xyz:   Tuple[int, int, int] = None,
-                 idxcol:        str = 'ijk',
-                 inplace:       bool = False) -> pd.DataFrame:
+def index_3Dto1D(blockmodel: pd.DataFrame,
+                 indexing: int = 0,
+                 xyz_cols: Tuple[str, str, str] = None,
+                 origin: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+                 dims: Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
+                 rotation: Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
+                 nblocks_xyz: Tuple[int, int, int] = None,
+                 idxcol: str = 'ijk',
+                 inplace: bool = False) -> pd.DataFrame:
     """
     Convert 3D array of xyz block centroids to 1D index that is reversible.
     Opposite of the function index_1Dto3D()
@@ -1484,15 +1483,15 @@ def index_3Dto1D(blockmodel:    pd.DataFrame,
         return blockmodel
 
 
-def index_1Dto3D(blockmodel:    pd.DataFrame,
-                 indexing:      int = 0,
-                 idxcol:        str = 'ijk',
-                 origin:        Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
-                 dims:          Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
-                 rotation:      Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
-                 nblocks_xyz:   Tuple[int, int, int] = None,
-                 xyz_cols:      Tuple[str, str, str] = ('x', 'y', 'z'),
-                 inplace:       bool = False) -> pd.DataFrame:
+def index_1Dto3D(blockmodel: pd.DataFrame,
+                 indexing: int = 0,
+                 idxcol: str = 'ijk',
+                 origin: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+                 dims: Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
+                 rotation: Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
+                 nblocks_xyz: Tuple[int, int, int] = None,
+                 xyz_cols: Tuple[str, str, str] = ('x', 'y', 'z'),
+                 inplace: bool = False) -> pd.DataFrame:
     """
     Convert IJK index back to xyz block centroids.
     Opposite of the function index_3Dto1D()
