@@ -15,14 +15,6 @@ varlist_agg = {
     'ore_tonnes': [],
 
 }
-
-varlist_no_agg = {
-    'id': [],
-    'x': [],
-    'y': [],
-    'z': [],
-}
-
 min_cols = ['final_pit']
 max_cols = ['period']
 

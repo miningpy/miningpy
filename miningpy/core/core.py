@@ -959,10 +959,10 @@ def geometric_reblock(blockmodel: pd.DataFrame,
                       dims: Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
                       reblock_multiplier: Union[int, float] = None,
                       varlist_agg: dict = None,
-                      varlist_no_agg: dict = None,
                       min_cols: list = None,
                       max_cols: list = None,
                       ):
+# TODO add xyz, check for regularity, handle odd input of multiplier
     """
     reblock regular block model into larger or smaller blocks (split or aggregate blocks)
     can be used as a tool for geometrically aggregating blocks in bench-phases
@@ -1218,7 +1218,7 @@ def check_regular(blockmodel: pd.DataFrame,
     """
     check if the blocks in a block model are actually
     on a regular grid (including a rotated grid).
-    note this is just an estimatimation of regularity, it is not perfect
+    note this is just an estimation of regularity, it is not perfect
 
     Parameters
     ----------
