@@ -980,6 +980,10 @@ def geometric_reblock(blockmodel: pd.DataFrame,
         reblocked block model
     """
 
+    # check that model is regular
+    if blockmodel.check_regular(xyz_cols=xyz_cols, origin=origin, dims=dims) is False:
+        raise ValueError('block model does not have regular dimensions')
+
     # make ijks
     blockmodel = blockmodel.ijk(xyz_cols=xyz_cols,
                                 origin=origin,
