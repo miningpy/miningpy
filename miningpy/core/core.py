@@ -16,6 +16,7 @@ from pandas.core.base import PandasObject
 from typing import Union, List, Tuple
 import datetime
 import warnings
+import itertools
 
 
 def ijk(blockmodel: pd.DataFrame,
@@ -1025,11 +1026,10 @@ def geometric_reblock(blockmodel: pd.DataFrame,
 
     # superblocking code
     if reblock_multiplier[0] >= 1 and reblock_multiplier[1] >= 1 and reblock_multiplier[2] >= 1:
+        print('reblocking input checks complete, superblocking initialisng')
 
         # make ijks
-        blockmodel = blockmodel.ijk(xyz_cols=xyz_cols,
-                                    origin=origin,
-                                    dims=dims)
+        blockmodel = blockmodel.ijk(xyz_cols=xyz_cols, origin=origin, dims=dims)
 
         # check for duplicates
         if blockmodel.duplicated(subset=['i', 'j', 'k']).sum() > 0:
@@ -1076,10 +1076,37 @@ def geometric_reblock(blockmodel: pd.DataFrame,
         blockmodel = blockmodel.xyz(origin=origin, dims=new_dims,)
 
         model_size_after_reblock = len(blockmodel)
-        print('model size reduced by: ', int((1-(model_size_after_reblock/model_size_before_reblock))*100), ' %')
+        print('reblocking reduced model size reduced by: ', int((1-(model_size_after_reblock/model_size_before_reblock))*100), ' %')
 
         # subblocking
     else:
+        print('reblocking input checks complete, subblocking initialisng')
+
+        # make ijks
+        blockmodel = blockmodel.ijk(xyz_cols=xyz_cols, origin=origin, dims=dims)
+
+        # check for duplicates
+        if blockmodel.duplicated(subset=['i', 'j', 'k']).sum() > 0:
+            blockmodel = blockmodel.drop_duplicates(subset=['i', 'j', 'k'])  # remove duplicate blocks
+            warnings.UserWarning("duplicate blocks removed")
+
+        # model extents
+        nblocks = blockmodel.nblocks_xyz(xyz_cols=xyz_cols, origin=origin, dims=dims)
+        extents = (origin[0] + nblocks[0]*dims[0], origin[1] + nblocks[1]*dims[1], origin[2] + nblocks[2]*dims[2], )
+
+        # Making empty model with dimensions required
+        x = np.arange(start=origin[0] + ((dims[0]*reblock_multiplier[0])/2), stop=extents[0] + dims[0], step=(dims[0] * reblock_multiplier[0]))
+        y = np.arange(start=origin[1] + ((dims[1]*reblock_multiplier[1])/2), stop=extents[1] + dims[1], step=(dims[1] * reblock_multiplier[1]))
+        z = np.arange(start=origin[2] + ((dims[2]*reblock_multiplier[2])/2), stop=extents[2] + dims[2], step=(dims[2] * reblock_multiplier[2]))
+        sub_blocked_model = pd.DataFrame(list(itertools.product(x, y, z)), columns=['x', 'y', 'z'])
+        del x, y, z
+
+        # IJK subblocked model on big grid
+        sub_blocked_model = sub_blocked_model.ijk(xyz_cols=xyz_cols, dims=dims, origin=origin)
+
+        # merge attributes
+
+
         print('subblocking not coded yet')
 
 
