@@ -1014,9 +1014,9 @@ def geometric_reblock(blockmodel: pd.DataFrame,
         warnings.UserWarning("duplicate blocks removed")
 
     # ijk on multiplier to create super or sub blocks
-    blockmodel['i2'] = np.ceil(blockmodel['i'] / reblock_multiplier).astype(int)
-    blockmodel['j2'] = np.ceil(blockmodel['j'] / reblock_multiplier).astype(int)
-    blockmodel['k2'] = np.ceil(blockmodel['k'] / reblock_multiplier).astype(int)
+    blockmodel['i2'] = np.ceil(blockmodel['i'] / reblock_multiplier[0]).astype(int)
+    blockmodel['j2'] = np.ceil(blockmodel['j'] / reblock_multiplier[1]).astype(int)
+    blockmodel['k2'] = np.ceil(blockmodel['k'] / reblock_multiplier[2]).astype(int)
 
     group_cols = ['i2', 'j2', 'k2']
 
@@ -1049,7 +1049,7 @@ def geometric_reblock(blockmodel: pd.DataFrame,
     blockmodel = blockmodel.reset_index()
     blockmodel = blockmodel.rename(columns={'i2': 'i', 'j2': 'j', 'k2': 'k'})
 
-    new_dims = (dims[0] * reblock_multiplier, dims[1] * reblock_multiplier, dims[2] * reblock_multiplier,)
+    new_dims = (dims[0] * reblock_multiplier[0], dims[1] * reblock_multiplier[1], dims[2] * reblock_multiplier[2],)
     blockmodel = blockmodel.xyz(origin=origin, dims=new_dims,)
 
     return blockmodel
