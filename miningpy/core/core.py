@@ -979,6 +979,23 @@ def geometric_reblock(blockmodel: pd.DataFrame,
     pandas.DataFrame
         reblocked block model
     """
+    # check reblocking multiplier for super and subblock in same function
+    def reblock_multiplier_check(reblock_multiplier_tuple):
+        result = True
+        if reblock_multiplier_tuple[0] >= 1:  # if the first reblock multiplier indicates superblocking then all must super
+            for multiplier in reblock_multiplier_tuple:
+                if multiplier < 1:
+                    result = False
+        else:  # else all sublock
+            for multiplier in reblock_multiplier_tuple:
+                if multiplier >= 1:
+                    result = False
+
+        return result
+    assert reblock_multiplier_check(reblock_multiplier) == True, "geometric_reblock does not handle both superblocking " \
+                                                                 "and subblocking in the same function. Consider " \
+                                                                 "subblocking whole model to smallest unit and then" \
+                                                                 " superblocking"
 
     # check that model is regular
     if blockmodel.check_regular(xyz_cols=xyz_cols, origin=origin, dims=dims) is False:
