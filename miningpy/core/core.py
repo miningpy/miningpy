@@ -1104,7 +1104,46 @@ def geometric_reblock(blockmodel: pd.DataFrame,
         # IJK subblocked model on big grid
         sub_blocked_model = sub_blocked_model.ijk(xyz_cols=xyz_cols, dims=dims, origin=origin)
 
-        # merge attributes
+        # set both models indicies to ijk
+        sub_blocked_model = sub_blocked_model.set_index(['i', 'j', 'k'])
+        blockmodel = blockmodel.set_index(['i', 'j', 'k'])
+
+        # all attributes
+        properties = list(varlist_agg.values())
+        properties = [_ for sublist in properties for _ in sublist]  # flatten list of lists
+
+        # bring across all weights (tonnes)
+        weights = list(varlist_agg.keys())
+
+        attributes = properties + weights
+
+        print('beginning attribute transfer')
+        for attribute in attributes:
+            print(attribute)
+            sub_blocked_model[attribute] = 0
+            sub_blocked_model[attribute] = blockmodel[attribute]
+
+        sub_blocked_model = sub_blocked_model.reset_index()
+        sub_blocked_model = sub_blocked_model.sort_values(by=['i', 'j', 'k'])
+        blockmodel = blockmodel.reset_index()
+        blockmodel = blockmodel.sort_values(by=['i', 'j', 'k'])
+
+        # drop blockmodel rows with nans as these blocks don't exist at this block size
+        sub_blocked_model = sub_blocked_model.dropna()
+
+        # reduce weights
+        weight_multiplier = reblock_multiplier[0] * reblock_multiplier[1] * reblock_multiplier[2]
+        for weight in weights:
+            sub_blocked_model[weight] = sub_blocked_model[weight] * weight_multiplier
+
+        check = blockmodel[weights[0]].sum() - sub_blocked_model[weights[0]].sum()
+        assert check < 1.0, 'tonnes lost reblocking!'
+
+        blockmodel = sub_blocked_model
+
+        model_size_after_reblock = len(blockmodel)
+        print('reblocking reduced model size increased by: ', int((model_size_after_reblock/model_size_before_reblock)*100)-100, ' %')
+
 
 
         print('subblocking not coded yet')
