@@ -985,8 +985,23 @@ def geometric_reblock(blockmodel: pd.DataFrame,
         raise ValueError('block model does not have regular dimensions and geometric reblock requires regular model')
 
     # check multiplier makes sense
-    if reblock_multiplier >= 1:
-        if reblock_multiplier/dims[0]
+    if reblock_multiplier[0] >= 1:
+        assert (reblock_multiplier[0]/dims[0]).is_integer(), "x dimension multiplier is not a multiple of original dimension"
+
+    if reblock_multiplier[1] >= 1:
+        assert (reblock_multiplier[1]/dims[1]).is_integer(), "y dimension multiplier is not a multiple of original dimension"
+
+    if reblock_multiplier[2] >= 1:
+        assert (reblock_multiplier[2]/dims[2]).is_integer(), "z dimension multiplier is not a multiple of original dimension"
+
+    if reblock_multiplier[0] < 1:
+        assert (dims[0]/reblock_multiplier[0]).is_integer(), "x dimension multiplier is not a multiple of original dimension"
+
+    if reblock_multiplier[1] < 1:
+        assert (dims[1]/reblock_multiplier[1]).is_integer(), "y dimension multiplier is not a multiple of original dimension"
+
+    if reblock_multiplier[2] < 1:
+        assert (dims[2]/reblock_multiplier[2]).is_integer(), "z dimension multiplier is not a multiple of original dimension"
 
     # make ijks
     blockmodel = blockmodel.ijk(xyz_cols=xyz_cols,
