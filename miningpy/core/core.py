@@ -962,8 +962,7 @@ def geometric_reblock(blockmodel: pd.DataFrame,
                       min_cols: list = None,
                       max_cols: list = None,
                       ):
-    # TODO handle odd input of multiplier and in diff dimensions
-    # TODO add len of model before and after
+    # TODO add fun stats for sub block
     """
     reblock regular block model into larger or smaller blocks (split or aggregate blocks)
     can be used as a tool for geometrically aggregating blocks in bench-phases
@@ -1003,6 +1002,9 @@ def geometric_reblock(blockmodel: pd.DataFrame,
 
     if reblock_multiplier[2] < 1:
         assert (dims[2]/reblock_multiplier[2]).is_integer(), "z dimension multiplier is not a multiple of original dimension"
+
+    # fun stats
+    model_size_before_reblock = len(blockmodel)
 
     # superblocking code
     if reblock_multiplier[0] >= 1 and reblock_multiplier[1] >= 1 and reblock_multiplier[2] >= 1:
@@ -1056,9 +1058,13 @@ def geometric_reblock(blockmodel: pd.DataFrame,
         new_dims = (dims[0] * reblock_multiplier[0], dims[1] * reblock_multiplier[1], dims[2] * reblock_multiplier[2],)
         blockmodel = blockmodel.xyz(origin=origin, dims=new_dims,)
 
+        model_size_after_reblock = len(blockmodel)
+        print('model size reduced by: ', int((1-(model_size_after_reblock/model_size_before_reblock))*100), ' %')
+
         # subblocking
     else:
         print('subblocking not coded yet')
+
 
 
     return blockmodel
