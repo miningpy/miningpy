@@ -1075,6 +1075,8 @@ def geometric_reblock(blockmodel: pd.DataFrame,
         new_dims = (dims[0] * reblock_multiplier[0], dims[1] * reblock_multiplier[1], dims[2] * reblock_multiplier[2],)
         blockmodel = blockmodel.xyz(origin=origin, dims=new_dims,)
 
+        # fun stats and cleaning
+        del blockmodel['i'], blockmodel['j'], blockmodel['k']
         model_size_after_reblock = len(blockmodel)
         print('reblocking reduced model size reduced by: ', int((1-(model_size_after_reblock/model_size_before_reblock))*100), ' %')
 
