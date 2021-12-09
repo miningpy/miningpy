@@ -1088,7 +1088,7 @@ def geometric_reblock(blockmodel: pd.DataFrame,
         # check for duplicates
         if blockmodel.duplicated(subset=['i', 'j', 'k']).sum() > 0:
             blockmodel = blockmodel.drop_duplicates(subset=['i', 'j', 'k'])  # remove duplicate blocks
-            warnings.UserWarning("duplicate blocks removed")
+            warnings.warn("duplicate blocks removed")
 
         # model extents
         nblocks = blockmodel.nblocks_xyz(xyz_cols=xyz_cols, origin=origin, dims=dims)
@@ -1136,19 +1136,22 @@ def geometric_reblock(blockmodel: pd.DataFrame,
         for weight in weights:
             sub_blocked_model[weight] = sub_blocked_model[weight] * weight_multiplier
 
+        # rough tonnage check
         check = blockmodel[weights[0]].sum() - sub_blocked_model[weights[0]].sum()
-        assert check < 1.0, 'tonnes lost reblocking!'
+        if check < 1.0:
+            warnings.warn('weight lost reblocking!')
+
+        # check duplicates
+        duplicate_check = sub_blocked_model.duplicated(subset=['x', 'y', 'z'])
+        if duplicate_check.sum() == 0:
+            warnings.warn('duplicates in sub_blocked_model')
 
         blockmodel = sub_blocked_model
 
+        # fun stats and cleaning
         model_size_after_reblock = len(blockmodel)
-        print('reblocking reduced model size increased by: ', int((model_size_after_reblock/model_size_before_reblock)*100)-100, ' %')
-
-
-
-        print('subblocking not coded yet')
-
-
+        print('reblocking increased model size  by: ', int((model_size_after_reblock/model_size_before_reblock)*100)-100, ' %')
+        del blockmodel['i'], blockmodel['j'], blockmodel['k']
 
     return blockmodel
 
