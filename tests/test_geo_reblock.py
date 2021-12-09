@@ -3,7 +3,6 @@ import pytest
 import pandas as pd
 import miningpy
 
-
 # block model example (zuck small - MineLib)
 url = "https://drive.google.com/uc?export=download&id=1SOrYhqiu5Tg8Zjb7be4fUWhbFDTU1sEk"
 
@@ -21,10 +20,12 @@ reblock = data.geometric_reblock(
     dims=(1, 1, 1),
     xyz_cols=('x', 'y', 'z'),
     origin=(-0.5, -0.5, -0.5),
-    reblock_multiplier=(2,2,2),
+    reblock_multiplier=(0.5,0.5,0.5),
     varlist_agg=varlist_agg,
     min_cols=min_cols,
     max_cols=max_cols,
 )
 
+reblock.plot3D(dims=(0.5,0.5,0.5),  xyz_cols=('x', 'y', 'z'),   col='value', widget='slider')
+data.plot3D(dims=(1, 1, 1),  xyz_cols=('x', 'y', 'z'),   col='value', widget='slider')
 print('ho')

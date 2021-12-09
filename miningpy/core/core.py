@@ -963,6 +963,7 @@ def geometric_reblock(blockmodel: pd.DataFrame,
                       max_cols: list = None,
                       ):
     # TODO handle odd input of multiplier and in diff dimensions
+    # TODO add len of model before and after
     """
     reblock regular block model into larger or smaller blocks (split or aggregate blocks)
     can be used as a tool for geometrically aggregating blocks in bench-phases
@@ -1003,54 +1004,62 @@ def geometric_reblock(blockmodel: pd.DataFrame,
     if reblock_multiplier[2] < 1:
         assert (dims[2]/reblock_multiplier[2]).is_integer(), "z dimension multiplier is not a multiple of original dimension"
 
-    # make ijks
-    blockmodel = blockmodel.ijk(xyz_cols=xyz_cols,
-                                origin=origin,
-                                dims=dims)
+    # superblocking code
+    if reblock_multiplier[0] >= 1 and reblock_multiplier[1] >= 1 and reblock_multiplier[2] >= 1:
 
-    # check for duplicates
-    if blockmodel.duplicated(subset=['i', 'j', 'k']).sum() > 0:
-        blockmodel = blockmodel.drop_duplicates(subset=['i', 'j', 'k'])  # remove duplicate blocks
-        warnings.UserWarning("duplicate blocks removed")
+        # make ijks
+        blockmodel = blockmodel.ijk(xyz_cols=xyz_cols,
+                                    origin=origin,
+                                    dims=dims)
 
-    # ijk on multiplier to create super or sub blocks
-    blockmodel['i2'] = np.ceil(blockmodel['i'] / reblock_multiplier[0]).astype(int)
-    blockmodel['j2'] = np.ceil(blockmodel['j'] / reblock_multiplier[1]).astype(int)
-    blockmodel['k2'] = np.ceil(blockmodel['k'] / reblock_multiplier[2]).astype(int)
+        # check for duplicates
+        if blockmodel.duplicated(subset=['i', 'j', 'k']).sum() > 0:
+            blockmodel = blockmodel.drop_duplicates(subset=['i', 'j', 'k'])  # remove duplicate blocks
+            warnings.UserWarning("duplicate blocks removed")
 
-    group_cols = ['i2', 'j2', 'k2']
+        # ijk on multiplier to create super or sub blocks
+        blockmodel['i2'] = np.ceil(blockmodel['i'] / reblock_multiplier[0]).astype(int)
+        blockmodel['j2'] = np.ceil(blockmodel['j'] / reblock_multiplier[1]).astype(int)
+        blockmodel['k2'] = np.ceil(blockmodel['k'] / reblock_multiplier[2]).astype(int)
 
-    # calculate average grades for each tonnage
-    tonne_cols = list(varlist_agg.keys())
-    inv_grades = []
-    for ton_var in tonne_cols:
-        if len(varlist_agg[ton_var]) > 0:  # check the tonnage actually has associated grades
-            inv_grades.append(blockmodel.group_weighted_average(avg_cols=varlist_agg[ton_var], weight_col=ton_var,
-                                                                group_cols=group_cols))
+        group_cols = ['i2', 'j2', 'k2']
 
-    # calculate total tonnage/volumes
-    inv_tonnes = blockmodel.groupby(group_cols)[tonne_cols].sum()
+        # calculate average grades for each tonnage
+        tonne_cols = list(varlist_agg.keys())
+        inv_grades = []
+        for ton_var in tonne_cols:
+            if len(varlist_agg[ton_var]) > 0:  # check the tonnage actually has associated grades
+                inv_grades.append(blockmodel.group_weighted_average(avg_cols=varlist_agg[ton_var], weight_col=ton_var,
+                                                                    group_cols=group_cols))
 
-    # take highest value
-    if len(max_cols) > 0:
-        inv_max = blockmodel.groupby(group_cols)[max_cols].max()
-        inv_grades.append(inv_max)
+        # calculate total tonnage/volumes
+        inv_tonnes = blockmodel.groupby(group_cols)[tonne_cols].sum()
 
-    # take lowest value
-    if len(min_cols) > 0:
-        inv_min = blockmodel.groupby(group_cols)[min_cols].min()
-        inv_grades.append(inv_min)
+        # take highest value
+        if len(max_cols) > 0:
+            inv_max = blockmodel.groupby(group_cols)[max_cols].max()
+            inv_grades.append(inv_max)
 
-    # join average grades / total tonnages
-    inv_all = pd.concat([inv_tonnes] + inv_grades, axis='columns')
-    blockmodel = inv_all
+        # take lowest value
+        if len(min_cols) > 0:
+            inv_min = blockmodel.groupby(group_cols)[min_cols].min()
+            inv_grades.append(inv_min)
 
-    # add back xyz coordinates
-    blockmodel = blockmodel.reset_index()
-    blockmodel = blockmodel.rename(columns={'i2': 'i', 'j2': 'j', 'k2': 'k'})
+        # join average grades / total tonnages
+        inv_all = pd.concat([inv_tonnes] + inv_grades, axis='columns')
+        blockmodel = inv_all
 
-    new_dims = (dims[0] * reblock_multiplier[0], dims[1] * reblock_multiplier[1], dims[2] * reblock_multiplier[2],)
-    blockmodel = blockmodel.xyz(origin=origin, dims=new_dims,)
+        # add back xyz coordinates
+        blockmodel = blockmodel.reset_index()
+        blockmodel = blockmodel.rename(columns={'i2': 'i', 'j2': 'j', 'k2': 'k'})
+
+        new_dims = (dims[0] * reblock_multiplier[0], dims[1] * reblock_multiplier[1], dims[2] * reblock_multiplier[2],)
+        blockmodel = blockmodel.xyz(origin=origin, dims=new_dims,)
+
+        # subblocking
+    else:
+        print('subblocking not coded yet')
+
 
     return blockmodel
 
