@@ -957,7 +957,7 @@ def geometric_reblock(blockmodel: pd.DataFrame,
                       xyz_cols: Tuple[str, str, str] = None,
                       origin: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
                       dims: Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
-                      reblock_multiplier: Union[int, float] = None,
+                      reblock_multiplier: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
                       varlist_agg: dict = None,
                       min_cols: list = None,
                       max_cols: list = None,
@@ -982,7 +982,11 @@ def geometric_reblock(blockmodel: pd.DataFrame,
 
     # check that model is regular
     if blockmodel.check_regular(xyz_cols=xyz_cols, origin=origin, dims=dims) is False:
-        raise ValueError('block model does not have regular dimensions')
+        raise ValueError('block model does not have regular dimensions and geometric reblock requires regular model')
+
+    # check multiplier makes sense
+    if reblock_multiplier >= 1:
+        if reblock_multiplier/dims[0]
 
     # make ijks
     blockmodel = blockmodel.ijk(xyz_cols=xyz_cols,
