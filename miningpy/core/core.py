@@ -1026,7 +1026,7 @@ def geometric_reblock(blockmodel: pd.DataFrame,
 
     # superblocking code
     if reblock_multiplier[0] >= 1 and reblock_multiplier[1] >= 1 and reblock_multiplier[2] >= 1:
-        print('reblocking input checks complete, superblocking initialisng')
+        print('reblocking input checks complete, superblocking initialising')
 
         # make ijks
         blockmodel = blockmodel.ijk(xyz_cols=xyz_cols, origin=origin, dims=dims)
@@ -1034,7 +1034,7 @@ def geometric_reblock(blockmodel: pd.DataFrame,
         # check for duplicates
         if blockmodel.duplicated(subset=['i', 'j', 'k']).sum() > 0:
             blockmodel = blockmodel.drop_duplicates(subset=['i', 'j', 'k'])  # remove duplicate blocks
-            warnings.UserWarning("duplicate blocks removed")
+            warnings.warn("duplicate blocks removed")
 
         # ijk on multiplier to create super or sub blocks
         blockmodel['i2'] = np.ceil(blockmodel['i'] / reblock_multiplier[0]).astype(int)
@@ -1082,7 +1082,7 @@ def geometric_reblock(blockmodel: pd.DataFrame,
 
         # subblocking
     else:
-        print('reblocking input checks complete, subblocking initialisng')
+        print('reblocking input checks complete, subblocking initialising')
 
         # make ijks
         blockmodel = blockmodel.ijk(xyz_cols=xyz_cols, origin=origin, dims=dims)
@@ -1152,7 +1152,7 @@ def geometric_reblock(blockmodel: pd.DataFrame,
 
         # fun stats and cleaning
         model_size_after_reblock = len(blockmodel)
-        print('reblocking increased model size  by: ', int((model_size_after_reblock/model_size_before_reblock)*100)-100, ' %')
+        print('reblocking increased model size by: ', int((model_size_after_reblock/model_size_before_reblock)*100)-100, ' %')
         del blockmodel['i'], blockmodel['j'], blockmodel['k']
 
     return blockmodel
