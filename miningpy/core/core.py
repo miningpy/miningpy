@@ -1121,7 +1121,6 @@ def geometric_reblock(blockmodel: pd.DataFrame,
 
         print('beginning attribute transfer')
         for attribute in attributes:
-            print(attribute)
             sub_blocked_model[attribute] = 0
             sub_blocked_model[attribute] = blockmodel[attribute]
 
@@ -1140,12 +1139,14 @@ def geometric_reblock(blockmodel: pd.DataFrame,
 
         # rough tonnage check
         check = blockmodel[weights[0]].sum() - sub_blocked_model[weights[0]].sum()
-        if check < 1.0:
-            warnings.warn('weight lost reblocking!')
+        check = 11
+        if check > 1.0:
+            weight_warning = str(weights[0])
+            warnings.warn(f'{weight_warning} lost reblocking!')
 
         # check duplicates
         duplicate_check = sub_blocked_model.duplicated(subset=['x', 'y', 'z'])
-        if duplicate_check.sum() == 0:
+        if duplicate_check.sum() != 0:
             warnings.warn('duplicates in sub_blocked_model')
 
         blockmodel = sub_blocked_model
