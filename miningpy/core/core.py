@@ -989,7 +989,7 @@ def geometric_reblock(blockmodel: pd.DataFrame,
                     result = False
         else:  # else all sublock
             for multiplier in reblock_multiplier_tuple:
-                if multiplier >= 1:
+                if multiplier > 1:  # if multiplier = 1 then no reblocking
                     result = False
 
         return result
@@ -1075,10 +1075,15 @@ def geometric_reblock(blockmodel: pd.DataFrame,
         new_dims = (dims[0] * reblock_multiplier[0], dims[1] * reblock_multiplier[1], dims[2] * reblock_multiplier[2],)
         blockmodel = blockmodel.xyz(origin=origin, dims=new_dims,)
 
+        # check duplicates
+        duplicate_check = blockmodel.duplicated(subset=['x', 'y', 'z'])
+        if duplicate_check.sum() != 0:
+            warnings.warn('duplicates in sub blocked model')
+
         # fun stats and cleaning
         del blockmodel['i'], blockmodel['j'], blockmodel['k']
         model_size_after_reblock = len(blockmodel)
-        print('reblocking reduced model size reduced by: ', int((1-(model_size_after_reblock/model_size_before_reblock))*100), ' %')
+        print('reblocking reduced number of blocks by: ', int((1-(model_size_after_reblock/model_size_before_reblock))*100), '%')
 
         # subblocking
     else:
@@ -1139,7 +1144,6 @@ def geometric_reblock(blockmodel: pd.DataFrame,
 
         # rough tonnage check
         check = blockmodel[weights[0]].sum() - sub_blocked_model[weights[0]].sum()
-        check = 11
         if check > 1.0:
             weight_warning = str(weights[0])
             warnings.warn(f'{weight_warning} lost reblocking!')
@@ -1147,13 +1151,13 @@ def geometric_reblock(blockmodel: pd.DataFrame,
         # check duplicates
         duplicate_check = sub_blocked_model.duplicated(subset=['x', 'y', 'z'])
         if duplicate_check.sum() != 0:
-            warnings.warn('duplicates in sub_blocked_model')
+            warnings.warn('duplicates in sub blocked model')
 
         blockmodel = sub_blocked_model
 
         # fun stats and cleaning
         model_size_after_reblock = len(blockmodel)
-        print('reblocking increased model size by: ', int((model_size_after_reblock/model_size_before_reblock)*100)-100, ' %')
+        print('reblocking increased number of blocks by: ', int((model_size_after_reblock/model_size_before_reblock)*100)-100, '%')
         del blockmodel['i'], blockmodel['j'], blockmodel['k']
 
     return blockmodel
