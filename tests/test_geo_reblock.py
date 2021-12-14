@@ -31,8 +31,15 @@ def test_geo_superblock():
         min_cols=min_cols,
         max_cols=max_cols,
     )
+
+    # check tonnages sum
     assert (data.rock_tonnes.sum() - reblock.rock_tonnes.sum() < 1) and \
            (data.rock_tonnes.sum() - reblock.rock_tonnes.sum() > -1), 'rock_tonnes lost superblocking'
+
+    # check dims
+    new_dims = reblock.block_dims(xyz_cols=('x', 'y', 'z'),
+                                  origin=(-0.5, -0.5, -0.5))
+    assert new_dims == (2, 2, 5), 'reblocking dims error'
 
 
 def test_geo_subblock():
@@ -57,9 +64,12 @@ def test_geo_subblock():
         min_cols=min_cols,
         max_cols=max_cols,
     )
+
+    # check tonnages sum
     assert (data.rock_tonnes.sum() - reblock.rock_tonnes.sum() < 1) and \
            (data.rock_tonnes.sum() - reblock.rock_tonnes.sum() > -1), 'rock_tonnes lost subblocking'
 
-if __name__ == '__main':
-    test_geo_subblock()
-    test_geo_superblock()
+    # check dims
+    new_dims = reblock.block_dims(xyz_cols=('x', 'y', 'z'),
+                                  origin=(-0.5, -0.5, -0.5))
+    assert new_dims == (0.5, 0.5, 0.5), 'reblocking dims error'
