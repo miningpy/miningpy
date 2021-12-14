@@ -980,7 +980,6 @@ def geometric_reblock(blockmodel: pd.DataFrame,
     ----------
     blockmodel: pd.DataFrame
         pandas dataframe of block model
-
     xyz_cols: tuple of strings
         names of x,y,z columns in model
     dims: tuple of floats, ints or str
@@ -1005,6 +1004,10 @@ def geometric_reblock(blockmodel: pd.DataFrame,
     -------
     pandas.DataFrame
         reblocked block model
+
+    Examples
+    --------
+    >>>
     """
     # check reblocking multiplier for super and subblock in same function
     def reblock_multiplier_check(reblock_multiplier_tuple):
