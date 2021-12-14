@@ -972,7 +972,9 @@ def geometric_reblock(blockmodel: pd.DataFrame,
 
     This function utilises a ``reblock_multiplier`` in (x, y, z) dimensions to define the reblock. The function will
     either superblock or subblock but not both in the same call. The reblock_multiplier must be a multiple of the
-    parent dimension.
+    parent dimension. To superblock in one dimension and subblock in another, subblock to the smallest dimensions
+    required and then superblock to the required size.
+
     Weighting of blocks, is handled by argument ``varlist_agg``. This dictionary must have the block
     model attribute to weight by as the key and the attributes to be weighted as a list in the key.
 
@@ -1173,7 +1175,7 @@ def geometric_reblock(blockmodel: pd.DataFrame,
         # IJK subblocked model on big grid
         sub_blocked_model = sub_blocked_model.ijk(xyz_cols=xyz_cols, dims=dims, origin=origin)
 
-        # set both models indicies to ijk
+        # set both models indices to ijk
         sub_blocked_model = sub_blocked_model.set_index(['i', 'j', 'k'])
         blockmodel = blockmodel.set_index(['i', 'j', 'k'])
 
