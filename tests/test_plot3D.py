@@ -67,6 +67,4 @@ def test_plot3D_3():
         widget='section'
     )
 
-    # assert isinstance(plot, pv.Plotter)
-test_plot3D_3()
-print('hello')
+    assert isinstance(plot, pv.Plotter)
