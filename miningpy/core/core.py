@@ -987,8 +987,19 @@ def geometric_reblock(blockmodel: pd.DataFrame,
         x,y,z dimension of regular parent blocks
     origin: tuple of floats or ints
         x,y,z origin of model - this is the corner of the bottom block (not the centroid)
-    origin: tuple of floats or ints
-        x,y,z origin of model - this is the corner of the bottom block (not the centroid)
+    reblock_multiplier: tuple of floats or ints
+        the scalar to change dimensions of blocks. E.g., (2, 2, 1) will double the blocks in the x and y dimension
+        and keep the z dimension the same.
+    varlist_agg: dictionary
+        used to weight attributes. Key is the attribute to weight by, value is a list of attributes to weight. All
+         attributes that are required to be carried through the reblock must be a key in the dictionary even if
+         they are not weighting anything. Keys with empty lists will be divided or summed accordingly
+         E.g., to carry through ore tonnes, volume and energy with ore grades,
+        varlist_agg = {'ore_tonnes': ['au_grade', 'cu_grade'], 'volume':['density'], 'energy':[]}
+    min_cols: list model attributes
+        attributes that require the min value e.g., resource category
+    max_cols: list model attributes
+        attributes that require the max value e.g., resource category
 
     Returns
     -------
