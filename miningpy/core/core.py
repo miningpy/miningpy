@@ -812,7 +812,7 @@ def vulcan_bdf(blockmodel: pd.DataFrame,
                end_offset: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
                format: str = 'T') -> bool:
     """
-    create a Vulcan block definition file from a vulcan block model.
+    Create a Vulcan block definition file from a vulcan block model.
     This script creates a BDF from a vulcan block model csv that can be imported into Vulcan.
     It assumes that bearing, dip and plunge are the default.
     values for the block model. Variables are given a default value of -99.0, a blank description and type 'double'.
@@ -963,17 +963,32 @@ def geometric_reblock(blockmodel: pd.DataFrame,
                       min_cols: list = None,
                       max_cols: list = None,
                       ):
-    # TODO add fun stats for sub block
+    # TODO blockmodel size warning when copying across attributes?
     """
-    reblock regular block model into larger or smaller blocks (split or aggregate blocks)
-    can be used as a tool for geometrically aggregating blocks in bench-phases
-    reblock factor (n) must be 2^n (i.e. blocks are either doubled, halved, quartered, etc in size)
-    cannot just define any new x,y,z dimension, must be multiple of current parent block size.
+    Reblock a regular block model into larger or smaller blocks (aggregate or split blocks). Aggregating multiple small
+    blocks into big blocks will be referred to as "superblocking" and splitting big blocks into smaller children will
+    be referred to as "subblocking". This tool can be used as a tool for geometrically aggregating blocks in
+    bench-phases.
+
+    This function utilises a ``reblock_multiplier`` in (x, y, z) dimensions to define the reblock. The function will
+    either superblock or subblock but not both in the same call. The reblock_multiplier must be a multiple of the
+    parent dimension.
+    Weighting of blocks, is handled by argument ``varlist_agg``. This dictionary must have the block
+    model attribute to weight by as the key and the attributes to be weighted as a list in the key.
 
     Parameters
     ----------
     blockmodel: pd.DataFrame
         pandas dataframe of block model
+
+    xyz_cols: tuple of strings
+        names of x,y,z columns in model
+    dims: tuple of floats, ints or str
+        x,y,z dimension of regular parent blocks
+    origin: tuple of floats or ints
+        x,y,z origin of model - this is the corner of the bottom block (not the centroid)
+    origin: tuple of floats or ints
+        x,y,z origin of model - this is the corner of the bottom block (not the centroid)
 
     Returns
     -------
@@ -1000,7 +1015,7 @@ def geometric_reblock(blockmodel: pd.DataFrame,
 
     # check that model is regular
     if blockmodel.check_regular(xyz_cols=xyz_cols, origin=origin, dims=dims) is False:
-        raise ValueError('block model does not have regular dimensions and geometric reblock requires regular model')
+        raise ValueError('block model does not have regular dimensions and geometric_reblock requires regular model')
 
     # check multiplier makes sense
     if reblock_multiplier[0] >= 1:
