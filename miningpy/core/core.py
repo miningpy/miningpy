@@ -1047,20 +1047,31 @@ def geometric_reblock(blockmodel: pd.DataFrame,
     # check reblocking multiplier for super and subblock in same function
     def reblock_multiplier_check(reblock_multiplier_tuple):
         result = True
-        if reblock_multiplier_tuple[0] >= 1:  # if the first reblock multiplier indicates superblocking then all must super
+        if reblock_multiplier_tuple[0] > 1:  # if the first reblock multiplier indicates superblocking then all must super
             for multiplier in reblock_multiplier_tuple:
                 if multiplier < 1:
                     result = False
-        else:  # else all sublock
+
+        elif reblock_multiplier_tuple[0] < 1:  # elif sublock
             for multiplier in reblock_multiplier_tuple:
-                if multiplier > 1:  # if multiplier = 1 then no reblocking
+                if multiplier > 1:
                     result = False
+
+        else:  # reblock_multiplier_tuple[0] == 1 and superblocking in y, z dims
+            if reblock_multiplier_tuple[1] > 1:
+                assert reblock_multiplier_tuple[2] >= 1, "geometric_reblock does not handle both superblocking y dim " \
+                                                         "and subblocking z dim. Consider subblocking whole model to "\
+                                                         "smallest unit and then superblocking."
+            if reblock_multiplier_tuple[1] < 1:
+                assert reblock_multiplier_tuple[2] <= 1, "geometric_reblock does not handle both subblocking y dim " \
+                                                         "and superblocking z dim. Consider subblocking whole model to "\
+                                                         "smallest unit and then superblocking."
 
         return result
     assert reblock_multiplier_check(reblock_multiplier) == True, "geometric_reblock does not handle both superblocking " \
                                                                  "and subblocking in the same function. Consider " \
                                                                  "subblocking whole model to smallest unit and then" \
-                                                                 " superblocking"
+                                                                 " superblocking."
 
     # check that model is regular
     if blockmodel.check_regular(xyz_cols=xyz_cols, origin=origin, dims=dims) is False:
