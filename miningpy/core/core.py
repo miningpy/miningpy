@@ -1057,7 +1057,7 @@ def geometric_reblock(blockmodel: pd.DataFrame,
                 if multiplier > 1:
                     result = False
 
-        else:  # reblock_multiplier_tuple[0] == 1 and superblocking in y, z dims
+        else:  # reblock_multiplier_tuple[0] == 1
             if reblock_multiplier_tuple[1] > 1:
                 assert reblock_multiplier_tuple[2] >= 1, "geometric_reblock does not handle both superblocking y dim " \
                                                          "and subblocking z dim. Consider subblocking whole model to "\
