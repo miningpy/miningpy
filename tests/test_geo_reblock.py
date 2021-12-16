@@ -32,8 +32,7 @@ def test_geo_reblock():
     min_cols = ['final_pit']
     max_cols = ['period']
 
-    for i, multi in enumerate(list_of_reblocking_multis):
-        print(i)
+    for multi in list_of_reblocking_multis:
         # reblock function
         reblock = data.geometric_reblock(
             dims=(1, 1, 1),  # original dims of model
@@ -53,5 +52,3 @@ def test_geo_reblock():
         new_dims = reblock.block_dims(xyz_cols=('x', 'y', 'z'),
                                       origin=(-0.5, -0.5, -0.5))
         assert new_dims == multi, 'reblocking dims error'
-
-test_geo_reblock()
