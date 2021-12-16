@@ -4,7 +4,7 @@ import pandas as pd
 import miningpy
 
 # block model example (zuck small - MineLib)
-url = "https://drive.google.com/uc?export=download&id=1SOrYhqiu5Tg8Zjb7be4fUWhbFDTU1sEk"
+url = "https://drive.google.com/uc?export=download&id=17UTMf_Wi7BcOFKOg9Cgw6PwoPINP5wfD"
 
 # read in block model from link
 data = pd.read_csv(url, compression='zip')
