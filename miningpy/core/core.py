@@ -1078,13 +1078,13 @@ def geometric_reblock(blockmodel: pd.DataFrame,
         raise ValueError('block model does not have regular dimensions and geometric_reblock requires regular model')
 
     # check multiplier makes sense
-    if reblock_multiplier[0] >= 1:
+    if reblock_multiplier[0] >= 1 and dims[0] < 1:
         assert (reblock_multiplier[0]/dims[0]).is_integer(), "x dimension multiplier is not a multiple of original dimension"
 
-    if reblock_multiplier[1] >= 1:
+    if reblock_multiplier[1] >= 1 and dims[1] < 1:
         assert (reblock_multiplier[1]/dims[1]).is_integer(), "y dimension multiplier is not a multiple of original dimension"
 
-    if reblock_multiplier[2] >= 1:
+    if reblock_multiplier[2] >= 1 and dims[2] < 1:
         assert (reblock_multiplier[2]/dims[2]).is_integer(), "z dimension multiplier is not a multiple of original dimension"
 
     if reblock_multiplier[0] < 1:
@@ -1130,25 +1130,35 @@ def geometric_reblock(blockmodel: pd.DataFrame,
         inv_tonnes = blockmodel.groupby(group_cols)[tonne_cols].sum()
 
         # take highest value
-        if len(max_cols) > 0:
-            inv_max = blockmodel.groupby(group_cols)[max_cols].max()
-            inv_grades.append(inv_max)
+        if max_cols != None:
+            if len(max_cols) > 0:
+                inv_max = blockmodel.groupby(group_cols)[max_cols].max()
+                inv_grades.append(inv_max)
 
         # take lowest value
-        if len(min_cols) > 0:
-            inv_min = blockmodel.groupby(group_cols)[min_cols].min()
-            inv_grades.append(inv_min)
+        if min_cols != None:
+            if len(min_cols) > 0:
+                inv_min = blockmodel.groupby(group_cols)[min_cols].min()
+                inv_grades.append(inv_min)
 
         # join average grades / total tonnages
         inv_all = pd.concat([inv_tonnes] + inv_grades, axis='columns')
         blockmodel = inv_all
 
-        # add back xyz coordinates
+        # add back xyz coordinates in a nice order
         blockmodel = blockmodel.reset_index()
         blockmodel = blockmodel.rename(columns={'i2': 'i', 'j2': 'j', 'k2': 'k'})
 
         new_dims = (dims[0] * reblock_multiplier[0], dims[1] * reblock_multiplier[1], dims[2] * reblock_multiplier[2],)
         blockmodel = blockmodel.xyz(origin=origin, dims=new_dims,)
+
+        cols = list(blockmodel.columns)
+        cols = [_ for _ in cols if _ not in xyz_cols]
+        cols.insert(0, 'x')
+        cols.insert(1, 'y')
+        cols.insert(2, 'z')
+
+        blockmodel = blockmodel[cols]
 
         # check duplicates
         duplicate_check = blockmodel.duplicated(subset=['x', 'y', 'z'])

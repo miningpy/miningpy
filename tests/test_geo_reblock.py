@@ -54,3 +54,8 @@ def test_geo_reblock():
         new_dims = reblock.block_dims(xyz_cols=('x', 'y', 'z'),
                                       origin=(-0.5, -0.5, -0.5))
         assert new_dims == multi, 'reblocking dims error'
+
+# testing breaking code with broken reblock multiplier
+# def test_mytest():
+#     with pytest.raises(AssertionError):
+#         test_geo_reblock()
