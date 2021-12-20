@@ -1240,6 +1240,15 @@ def geometric_reblock(blockmodel: pd.DataFrame,
 
         blockmodel = sub_blocked_model
 
+        # make sure xyz cols are at the front
+        cols = list(blockmodel.columns)
+        cols = [_ for _ in cols if _ not in xyz_cols]
+        cols.insert(0, 'x')
+        cols.insert(1, 'y')
+        cols.insert(2, 'z')
+
+        blockmodel = blockmodel[cols]
+
         # fun stats and cleaning
         model_size_after_reblock = len(blockmodel)
         print('reblocking increased number of blocks by: ', int((model_size_after_reblock/model_size_before_reblock)*100)-100, '%')
