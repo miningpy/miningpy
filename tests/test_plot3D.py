@@ -48,6 +48,7 @@ def test_plot3D_2():
 
     assert isinstance(plot, pv.Plotter)
 
+
 # test data with slider widget
 testdata3 = {
     'x': [5, 5, 15],
@@ -55,6 +56,7 @@ testdata3 = {
     'z': [5, 5, 5],
     'ton': [50.1, 100, 50],
 }
+
 
 def test_plot3D_3():
     # all params specified

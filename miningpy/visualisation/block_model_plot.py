@@ -286,6 +286,7 @@ def plot3D(blockmodel:      pd.DataFrame,
 
     if show_plot:
         plot.show(full_screen=True)
+        return plot  # pv.Plotter
 
     if not show_plot:
         return plot  # pv.Plotter
