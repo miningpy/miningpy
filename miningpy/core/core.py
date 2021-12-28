@@ -16,18 +16,19 @@ from pandas.core.base import PandasObject
 from typing import Union, List, Tuple
 import datetime
 import warnings
+import itertools
 
 
-def ijk(blockmodel:     pd.DataFrame,
-        method:         str = 'ijk',
-        indexing:       int = 0,
-        xyz_cols:       Tuple[str, str, str] = None,
-        origin:         Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
-        dims:           Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
-        rotation:       Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
-        ijk_cols:       Tuple[str, str, str] = ('i', 'j', 'k'),
+def ijk(blockmodel: pd.DataFrame,
+        method: str = 'ijk',
+        indexing: int = 0,
+        xyz_cols: Tuple[str, str, str] = None,
+        origin: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+        dims: Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
+        rotation: Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
+        ijk_cols: Tuple[str, str, str] = ('i', 'j', 'k'),
         print_warnings: bool = True,
-        inplace:        bool = False) -> pd.DataFrame:
+        inplace: bool = False) -> pd.DataFrame:
     """
     Calculate block ijk indexes from their xyz cartesian coordinates
 
@@ -158,13 +159,14 @@ def ijk(blockmodel:     pd.DataFrame,
                     # check integer value isn't far from float - this can cause indexing issues
                     # throw a warning to the user if this is the case
                     # float should be within 0.00001 tolerance of integer
-                    indexed_float = ((bm_xcol - xsize/2 - xorigin) / xsize)
-                    indexed_int = np.rint((bm_xcol - xsize/2 - xorigin) / xsize).astype(int)
+                    indexed_float = ((bm_xcol - xsize / 2 - xorigin) / xsize)
+                    indexed_int = np.rint((bm_xcol - xsize / 2 - xorigin) / xsize).astype(int)
                     check_float = (indexed_float - indexed_int).abs()
                     if check_float.any() > 0.00001:
-                        warnings.warn("MiningPy WARNING - xcol block centroids not on a regular grid - calculated IJK values may be wrong")
+                        warnings.warn(
+                            "MiningPy WARNING - xcol block centroids not on a regular grid - calculated IJK values may be wrong")
 
-                icol_float = (bm_xcol - xsize/2 - xorigin) / xsize
+                icol_float = (bm_xcol - xsize / 2 - xorigin) / xsize
                 icol_float = icol_float.round(decimals=0)
                 blockmodel[icol] = (np.rint(icol_float) + indexing).astype(int)
             except ValueError:
@@ -176,13 +178,14 @@ def ijk(blockmodel:     pd.DataFrame,
                     # check integer value isn't far from float - this can cause indexing issues
                     # throw a warning to the user if this is the case
                     # float should be within 0.00001 tolerance of integer
-                    indexed_float = ((bm_ycol - ysize/2 - yorigin) / ysize)
-                    indexed_int = np.rint((bm_ycol - ysize/2 - yorigin) / ysize).astype(int)
+                    indexed_float = ((bm_ycol - ysize / 2 - yorigin) / ysize)
+                    indexed_int = np.rint((bm_ycol - ysize / 2 - yorigin) / ysize).astype(int)
                     check_float = (indexed_float - indexed_int).abs()
                     if check_float.any() > 0.00001:
-                        warnings.warn("MiningPy WARNING - ycol block centroids not on a regular grid - calculated IJK values may be wrong")
+                        warnings.warn(
+                            "MiningPy WARNING - ycol block centroids not on a regular grid - calculated IJK values may be wrong")
 
-                jcol_float = (bm_ycol - ysize/2 - yorigin) / ysize
+                jcol_float = (bm_ycol - ysize / 2 - yorigin) / ysize
                 jcol_float = jcol_float.round(decimals=0)
                 blockmodel[jcol] = (np.rint(jcol_float) + indexing).astype(int)
             except ValueError:
@@ -198,7 +201,8 @@ def ijk(blockmodel:     pd.DataFrame,
                     indexed_int = np.rint((bm_zcol - zsize / 2 - zorigin) / zsize).astype(int)
                     check_float = (indexed_float - indexed_int).abs()
                     if check_float.any() > 0.00001:
-                        warnings.warn("MiningPy WARNING - zcol block centroids not on a regular grid - calculated IJK values may be wrong")
+                        warnings.warn(
+                            "MiningPy WARNING - zcol block centroids not on a regular grid - calculated IJK values may be wrong")
 
                 kcol_float = (bm_zcol - zsize / 2 - zorigin) / zsize
                 kcol_float = kcol_float.round(decimals=0)
@@ -213,15 +217,15 @@ def ijk(blockmodel:     pd.DataFrame,
         raise ValueError('IJK FAILED - IJK method not accepted')
 
 
-def xyz(blockmodel:     pd.DataFrame,
-        method:         str = 'xyz',
-        indexing:       int = 0,
-        ijk_cols:       Tuple[str, str, str] = ('i', 'j', 'k'),
-        origin:         Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
-        dims:           Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
-        rotation:       Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
-        xyz_cols:       Tuple[str, str, str] = ('x', 'y', 'z'),
-        inplace:        bool = False) -> pd.DataFrame:
+def xyz(blockmodel: pd.DataFrame,
+        method: str = 'xyz',
+        indexing: int = 0,
+        ijk_cols: Tuple[str, str, str] = ('i', 'j', 'k'),
+        origin: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+        dims: Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
+        rotation: Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
+        xyz_cols: Tuple[str, str, str] = ('x', 'y', 'z'),
+        inplace: bool = False) -> pd.DataFrame:
     """
     Calculate xyz cartesian cooridinates of blocks from their ijk indexes
 
@@ -259,7 +263,7 @@ def xyz(blockmodel:     pd.DataFrame,
     if not inplace:
         blockmodel = blockmodel.copy()
 
-    methods_accepted = ['xyz', 'xy', 'xz', 'yz', 'x',  'y', 'z']
+    methods_accepted = ['xyz', 'xy', 'xz', 'yz', 'x', 'y', 'z']
     indexing_accepted = [0, 1]
 
     # check input indexing
@@ -285,19 +289,19 @@ def xyz(blockmodel:     pd.DataFrame,
     if method in methods_accepted:
         if 'x' in method:
             try:
-                blockmodel[xcol] = ((blockmodel[icol] - indexing) * xsize) + xorigin + (xsize/2)
+                blockmodel[xcol] = ((blockmodel[icol] - indexing) * xsize) + xorigin + (xsize / 2)
             except ValueError:
                 raise ValueError('XYZ FAILED - either icol, xorigin or xsize not defined properly')
 
         if 'y' in method:
             try:
-                blockmodel[ycol] = ((blockmodel[jcol] - indexing) * ysize) + yorigin + (ysize/2)
+                blockmodel[ycol] = ((blockmodel[jcol] - indexing) * ysize) + yorigin + (ysize / 2)
             except ValueError:
                 raise ValueError('XYZ FAILED - either jcol, yorigin or ysize not defined properly')
 
         if 'z' in method:
             try:
-                blockmodel[zcol] = ((blockmodel[kcol] - indexing) * zsize) + zorigin + (zsize/2)
+                blockmodel[zcol] = ((blockmodel[kcol] - indexing) * zsize) + zorigin + (zsize / 2)
             except ValueError:
                 raise ValueError('XYZ FAILED - either kcol, zorigin or zsize not defined properly')
 
@@ -320,13 +324,13 @@ def xyz(blockmodel:     pd.DataFrame,
         return blockmodel
 
 
-def rotate_grid(blockmodel:         pd.DataFrame,
-                xyz_cols:           Tuple[str, str, str] = ('x', 'y', 'z'),
-                origin:             Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
-                rotation:           Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
-                return_full_model:  bool = True,
-                derotate:           bool = False,
-                inplace:            bool = False) -> Union[pd.DataFrame, dict]:
+def rotate_grid(blockmodel: pd.DataFrame,
+                xyz_cols: Tuple[str, str, str] = ('x', 'y', 'z'),
+                origin: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+                rotation: Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
+                return_full_model: bool = True,
+                derotate: bool = False,
+                inplace: bool = False) -> Union[pd.DataFrame, dict]:
     """
     Rotate block model relative to cartesian grid
     This method uses a rotation matrix method
@@ -390,12 +394,12 @@ def rotate_grid(blockmodel:         pd.DataFrame,
     else:
         return blockmodel
 
-    x_sin = sin(x_rotation*(pi/180.0))
-    x_cos = cos(x_rotation*(pi/180.0))
-    y_sin = sin(y_rotation*(pi/180.0))
-    y_cos = cos(y_rotation*(pi/180.0))
-    z_sin = sin(z_rotation*(pi/180.0))
-    z_cos = cos(z_rotation*(pi/180.0))
+    x_sin = sin(x_rotation * (pi / 180.0))
+    x_cos = cos(x_rotation * (pi / 180.0))
+    y_sin = sin(y_rotation * (pi / 180.0))
+    y_cos = cos(y_rotation * (pi / 180.0))
+    z_sin = sin(z_rotation * (pi / 180.0))
+    z_cos = cos(z_rotation * (pi / 180.0))
 
     # define rotation matrix
     rotation_matrix = np.zeros((3, 3), dtype=np.float64)
@@ -435,10 +439,10 @@ def rotate_grid(blockmodel:         pd.DataFrame,
                     'z': blockmodel[zcol]}
 
 
-def group_weighted_average(blockmodel:   pd.DataFrame,
-                           avg_cols:     Union[str, List[str]],
-                           weight_col:   str,
-                           group_cols:   Union[str, List[str]] = None) -> pd.DataFrame:
+def group_weighted_average(blockmodel: pd.DataFrame,
+                           avg_cols: Union[str, List[str]],
+                           weight_col: str,
+                           group_cols: Union[str, List[str]] = None) -> pd.DataFrame:
     """
     weighted average of block model attribute(s)
 
@@ -506,7 +510,7 @@ def group_weighted_average(blockmodel:   pd.DataFrame,
         # sum the weights
         data_weights = data_in[weight_col].sum()
         # mass divide the units by the weight col and presto
-        data_out = data_units/data_weights
+        data_out = data_units / data_weights
         data_out = data_out.fillna(0.0)  # in case of zero weights
         return data_out
 
@@ -685,14 +689,16 @@ def vulcan_csv(blockmodel: pd.DataFrame,
         return blockmodel
 
 
-def check_regular_extents(  blockmodel: pd.DataFrame,
-                    end_offset: Tuple[Union[int, float], Union[int, float], Union[int, float]],
-                    dims: Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]],
-                    origin: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
-                    original_rotation: Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = (0,0,0),
-                    xyz_cols: Tuple[str, str, str] = None,
-                    start_offset: Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0.0, 0.0, 0.0),
-                    ):
+def check_regular_extents(blockmodel: pd.DataFrame,
+                          end_offset: Tuple[Union[int, float], Union[int, float], Union[int, float]],
+                          dims: Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]],
+                          origin: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+                          original_rotation: Tuple[
+                              Union[int, float, str], Union[int, float, str], Union[int, float, str]] = (0, 0, 0),
+                          xyz_cols: Tuple[str, str, str] = None,
+                          start_offset: Tuple[Union[int, float], Union[int, float], Union[int, float]] = (
+                                  0.0, 0.0, 0.0),
+                          ):
     """Verify if the model's blocks are physically within the extents specified.
 
     Parameters
@@ -723,11 +729,11 @@ def check_regular_extents(  blockmodel: pd.DataFrame,
         True if test succeeds, False if it doesn't
     """
 
-    #TODO make this better, or cancel this error checking entirely
+    # TODO make this better, or cancel this error checking entirely
     bm = pd.DataFrame()
     try:
         bm = blockmodel[[xyz_cols[0], xyz_cols[1], xyz_cols[2]]]
-    except :
+    except:
         try:
             bm = blockmodel[['centroid_x', 'centroid_y', 'centroid_z']]
         except:
@@ -744,12 +750,12 @@ def check_regular_extents(  blockmodel: pd.DataFrame,
 
     bm.columns = ['x', 'y', 'z']
 
-    #Checks if the block model is a vulcan formatted block model
+    # Checks if the block model is a vulcan formatted block model
     if bm.at[0, 'x'] == 'Variable descriptions:':
         bm = bm.iloc[3:, :]
         bm = bm.astype('float64')
 
-    #TODO make sure this actually derotates a model
+    # TODO make sure this actually derotates a model
     bm = bm.rotate_grid(origin=origin,
                         rotation=original_rotation,
                         derotate=True)
@@ -761,31 +767,30 @@ def check_regular_extents(  blockmodel: pd.DataFrame,
     bm_ymin = bm['y'].min()
     bm_zmin = bm['z'].min()
 
-    th_xmax = origin[0] + end_offset[0] - dims[0]/2
-    th_ymax = origin[1] + end_offset[1] - dims[1]/2
-    th_zmax = origin[2] + end_offset[2] - dims[2]/2
-    th_xmin = origin[0] + start_offset[0] + dims[0]/2
-    th_ymin = origin[1] + start_offset[1] + dims[1]/2
-    th_zmin = origin[2] + start_offset[2] + dims[2]/2
+    th_xmax = origin[0] + end_offset[0] - dims[0] / 2
+    th_ymax = origin[1] + end_offset[1] - dims[1] / 2
+    th_zmax = origin[2] + end_offset[2] - dims[2] / 2
+    th_xmin = origin[0] + start_offset[0] + dims[0] / 2
+    th_ymin = origin[1] + start_offset[1] + dims[1] / 2
+    th_zmin = origin[2] + start_offset[2] + dims[2] / 2
 
-    out_xmax = abs(bm_xmax - th_xmax)/dims[0] > 0.01
-    out_ymax = abs(bm_ymax - th_ymax)/dims[1] > 0.01
-    out_zmax = abs(bm_zmax - th_zmax)/dims[2] > 0.01
-    out_xmin = abs(bm_xmin - th_xmin)/dims[0] > 0.01
-    out_ymin = abs(bm_ymin - th_ymin)/dims[1] > 0.01
-    out_zmin = abs(bm_zmin - th_zmin)/dims[2] > 0.01
-    blocks_outside = out_xmax or out_ymax or out_zmax or\
+    out_xmax = abs(bm_xmax - th_xmax) / dims[0] > 0.01
+    out_ymax = abs(bm_ymax - th_ymax) / dims[1] > 0.01
+    out_zmax = abs(bm_zmax - th_zmax) / dims[2] > 0.01
+    out_xmin = abs(bm_xmin - th_xmin) / dims[0] > 0.01
+    out_ymin = abs(bm_ymin - th_ymin) / dims[1] > 0.01
+    out_zmin = abs(bm_zmin - th_zmin) / dims[2] > 0.01
+    blocks_outside = out_xmax or out_ymax or out_zmax or \
                      out_xmin or out_ymin or out_zmin
 
-    in_xmax = abs(bm_xmax - th_xmax)/dims[0] > 0.01
-    in_ymax = abs(bm_ymax - th_ymax)/dims[1] > 0.01
-    in_zmax = abs(bm_zmax - th_zmax)/dims[2] > 0.01
-    in_xmin = abs(bm_xmin - th_xmin)/dims[0] > 0.01
-    in_ymin = abs(bm_ymin - th_ymin)/dims[1] > 0.01
-    in_zmin = abs(bm_zmin - th_zmin)/dims[2] > 0.01
-    blocks_inside = in_xmax or in_ymax or in_zmax or\
-                     in_xmin or in_ymin or in_zmin
-
+    in_xmax = abs(bm_xmax - th_xmax) / dims[0] > 0.01
+    in_ymax = abs(bm_ymax - th_ymax) / dims[1] > 0.01
+    in_zmax = abs(bm_zmax - th_zmax) / dims[2] > 0.01
+    in_xmin = abs(bm_xmin - th_xmin) / dims[0] > 0.01
+    in_ymin = abs(bm_ymin - th_ymin) / dims[1] > 0.01
+    in_zmin = abs(bm_zmin - th_zmin) / dims[2] > 0.01
+    blocks_inside = in_xmax or in_ymax or in_zmax or \
+                    in_xmin or in_ymin or in_zmin
 
     if blocks_outside:
         warnings.warn('Big Warning, blocks appears to exist outside the bm extents!\n')
@@ -799,8 +804,6 @@ def check_regular_extents(  blockmodel: pd.DataFrame,
         return False
 
 
-
-
 def vulcan_bdf(blockmodel: pd.DataFrame,
                path: str = None,
                origin: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
@@ -809,7 +812,7 @@ def vulcan_bdf(blockmodel: pd.DataFrame,
                end_offset: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
                format: str = 'T') -> bool:
     """
-    create a Vulcan block definition file from a vulcan block model.
+    Create a Vulcan block definition file from a vulcan block model.
     This script creates a BDF from a vulcan block model csv that can be imported into Vulcan.
     It assumes that bearing, dip and plunge are the default.
     values for the block model. Variables are given a default value of -99.0, a blank description and type 'double'.
@@ -889,7 +892,7 @@ def vulcan_bdf(blockmodel: pd.DataFrame,
         bdf.write(" ")
         bdf.write("description=' '\n")
         bdf.write(" ")
-        bdf.write(f"name='{variables[count-1]}'\n")
+        bdf.write(f"name='{variables[count - 1]}'\n")
         bdf.write(" ")
         bdf.write("type='double'\n")
         bdf.write(f"END$DEF variable_{count}\n")
@@ -951,24 +954,307 @@ def vulcan_bdf(blockmodel: pd.DataFrame,
     return True
 
 
-def geometric_reblock(blockmodel: pd.DataFrame):
+def geometric_reblock(blockmodel: pd.DataFrame,
+                      xyz_cols: Tuple[str, str, str] = None,
+                      origin: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+                      dims: Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
+                      reblock_multiplier: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+                      varlist_agg: dict = None,
+                      min_cols: list = None,
+                      max_cols: list = None,
+                      ):
+    # TODO blockmodel size warning when copying across attributes?
     """
-    reblock regular block model into larger or smaller blocks (split or aggregate blocks)
-    can be used as a tool for geometrically aggregating blocks in bench-phases
-    reblock factor (n) must be 2^n (i.e. blocks are either doubled, halved, quartered, etc in size)
-    cannot just define any new x,y,z dimension, must be multiple of current parent block size.
+    Reblock a regular block model into larger or smaller blocks (aggregate or split blocks). Aggregating multiple small
+    blocks into big blocks will be referred to as "superblocking" and splitting big blocks into smaller children will
+    be referred to as "subblocking". This tool can be used as a tool for geometrically aggregating blocks in
+    bench-phases.
+
+    This function utilises a ``reblock_multiplier`` in (x, y, z) dimensions to define the reblock. The function will
+    either superblock or subblock but not both in the same call. The reblock_multiplier must be a multiple of the
+    parent dimension. To superblock in one dimension and subblock in another, subblock to the smallest dimensions
+    required and then superblock to the required size.
+
+    Weighting of blocks, is handled by argument ``varlist_agg``. This dictionary must have the block
+    model attribute to weight by as the key and the attributes to be weighted as a list in the key.
 
     Parameters
     ----------
     blockmodel: pd.DataFrame
         pandas dataframe of block model
+    xyz_cols: tuple of strings
+        names of x,y,z columns in model
+    dims: tuple of floats, ints or str
+        x,y,z dimension of regular parent blocks
+    origin: tuple of floats or ints
+        x,y,z origin of model - this is the corner of the bottom block (not the centroid)
+    reblock_multiplier: tuple of floats or ints
+        the scalar to change dimensions of blocks. E.g., (2, 2, 1) will double the blocks in the x and y dimension
+        and keep the z dimension the same.
+    varlist_agg: dictionary
+        used to weight attributes. Key is the attribute to weight by, value is a list of attributes to weight. All
+        attributes that are required to be carried through the reblock must be a key in the dictionary even if
+        they are not weighting anything. Keys with empty lists will be divided or summed accordingly
+        E.g., to carry through ore tonnes, volume and energy with ore grades,
+        varlist_agg = {'ore_tonnes': ['au_grade', 'cu_grade'], 'volume':['density'], 'energy':[]}
+    min_cols: {optional} list of model attributes
+        attributes that require the min value e.g., pit_number
+    max_cols: {optional} list of model attributes
+        attributes that require the max value e.g., resource category
 
     Returns
     -------
     pandas.DataFrame
         reblocked block model
+
+    Examples
+    --------
+>>> import pandas as pd
+>>> import miningpy
+
+>>> # block model example (zuck small - MineLib)
+>>> url = "https://drive.google.com/uc?export=download&id=1SOrYhqiu5Tg8Zjb7be4fUWhbFDTU1sEk"
+
+>>> # read in block model from link
+>>> data = pd.read_csv(url, compression='zip')
+
+>>> # listing attributes to carry through (n.b. dropping ID column)
+>>> # keys are what to weight by and values are lists of attributes to be weighted
+>>> varlist_agg = {
+>>> 'rock_tonnes': ['cost', 'value'],
+>>> 'ore_tonnes': [],
+>>> }
+
+>>> # take the max or min value of reblock
+>>> min_cols = ['final_pit']
+>>> max_cols = ['period']
+
+>>> # reblock function
+>>> reblock = data.geometric_reblock(
+>>> dims=(1, 1, 1),  # original dims of model
+>>> xyz_cols=('x', 'y', 'z'),
+>>> origin=(-0.5, -0.5, -0.5),  # bottom left corner
+>>> reblock_multiplier=(2, 2, 1),  # doubling x and y dim and keeping z dim the same
+>>> varlist_agg=varlist_agg,
+>>> min_cols=min_cols,
+>>> max_cols=max_cols,
+>>> )
+
+>>>reblock.plot3D(dims=(2, 2, 1), xyz_cols=('x', 'y', 'z'), col='value', widget='section')  # reblocked plot
+>>>data.plot3D(dims=(1, 1, 1), xyz_cols=('x', 'y', 'z'), col='value', widget='section')  # original plot
+
     """
-    raise Exception("MiningPy function {geometric_reblock} hasn't been created yet")
+    # check reblocking multiplier for super and subblock in same function
+    def reblock_multiplier_check(reblock_multiplier_tuple):
+        result = True
+        if reblock_multiplier_tuple[0] > 1:  # if the first reblock multiplier indicates superblocking then all must super
+            for multiplier in reblock_multiplier_tuple:
+                if multiplier < 1:
+                    result = False
+
+        elif reblock_multiplier_tuple[0] < 1:  # elif sublock
+            for multiplier in reblock_multiplier_tuple:
+                if multiplier > 1:
+                    result = False
+
+        else:  # reblock_multiplier_tuple[0] == 1
+            if reblock_multiplier_tuple[1] > 1:
+                assert reblock_multiplier_tuple[2] >= 1, "geometric_reblock does not handle both superblocking y dim " \
+                                                         "and subblocking z dim. Consider subblocking whole model to "\
+                                                         "smallest unit and then superblocking."
+            if reblock_multiplier_tuple[1] < 1:
+                assert reblock_multiplier_tuple[2] <= 1, "geometric_reblock does not handle both subblocking y dim " \
+                                                         "and superblocking z dim. Consider subblocking whole model to "\
+                                                         "smallest unit and then superblocking."
+
+        return result
+    assert reblock_multiplier_check(reblock_multiplier) == True, "geometric_reblock does not handle both superblocking " \
+                                                                 "and subblocking in the same function. Consider " \
+                                                                 "subblocking whole model to smallest unit and then" \
+                                                                 " superblocking."
+
+    # check that model is regular
+    if blockmodel.check_regular(xyz_cols=xyz_cols, origin=origin, dims=dims) is False:
+        raise ValueError('block model does not have regular dimensions and geometric_reblock requires regular model')
+
+    # check multiplier makes sense
+    if reblock_multiplier[0] >= 1 and dims[0] < 1:
+        assert (reblock_multiplier[0]/dims[0]).is_integer(), "x dimension multiplier is not a multiple of original dimension"
+
+    if reblock_multiplier[1] >= 1 and dims[1] < 1:
+        assert (reblock_multiplier[1]/dims[1]).is_integer(), "y dimension multiplier is not a multiple of original dimension"
+
+    if reblock_multiplier[2] >= 1 and dims[2] < 1:
+        assert (reblock_multiplier[2]/dims[2]).is_integer(), "z dimension multiplier is not a multiple of original dimension"
+
+    if reblock_multiplier[0] < 1:
+        assert (dims[0]/reblock_multiplier[0]).is_integer(), "x dimension multiplier is not a multiple of original dimension"
+
+    if reblock_multiplier[1] < 1:
+        assert (dims[1]/reblock_multiplier[1]).is_integer(), "y dimension multiplier is not a multiple of original dimension"
+
+    if reblock_multiplier[2] < 1:
+        assert (dims[2]/reblock_multiplier[2]).is_integer(), "z dimension multiplier is not a multiple of original dimension"
+
+    # fun stats
+    model_size_before_reblock = len(blockmodel)
+
+    # superblocking code
+    if reblock_multiplier[0] >= 1 and reblock_multiplier[1] >= 1 and reblock_multiplier[2] >= 1:
+        print('reblocking input checks complete, superblocking initialising')
+
+        # make ijks
+        blockmodel = blockmodel.ijk(xyz_cols=xyz_cols, origin=origin, dims=dims)
+
+        # check for duplicates
+        if blockmodel.duplicated(subset=['i', 'j', 'k']).sum() > 0:
+            blockmodel = blockmodel.drop_duplicates(subset=['i', 'j', 'k'])  # remove duplicate blocks
+            warnings.warn("duplicate blocks removed")
+
+        # ijk on multiplier to create super or sub blocks
+        blockmodel['i2'] = np.ceil(blockmodel['i'] / reblock_multiplier[0]).astype(int)
+        blockmodel['j2'] = np.ceil(blockmodel['j'] / reblock_multiplier[1]).astype(int)
+        blockmodel['k2'] = np.ceil(blockmodel['k'] / reblock_multiplier[2]).astype(int)
+
+        group_cols = ['i2', 'j2', 'k2']
+
+        # calculate average grades for each tonnage
+        tonne_cols = list(varlist_agg.keys())
+        inv_grades = []
+        for ton_var in tonne_cols:
+            if len(varlist_agg[ton_var]) > 0:  # check the tonnage actually has associated grades
+                inv_grades.append(blockmodel.group_weighted_average(avg_cols=varlist_agg[ton_var], weight_col=ton_var,
+                                                                    group_cols=group_cols))
+
+        # calculate total tonnage/volumes
+        inv_tonnes = blockmodel.groupby(group_cols)[tonne_cols].sum()
+
+        # take highest value
+        if max_cols != None:
+            if len(max_cols) > 0:
+                inv_max = blockmodel.groupby(group_cols)[max_cols].max()
+                inv_grades.append(inv_max)
+
+        # take lowest value
+        if min_cols != None:
+            if len(min_cols) > 0:
+                inv_min = blockmodel.groupby(group_cols)[min_cols].min()
+                inv_grades.append(inv_min)
+
+        # join average grades / total tonnages
+        inv_all = pd.concat([inv_tonnes] + inv_grades, axis='columns')
+        blockmodel = inv_all
+
+        # add back xyz coordinates in a nice order
+        blockmodel = blockmodel.reset_index()
+        blockmodel = blockmodel.rename(columns={'i2': 'i', 'j2': 'j', 'k2': 'k'})
+
+        new_dims = (dims[0] * reblock_multiplier[0], dims[1] * reblock_multiplier[1], dims[2] * reblock_multiplier[2],)
+        blockmodel = blockmodel.xyz(origin=origin, dims=new_dims,)
+
+        cols = list(blockmodel.columns)
+        cols = [_ for _ in cols if _ not in xyz_cols]
+        cols.insert(0, 'x')
+        cols.insert(1, 'y')
+        cols.insert(2, 'z')
+
+        blockmodel = blockmodel[cols]
+
+        # check duplicates
+        duplicate_check = blockmodel.duplicated(subset=['x', 'y', 'z'])
+        if duplicate_check.sum() != 0:
+            warnings.warn('duplicates in sub blocked model')
+
+        # fun stats and cleaning
+        del blockmodel['i'], blockmodel['j'], blockmodel['k']
+        model_size_after_reblock = len(blockmodel)
+        print('reblocking reduced number of blocks by: ', int((1-(model_size_after_reblock/model_size_before_reblock))*100), '%')
+
+        # subblocking
+    else:
+        print('reblocking input checks complete, subblocking initialising')
+
+        # make ijks
+        blockmodel = blockmodel.ijk(xyz_cols=xyz_cols, origin=origin, dims=dims)
+
+        # check for duplicates
+        if blockmodel.duplicated(subset=['i', 'j', 'k']).sum() > 0:
+            blockmodel = blockmodel.drop_duplicates(subset=['i', 'j', 'k'])  # remove duplicate blocks
+            warnings.warn("duplicate blocks removed")
+
+        # model extents
+        nblocks = blockmodel.nblocks_xyz(xyz_cols=xyz_cols, origin=origin, dims=dims)
+        extents = (origin[0] + nblocks[0]*dims[0], origin[1] + nblocks[1]*dims[1], origin[2] + nblocks[2]*dims[2], )
+
+        # Making empty model with dimensions required
+        x = np.arange(start=origin[0] + ((dims[0]*reblock_multiplier[0])/2), stop=extents[0] + dims[0], step=(dims[0] * reblock_multiplier[0]))
+        y = np.arange(start=origin[1] + ((dims[1]*reblock_multiplier[1])/2), stop=extents[1] + dims[1], step=(dims[1] * reblock_multiplier[1]))
+        z = np.arange(start=origin[2] + ((dims[2]*reblock_multiplier[2])/2), stop=extents[2] + dims[2], step=(dims[2] * reblock_multiplier[2]))
+        sub_blocked_model = pd.DataFrame(list(itertools.product(x, y, z)), columns=['x', 'y', 'z'])
+        del x, y, z
+
+        # IJK subblocked model on big grid
+        sub_blocked_model = sub_blocked_model.ijk(xyz_cols=xyz_cols, dims=dims, origin=origin)
+
+        # set both models indices to ijk
+        sub_blocked_model = sub_blocked_model.set_index(['i', 'j', 'k'])
+        blockmodel = blockmodel.set_index(['i', 'j', 'k'])
+
+        # all attributes
+        properties = list(varlist_agg.values())
+        properties = [_ for sublist in properties for _ in sublist]  # flatten list of lists
+
+        # bring across all weights (tonnes)
+        weights = list(varlist_agg.keys())
+
+        attributes = properties + weights
+
+        print('beginning subblocking attribute transfer')
+        for attribute in attributes:
+            sub_blocked_model[attribute] = 0
+            sub_blocked_model[attribute] = blockmodel[attribute]
+
+        sub_blocked_model = sub_blocked_model.reset_index()
+        sub_blocked_model = sub_blocked_model.sort_values(by=['i', 'j', 'k'])
+        blockmodel = blockmodel.reset_index()
+        blockmodel = blockmodel.sort_values(by=['i', 'j', 'k'])
+
+        # drop blockmodel rows with nans as these blocks don't exist at this block size
+        sub_blocked_model = sub_blocked_model.dropna()
+
+        # reduce weights
+        weight_multiplier = reblock_multiplier[0] * reblock_multiplier[1] * reblock_multiplier[2]
+        for weight in weights:
+            sub_blocked_model[weight] = sub_blocked_model[weight] * weight_multiplier
+
+        # rough tonnage check
+        check = blockmodel[weights[0]].sum() - sub_blocked_model[weights[0]].sum()
+        if check > 1.0:
+            weight_warning = str(weights[0])
+            warnings.warn(f'{weight_warning} lost reblocking!')
+
+        # check duplicates
+        duplicate_check = sub_blocked_model.duplicated(subset=['x', 'y', 'z'])
+        if duplicate_check.sum() != 0:
+            warnings.warn('duplicates in sub blocked model')
+
+        blockmodel = sub_blocked_model
+
+        # make sure xyz cols are at the front
+        cols = list(blockmodel.columns)
+        cols = [_ for _ in cols if _ not in xyz_cols]
+        cols.insert(0, 'x')
+        cols.insert(1, 'y')
+        cols.insert(2, 'z')
+
+        blockmodel = blockmodel[cols]
+
+        # fun stats and cleaning
+        model_size_after_reblock = len(blockmodel)
+        print('reblocking increased number of blocks by: ', int((model_size_after_reblock/model_size_before_reblock)*100)-100, '%')
+        del blockmodel['i'], blockmodel['j'], blockmodel['k']
+
+    return blockmodel
 
 
 def attribute_reblock(blockmodel: pd.DataFrame):
@@ -995,7 +1281,6 @@ def model_origin(blockmodel: pd.DataFrame,
                  xyz_cols: Tuple[str, str, str] = None,
                  dims: Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
                  ) -> Tuple[float, float, float]:
-
     """
     calculate the origin of a block model grid relative to its current xyz grid
     origin is the corner of the block with min xyz coordinates
@@ -1019,35 +1304,36 @@ def model_origin(blockmodel: pd.DataFrame,
 
     # x origin
     if type(dims[0]) is int or type(dims[0]) is float:
-        xorigin = blockmodel[xyz_cols[0]].min() - (dims[0]/2)
+        xorigin = blockmodel[xyz_cols[0]].min() - (dims[0] / 2)
     elif type(dims[0]) is str:
-        xorigin = (blockmodel[xyz_cols[0]] - (blockmodel[dims[0]]/2)).min()
+        xorigin = (blockmodel[xyz_cols[0]] - (blockmodel[dims[0]] / 2)).min()
     else:
         raise Exception("x dimension must be int, float or str (block model column name).")
 
     # y origin
     if type(dims[1]) is int or type(dims[1]) is float:
-        yorigin = blockmodel[xyz_cols[1]].min() - (dims[1]/2)
+        yorigin = blockmodel[xyz_cols[1]].min() - (dims[1] / 2)
     elif type(dims[1]) is str:
-        yorigin = (blockmodel[xyz_cols[1]] - (blockmodel[dims[1]]/2)).min()
+        yorigin = (blockmodel[xyz_cols[1]] - (blockmodel[dims[1]] / 2)).min()
     else:
         raise Exception("y dimension must be int, float or str (block model column name).")
 
     # z origin
     if type(dims[2]) is int or type(dims[2]) is float:
-        zorigin = blockmodel[xyz_cols[2]].min() - (dims[2]/2)
+        zorigin = blockmodel[xyz_cols[2]].min() - (dims[2] / 2)
     elif type(dims[2]) is str:
-        zorigin = (blockmodel[xyz_cols[2]] - (blockmodel[dims[2]]/2)).min()
+        zorigin = (blockmodel[xyz_cols[2]] - (blockmodel[dims[2]] / 2)).min()
     else:
         raise Exception("z dimension must be int, float or str (block model column name).")
 
     return xorigin, yorigin, zorigin
 
 
-def block_dims(blockmodel:   pd.DataFrame,
-               xyz_cols:     Tuple[str, str, str] = None,
-               origin:       Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
-               rotation:     Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0)) -> Tuple[float, float, float]:
+def block_dims(blockmodel: pd.DataFrame,
+               xyz_cols: Tuple[str, str, str] = None,
+               origin: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+               rotation: Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0)) -> Tuple[
+    float, float, float]:
     """
     estimate the x, y, z dimensions of blocks
     if the blocks are rotated then they are unrotated first
@@ -1165,7 +1451,7 @@ def check_regular(blockmodel: pd.DataFrame,
     """
     check if the blocks in a block model are actually
     on a regular grid (including a rotated grid).
-    note this is just an estimatimation of regularity, it is not perfect
+    note this is just an estimation of regularity, it is not perfect
 
     Parameters
     ----------
@@ -1253,7 +1539,8 @@ def check_regular(blockmodel: pd.DataFrame,
 
 def check_internal_blocks_missing(blockmodel: pd.DataFrame,
                                   xyz_cols: Tuple[str, str, str] = None,
-                                  dims: Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
+                                  dims: Tuple[
+                                      Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
                                   rotation: Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
                                   origin: Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
                                   ) -> bool:
@@ -1327,15 +1614,15 @@ def check_internal_blocks_missing(blockmodel: pd.DataFrame,
     return False
 
 
-def index_3Dto1D(blockmodel:    pd.DataFrame,
-                 indexing:      int = 0,
-                 xyz_cols:      Tuple[str, str, str] = None,
-                 origin:        Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
-                 dims:          Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
-                 rotation:      Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
-                 nblocks_xyz:   Tuple[int, int, int] = None,
-                 idxcol:        str = 'ijk',
-                 inplace:       bool = False) -> pd.DataFrame:
+def index_3Dto1D(blockmodel: pd.DataFrame,
+                 indexing: int = 0,
+                 xyz_cols: Tuple[str, str, str] = None,
+                 origin: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+                 dims: Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
+                 rotation: Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
+                 nblocks_xyz: Tuple[int, int, int] = None,
+                 idxcol: str = 'ijk',
+                 inplace: bool = False) -> pd.DataFrame:
     """
     Convert 3D array of xyz block centroids to 1D index that is reversible.
     Opposite of the function index_1Dto3D()
@@ -1429,15 +1716,15 @@ def index_3Dto1D(blockmodel:    pd.DataFrame,
         return blockmodel
 
 
-def index_1Dto3D(blockmodel:    pd.DataFrame,
-                 indexing:      int = 0,
-                 idxcol:        str = 'ijk',
-                 origin:        Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
-                 dims:          Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
-                 rotation:      Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
-                 nblocks_xyz:   Tuple[int, int, int] = None,
-                 xyz_cols:      Tuple[str, str, str] = ('x', 'y', 'z'),
-                 inplace:       bool = False) -> pd.DataFrame:
+def index_1Dto3D(blockmodel: pd.DataFrame,
+                 indexing: int = 0,
+                 idxcol: str = 'ijk',
+                 origin: Tuple[Union[int, float], Union[int, float], Union[int, float]] = None,
+                 dims: Tuple[Union[int, float, str], Union[int, float, str], Union[int, float, str]] = None,
+                 rotation: Tuple[Union[int, float], Union[int, float], Union[int, float]] = (0, 0, 0),
+                 nblocks_xyz: Tuple[int, int, int] = None,
+                 xyz_cols: Tuple[str, str, str] = ('x', 'y', 'z'),
+                 inplace: bool = False) -> pd.DataFrame:
     """
     Convert IJK index back to xyz block centroids.
     Opposite of the function index_3Dto1D()

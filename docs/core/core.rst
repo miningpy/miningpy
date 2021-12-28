@@ -64,6 +64,11 @@ vulcan_bdf
 
 .. autofunction:: vulcan_bdf
 
+geometric_reblock
+----------
+
+.. autofunction:: geometric_reblock
+
 index_3Dto1D
 --------------
 

@@ -184,7 +184,7 @@ def plot3D(blockmodel:      pd.DataFrame,
         grid.GetCellData().AddArray(vtk_array)
 
     else:  # int or float column
-        grid.cell_arrays[col] = block_model[col].values  # add the data values to visualise
+        grid.cell_data[col] = block_model[col].values  # add the data values to visualise
 
     # set theme
     pv.set_plot_theme("ParaView")  # just changes colour scheme
@@ -393,7 +393,7 @@ def add_section_string(widget, plot, mesh, style, show_edges, scalars, scalar_ba
         strings[strings == string] = idx
 
     strings = strings.astype(int)
-    mesh.cell_arrays[scalars+'_int'] = strings
+    mesh.cell_data[scalars+'_int'] = strings
 
     rng = mesh.get_data_range(scalars+'_int')
     if clim is None:
@@ -442,9 +442,8 @@ def add_slider_num(dtype, plot, mesh, style, show_edges, scalars, scalar_bar_arg
 
     name = mesh.memory_address
 
-    if scalars is None:
-        field, scalars = mesh.active_scalars_info
-    arr, field = get_array(mesh, scalars, preference='cell', info=True)
+    field, scalars = mesh.active_scalars_info
+    arr = get_array(mesh=mesh, name=scalars, preference='cell', err=True)
 
     if arr is None:
         raise ValueError('No arrays present to threshold.')
@@ -514,9 +513,9 @@ def add_slider_string(plot, mesh, style, show_edges, scalars, scalar_bar_args,
 
     name = mesh.memory_address
 
-    arr, field = get_array(mesh, scalars, preference='cell', info=True)
+    arr, field = get_array(mesh, scalars, preference='cell',)
 
-    data = set(mesh.cell_arrays[scalars])
+    data = set(mesh.cell_data[scalars])
     data = list(sorted(data))
 
     plot.add_mesh(mesh.outline(), name=name + "outline", opacity=0.0)
@@ -536,7 +535,7 @@ def add_slider_string(plot, mesh, style, show_edges, scalars, scalar_bar_args,
         strings[strings == string] = idx
 
     strings = strings.astype(int)
-    mesh.cell_arrays[scalars+'_int'] = strings
+    mesh.cell_data[scalars+'_int'] = strings
 
     alg = vtk.vtkThreshold()
     alg.SetInputDataObject(mesh)

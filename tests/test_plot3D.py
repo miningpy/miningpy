@@ -47,3 +47,24 @@ def test_plot3D_2():
     )
 
     assert isinstance(plot, pv.Plotter)
+
+# test data with slider widget
+testdata3 = {
+    'x': [5, 5, 15],
+    'y': [5, 15, 25],
+    'z': [5, 5, 5],
+    'ton': [50.1, 100, 50],
+}
+
+def test_plot3D_3():
+    # all params specified
+    data = pd.DataFrame(testdata3)
+    plot = data.plot3D(
+        xyz_cols=('x', 'y', 'z'),
+        dims=(5, 5, 5),
+        col='ton',
+        show_plot=True,
+        widget='section'
+    )
+
+    assert isinstance(plot, pv.Plotter)
