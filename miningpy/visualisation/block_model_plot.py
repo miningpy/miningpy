@@ -7,7 +7,7 @@ import numpy as np
 from typing import Union, Tuple
 import vtk
 import secrets
-
+import warnings
 
 def plot3D(blockmodel:      pd.DataFrame,
            xyz_cols:        Tuple[str, str, str] = ('x', 'y', 'z'),
@@ -76,7 +76,10 @@ def plot3D(blockmodel:      pd.DataFrame,
 
     # check for duplicate blocks and return warning
     dup_check = list(blockmodel.duplicated(subset=[xyz_cols[0], xyz_cols[1], xyz_cols[2]]).unique())
-    assert True not in dup_check, 'MiningPy ERROR - duplicate blocks in dataframe'
+
+    if len(dup_check) > 0:
+        warnings.warn("There are duplicate blocks in dataframe, dropping duplicates except for the first occurrence.")
+        blockmodel = blockmodel.drop_duplicates(subset=[xyz_cols[0], xyz_cols[1], xyz_cols[2]], keep='first')
 
     # check widget choice is allowed
     _widgets = ['slider',
