@@ -75,7 +75,7 @@ jobs:
 
     - script: |
         call activate baseAnaconda
-        conda develop .
+        python -m pip install .
       displayName: Install miningpy package in conda env
 
     - script: |
