@@ -12,7 +12,7 @@ source:
 build:
   script_env:
     - DEPLOY_TIME
-  script: {{ PYTHON }} setup.py install --single-version-externally-managed --record=record.txt
+  script: {{ PYTHON }} -m pip install .
   always_include_files:
     - miningpy/VERSION
     - miningpy/visualisation/ParaViewGlance.html
