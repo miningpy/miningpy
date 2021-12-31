@@ -70,16 +70,18 @@ jobs:
       displayName: Create Anaconda environment & Install packages
 
     - script: |
-        call activate baseAnaconda
         conda build purge-all
       displayName: Purge Conda Build Dir
 
     - script: |
+        conda-build conda.recipe --no-anaconda-upload --channel conda-forge --python $(python.version)
+      displayName: Build MiningPy Package
+
+    - script: |
         call activate baseAnaconda
-        conda-build conda.recipe --no-anaconda-upload
         conda install --use-local miningpy
       displayName: Install miningpy package in conda env
-    
+
     - script: |
         call activate baseAnaconda
         conda install pytest pytest-azurepipelines

@@ -34,13 +34,10 @@ jobs:
         conda update conda-build
       displayName: Update conda & conda-build
 
-    - script: conda create --yes --quiet --name baseAnaconda python=$(python.version)
-      displayName: Create Anaconda environment & Install packages
-
     - script: |
         conda build purge-all
       displayName: Purge Conda Build Dir
 
     - script: |
-        conda-build conda.recipe --no-anaconda-upload --channel conda-forge
+        conda-build conda.recipe --no-anaconda-upload --channel conda-forge --python $(python.version)
       displayName: Conda-Build Recipe & Test
