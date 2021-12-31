@@ -49,7 +49,7 @@ jobs:
     - script: |
         call activate baseAnaconda
         conda install --yes --quiet --name baseAnaconda -c conda-forge miningpy
-      displayName: Install Nightly MiningPy
+      displayName: Install MiningPy
 
     - script: |
         call activate baseAnaconda
@@ -84,8 +84,8 @@ jobs:
 
     - script: |
         call activate baseAnaconda
-        conda install --yes --quiet --name baseAnaconda -c conda-forge miningpy
-      displayName: Install Nightly MiningPy
+        conda install --yes --quiet -c conda-forge miningpy
+      displayName: Install MiningPy
 
     - script: |
         call activate baseAnaconda
