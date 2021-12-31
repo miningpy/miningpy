@@ -1,6 +1,6 @@
 ezdxf>=0.13.1
-numpy!=1.19.4
 pandas>=1.0
+numpy
 pyvista>=0.32
 vtk>=8.0
 matplotlib
