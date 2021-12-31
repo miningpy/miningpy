@@ -39,12 +39,15 @@ jobs:
     - script: |
         python -m pip install --upgrade pip setuptools wheel
         python -m pip install .
-      displayName: 'Install Library'
+      displayName: 'Install MiningPy'
 
     - script: |
         python -m pip install pytest pytest-azurepipelines
+      displayName: 'Install PyTest'
+
+    - script: |
         python -m pytest
-      displayName: 'pytest'
+      displayName: 'Tests'
 
   - job: WindowsAnaconda
     pool:
@@ -76,10 +79,14 @@ jobs:
     - script: |
         call activate baseAnaconda
         python -m pip install .
-      displayName: Install miningpy package in conda env
+      displayName: Install MiningPy
 
     - script: |
         call activate baseAnaconda
         conda install pytest pytest-azurepipelines
+      displayName: Install PyTest
+
+    - script: |
+        call activate baseAnaconda
         python -m pytest
-      displayName: pytest
+      displayName: Tests
