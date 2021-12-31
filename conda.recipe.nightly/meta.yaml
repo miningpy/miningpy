@@ -26,7 +26,7 @@ requirements:
     - numpy !=1.19.4
     - pandas >=1.0
     - python
-    - pyvista >=0.25
+    - pyvista >=0.32
     - vtk >=8.0
     - matplotlib-base
 
