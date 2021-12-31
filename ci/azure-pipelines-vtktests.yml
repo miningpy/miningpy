@@ -43,5 +43,5 @@ jobs:
         conda config --add channels conda-forge
         conda config --set channel_priority strict
         conda install -c conda-forge vtk
-        python setup.py install
+        python -m pip install .
       displayName: Install miningpy package in conda env
