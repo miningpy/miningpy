@@ -42,7 +42,7 @@ jobs:
       displayName: 'Install Library'
 
     - script: |
-        pip install pytest pytest-azurepipelines
+        python -m pip install pytest pytest-azurepipelines
         python -m pytest
       displayName: 'pytest'
 
@@ -60,16 +60,28 @@ jobs:
     - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
       displayName: Add conda to PATH
 
+    - script: |
+        conda update conda
+        conda install conda-build
+        conda update conda-build
+      displayName: Update conda & conda-build
+
     - script: conda create --yes --quiet --name baseAnaconda python=$(python.version) anaconda
       displayName: Create Anaconda environment & Install packages
 
     - script: |
         call activate baseAnaconda
-        python setup.py install
+        conda build purge-all
+      displayName: Purge Conda Build Dir
+
+    - script: |
+        call activate baseAnaconda
+        conda-build conda.recipe --no-anaconda-upload
+        conda install --use-local miningpy
       displayName: Install miningpy package in conda env
     
     - script: |
         call activate baseAnaconda
-        pip install pytest pytest-azurepipelines
+        conda install pytest pytest-azurepipelines
         python -m pytest
       displayName: pytest
