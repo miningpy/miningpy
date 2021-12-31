@@ -143,8 +143,9 @@ The package is built and tested nightly using environments based on [Virtualenv]
 
 MiningPy is tested to be fully tested with the following versions of Python:
 
-- Python 3.7
+- Python 3.9
 - Python 3.8
+- Python 3.7
 
 Offical testing and support has been removed for the following versions of Python (although MiningPy might still work with them):
 
