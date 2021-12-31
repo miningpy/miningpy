@@ -74,12 +74,8 @@ jobs:
       displayName: Purge Conda Build Dir
 
     - script: |
-        conda-build conda.recipe --no-anaconda-upload --channel conda-forge --python $(python.version)
-      displayName: Build MiningPy Package
-
-    - script: |
         call activate baseAnaconda
-        conda install --use-local miningpy
+        conda develop .
       displayName: Install miningpy package in conda env
 
     - script: |
