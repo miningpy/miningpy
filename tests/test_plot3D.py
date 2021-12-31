@@ -65,7 +65,7 @@ def test_plot3D_3():
         xyz_cols=('x', 'y', 'z'),
         dims=(5, 5, 5),
         col='ton',
-        show_plot=True,
+        show_plot=False,
         widget='section'
     )
 
