@@ -75,9 +75,9 @@ def plot3D(blockmodel:      pd.DataFrame,
         raise Exception(f'MiningPy ERROR - column to plot: {col} must be one of Pandas dtypes: int, float, object, string, boolean.')
 
     # check for duplicate blocks and return warning
-    dup_check = list(blockmodel.duplicated(subset=[xyz_cols[0], xyz_cols[1], xyz_cols[2]]).unique())
+    dup_check = blockmodel.duplicated(subset=[xyz_cols[0], xyz_cols[1], xyz_cols[2]])
 
-    if len(dup_check) > 0:
+    if dup_check.sum() > 0:
         warnings.warn("There are duplicate blocks in dataframe, dropping duplicates except for the first occurrence.")
         blockmodel = blockmodel.drop_duplicates(subset=[xyz_cols[0], xyz_cols[1], xyz_cols[2]], keep='first')
 
