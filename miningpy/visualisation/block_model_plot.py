@@ -59,12 +59,12 @@ def plot3D(blockmodel:      pd.DataFrame,
         whether to model shadows with a light source from the users perspective.
         if False, it is like the block model has been lit up with lights from all angles.
     show_plot: bool, default True
-        whether to open active window or just return pyvista.Plotter object
+        whether to open active window or just return pyvistaqt.plotting.BackgroundPlotter object
         to .show() later.
 
     Returns
     -------
-    pyvista.Plotter object & active window of block model 3D plot
+    pyvistaqt.plotting.BackgroundPlotter object & active window of block model 3D plot
     """
 
     # check col data to plot is int or float data - not string or bool
