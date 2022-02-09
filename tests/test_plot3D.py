@@ -3,6 +3,8 @@ import pandas as pd
 import pytest
 import miningpy
 import pyvista as pv
+import pyvistaqt
+from pyvistaqt import BackgroundPlotter
 
 # test data
 testdata1 = {
@@ -24,7 +26,7 @@ def test_plot3D_1():
         show_plot=False
     )
 
-    assert isinstance(plot, pv.Plotter)
+    assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter)
 
 
 # test data - only one block
@@ -46,7 +48,7 @@ def test_plot3D_2():
         show_plot=False
     )
 
-    assert isinstance(plot, pv.Plotter)
+    assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter)
 
 
 # test data with slider widget
@@ -66,7 +68,7 @@ def test_plot3D_3():
         dims=(5, 5, 5),
         col='ton',
         show_plot=False,
-        widget='section'
+        widget='section',
+        window_size=(3000, 2000)
     )
-
-    assert isinstance(plot, pv.Plotter)
+    assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter)
