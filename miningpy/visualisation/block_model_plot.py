@@ -477,7 +477,7 @@ def add_slider_num(dtype, plot, mesh, style, show_edges, scalars, scalar_bar_arg
     plot.threshold_meshes.append(threshold_mesh)
 
     def callback_float(value, widget):
-        alg.ThresholdByUpper(value)
+        alg.SetLowerThreshold(value)
         alg.Update()
         threshold_mesh.shallow_copy(alg.GetOutput())
 
@@ -485,7 +485,7 @@ def add_slider_num(dtype, plot, mesh, style, show_edges, scalars, scalar_bar_arg
         _rounded_value = int(round(float(value), 0))
         widget.GetRepresentation().SetValue(_rounded_value)
 
-        alg.ThresholdByUpper(_rounded_value)
+        alg.SetLowerThreshold(_rounded_value)
         alg.Update()
         threshold_mesh.shallow_copy(alg.GetOutput())
 
