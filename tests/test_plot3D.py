@@ -83,7 +83,6 @@ testdata4 = {
     'messy_field': [1, 1.0, '1']
 }
 
-
 def test_plot3D_4():
     # all params specified
     data = pd.DataFrame(testdata4)
@@ -93,67 +92,11 @@ def test_plot3D_4():
     plot = data.plot3D(
         xyz_cols=('x', 'y', 'z'),
         dims=(5, 5, 5),
-        col='ton',
+        col='messy_field',
         show_plot=True,
         widget=None
     )
     # assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter)
 test_plot3D_4()
 
-# method 2
-data = pd.DataFrame(testdata3)  # df
-data = data.convert_dtypes()  # turning into pandas dtypes (handle na) -> this won't plot3d
 
-selection_numbers = data.select_dtypes(include=[np.number])
-selection_strings = data.select_dtypes(exclude=[np.number])
-
-num_cols = list(selection_numbers.columns)
-str_cols = list(selection_strings.columns)
-
-# data_num_np = selection_numbers.to_numpy(dtype=float)
-# data_str_np = selection_strings.to_numpy(dtype=str)
-
-data_numbers_pd = pd.DataFrame(selection_numbers, columns=num_cols, dtype=np.float64)
-data_strings_pd = pd.DataFrame(selection_strings, columns=str_cols)
-
-data_pd = pd.concat([data_numbers_pd, data_strings_pd], axis=1)
-print(data_pd.dtypes)
-
-plot = data_pd.plot3D(
-    xyz_cols=('x', 'y', 'z'),
-    dims=(5, 5, 5),
-    col='ton',
-    show_plot=True,
-    widget=None
-)
-
-# simplifying method 2
-
-testdata3 = {
-    'x': [5, 5, 15],
-    'y': [5, 15, 25],
-    'z': [5, 5, 5],
-    'ton': [50.1, 100, 50],
-    'string': ['25', '100', '50'],
-    'obj': ['25', 100, '50'],
-    'bool': [True, False, True]
-}
-data = pd.DataFrame(testdata3)  # df
-data = data.convert_dtypes()  # turning into pandas dtypes (handle na) -> this won't plot3d
-
-selection_numbers = data.select_dtypes(include=[np.number])
-selection_strings = data.select_dtypes(exclude=[np.number])
-
-data_numbers_pd = pd.DataFrame(selection_numbers,  dtype=float)
-data_strings_pd = pd.DataFrame(selection_strings, dtype=str)
-
-data_pd = pd.concat([data_numbers_pd, data_strings_pd], axis=1)
-print(data_pd.dtypes)
-print(data.dtypes)
-
-data.plot3D(
-    xyz_cols=('x', 'y', 'z'),
-    dims=(5, 5, 5),
-    col='bool',
-    widget=None
-)
