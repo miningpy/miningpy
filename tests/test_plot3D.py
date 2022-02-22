@@ -68,10 +68,12 @@ def test_plot3D_3():
         xyz_cols=('x', 'y', 'z'),
         dims=(5, 5, 5),
         col='ton',
-        show_plot=False,
-        widget='section'
+        show_plot=True,
+        widget=None
     )
     # assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter)
+
+test_plot3D_3()
 
 # test data with Pandas dtypes
 testdata4 = {
@@ -79,8 +81,8 @@ testdata4 = {
     'y': [5, 15, 25],
     'z': [5, 5, 5],
     'ton': [50.1, 100, 50],
-    'pitname': ['pit1', 'pit2', 'pit3',],
-    'messy_field':[1, 1.0, '1']
+    'pitname': ['pit1', 'pit2', 'pit3'],
+    'messy_field': [1, 1.0, '1']
 }
 
 
@@ -95,10 +97,10 @@ def test_plot3D_4():
         dims=(5, 5, 5),
         col='ton',
         show_plot=True,
-        widget='section'
+        widget=None
     )
     # assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter)
-
+test_plot3D_4()
 # method 1
 """
 # pandas dtype error handling issue #67
