@@ -86,7 +86,7 @@ testdata4 = {
 def test_plot3D_4():
     # all params specified
     data = pd.DataFrame(testdata4)
-    data = data.convert_dtypes()  # Pandas dtypes aren't supported by Plot3D
+    data_conv = data.convert_dtypes()  # Pandas dtypes aren't supported by Plot3D
     # https://pandas.pydata.org/pandas-docs/stable/user_guide/gotchas.html#nan-integer-na-values-and-na-type-promotions
 
     plot = data.plot3D(
@@ -99,4 +99,5 @@ def test_plot3D_4():
     # assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter)
 test_plot3D_4()
 
-
+data = pd.DataFrame(testdata4)
+data_conv = data.convert_dtypes()

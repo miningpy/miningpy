@@ -68,10 +68,7 @@ def plot3D(blockmodel:      pd.DataFrame,
     _dtype = str(data_types[col])
 
     if _dtype[0:3] != 'int' and \
-       _dtype[0:5] != 'float' and \
-       _dtype != 'object' and \
-       _dtype != 'string' and \
-       _dtype != 'bool':
+       _dtype[0:5] != 'float':
 
         print('converting dtypes')  # testing only
         # convert dtypes explicitly
