@@ -101,6 +101,26 @@ def test_plot3D_4():
     )
     # assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter)
 test_plot3D_4()
+# method 1
+"""
+# pandas dtype error handling issue #67
+data = pd.DataFrame(testdata3)  # df
+data = data.convert_dtypes()  # turning into pandas dtypes (handle na) -> this won't plot3d
+
+data_np = data.to_numpy(dtype=np.float64)  # no column headers
+columns_to_take_over = list(data.columns)
+
+data_pd = pd.DataFrame(data_np, columns=columns_to_take_over )
+
+plot = data_pd.plot3D(
+    xyz_cols=('x', 'y', 'z'),
+    dims=(5, 5, 5),
+    col='ton',
+    show_plot=True,
+    widget=None
+)
+
+"""
 
 # method 2
 data = pd.DataFrame(testdata3)  # df

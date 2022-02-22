@@ -72,7 +72,24 @@ def plot3D(blockmodel:      pd.DataFrame,
        _dtype != 'object' and \
        _dtype != 'string' and \
        _dtype != 'bool':
-        raise Exception(f'MiningPy ERROR - column to plot: {col} must be one of Pandas dtypes: int, float, object, string, boolean.')
+
+        print('converting dtypes')  # testing only
+        # convert dtypes explicitly
+        # split by dtype
+        selection_numbers = blockmodel.select_dtypes(include=[np.number])
+        selection_strings = blockmodel.select_dtypes(exclude=[np.number])
+
+        # create new dataframes using python dtypes
+        data_numbers_pd = pd.DataFrame(selection_numbers, dtype=float)
+        data_strings_pd = pd.DataFrame(selection_strings, dtype=str)
+
+        # concat together
+        blockmodel = pd.concat([data_numbers_pd, data_strings_pd], axis=1)
+        del selection_numbers, selection_strings, data_numbers_pd, data_strings_pd
+
+    # else:
+        # raise Exception(f'MiningPy ERROR - column to plot: {col} must be one of Pandas dtypes: int, float, object, string, boolean.')
+        # print('moving forward with dtype', f' {str(data_types[col])}')
 
     # check for duplicate blocks and return warning
     dup_check = list(blockmodel.duplicated(subset=[xyz_cols[0], xyz_cols[1], xyz_cols[2]]).unique())
