@@ -64,11 +64,12 @@ def plot3D(blockmodel:      pd.DataFrame,
     """
 
     # check for duplicate blocks and return warning
-    dup_check = list(blockmodel.duplicated(subset=[xyz_cols[0], xyz_cols[1], xyz_cols[2]]).unique())
+    xyz_cols = list(xyz_cols)
+    dup_check = list(blockmodel.duplicated(subset=xyz_cols).unique())
 
     if len(dup_check) > 0:
         warnings.warn("There are duplicate blocks in dataframe, dropping duplicates except for the first occurrence.")
-        blockmodel = blockmodel.drop_duplicates(subset=[xyz_cols[0], xyz_cols[1], xyz_cols[2]], keep='first')
+        blockmodel = blockmodel.drop_duplicates(subset=xyz_cols, keep='first')
 
     # check widget choice is allowed
     _widgets = ['slider',
@@ -122,7 +123,6 @@ def plot3D(blockmodel:      pd.DataFrame,
 
     else:
         # make copy of required columns
-        xyz_cols = list(xyz_cols)
         cols = list(xyz_cols)
         if col not in xyz_cols:
             cols.append(col)
