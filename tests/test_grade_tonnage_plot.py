@@ -3,15 +3,8 @@ import pandas as pd
 import miningpy
 
 # test data
-testdata = {
-    'x': [5, 5, 15],
-    'y': [5, 15, 25],
-    'z': [5, 5, 5],
-    'ton': [50, 100, 50],
-    'grade': [0.1, 0.2, 0.3]
+url = "https://drive.google.com/uc?export=download&id=1SOrYhqiu5Tg8Zjb7be4fUWhbFDTU1sEk"
+data = pd.read_csv(url, compression='zip')
 
-}
+data.grade_tonnage_plot(grade_col='value', ton_col='rock_tonnes')
 
-data = pd.DataFrame(testdata)
-
-data.grade_tonnage_plot(grade_col='grade', ton_col='ton')

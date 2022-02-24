@@ -17,7 +17,7 @@ from typing import Union, List, Tuple
 import datetime
 import warnings
 import itertools
-
+import matplotlib.pyplot as plt
 
 def ijk(blockmodel: pd.DataFrame,
         method: str = 'ijk',
@@ -1871,6 +1871,20 @@ def grade_tonnage_plot( blockmodel: pd.DataFrame,
         temp = blockmodel[mask].copy()
         grade_tonnage.at[grade, 'tonnage'] = temp[ton_col].sum()
         grade_tonnage.at[grade, 'grade_to_plot'] = np.average(temp[grade_col], weights=temp[ton_col])
+
+
+        fig = plt.figure()
+        ax1 = fig.add_subplot()
+        ax2 = ax1.twinx()
+
+        # the ax keyword sets the axis that the data frame plots to
+        grade_tonnage.plot(ax=ax1, style='.-', y='tonnage', legend=False, color='blue')
+        grade_tonnage.plot(ax=ax2, style='.-', y='cu_av', legend=False, color='red')
+        ax1.set_ylabel('Ore Tonnage above COG (Mt)', color='blue')
+        ax2.set_ylabel('Average Cu Grade above COG (%)', color='red')
+        ax1.set_xlabel('Cu COG (%)')
+        plt.title('Grade-Tonnage Curve')
+        plt.show()
 
 
 
