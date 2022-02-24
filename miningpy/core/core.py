@@ -1819,13 +1819,14 @@ def grade_tonnage_plot( blockmodel: pd.DataFrame,
                         grade_col: str,
                         ton_col: str,
                         cog_grades: List = None,
-                        cog_grade_bins: int = None,
+                        cog_grade_points: int = None,
                         plot_path: str = None,
                         table_path: str = None):
 
     """
-    Plot Grade-Tonnage curve and save image. Grade-Tonnage curves are a visual representation of the impact of cut-off grades on
-    mineral reserves.
+    Plot Grade-Tonnage curve and save image. Grade-Tonnage curves are a visual representation of the impact of cut-off
+    grades on mineral reserves. Grades to plot can be specified, else grades to plot will be generated based on the
+    range of grades in the model
 
     Parameters
     ----------
@@ -1837,7 +1838,7 @@ def grade_tonnage_plot( blockmodel: pd.DataFrame,
         name of tonnage column in the model
     cog_grades: {optional} ints, floats
         list of cut off grades to plot
-    cog_grade_bins: {optional} int, default 10
+    cog_grade_points: {optional} int, default 10
         number of cut off grades to plot between min and max grade
     plot_path: str
         path to save plot .png
@@ -1858,13 +1859,13 @@ def grade_tonnage_plot( blockmodel: pd.DataFrame,
 
     # create COGs to plot
     if cog_grades is None:
-        if cog_grade_bins is None:
+        if cog_grade_points is None:
             cog_grade_bins = 10
-        if cog_grade_bins < 1:
+        if cog_grade_points < 1:
             warnings.warn("number of cut off grades to plot must be a positive integer, using default")
             cog_grade_bins = 10
 
-        cog_grades = np.linspace(min_grade, max_grade, num=cog_grade_bins)
+        cog_grades = np.linspace(min_grade, max_grade, num=cog_grade_points)
 
     # construct df to plot
     grade_tonnage = pd.DataFrame(cog_grades, columns=[grade_col])
@@ -1879,6 +1880,9 @@ def grade_tonnage_plot( blockmodel: pd.DataFrame,
         grade_tonnage.at[grade, 'tonnage'] = temp[ton_col].sum()
         grade_tonnage.at[grade, 'grade'] = np.average(temp[grade_col], weights=temp[ton_col])
 
+    del temp
+
+    # plot
     if plot_path is not None:
         with plt.style.context('seaborn-white'):
             fig = plt.figure()
@@ -1899,6 +1903,7 @@ def grade_tonnage_plot( blockmodel: pd.DataFrame,
             else:
                 plt.savefig(plot_path, format='png', dpi=330)
 
+    # write table to excel
     if table_path is not None:
         grade_tonnage.to_excel(table_path, sheet_name='grade_tonnage_table')
 
