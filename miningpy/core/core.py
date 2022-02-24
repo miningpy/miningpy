@@ -1844,7 +1844,12 @@ def grade_tonnage(blockmodel: pd.DataFrame,
     matplotlib.pyplot
         Grade-Tonnage plot
     """
-    a = 1
+    # obtain range of grade to plot
+    max_grade = blockmodel[grade_col].max()
+    min_grade = blockmodel[grade_col].min()
+    if min_grade < 0:
+        warnings.warn(f"min grade in {grade_col} is less than 0")
+
 
 
 
