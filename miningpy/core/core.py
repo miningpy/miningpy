@@ -1872,19 +1872,19 @@ def grade_tonnage_plot( blockmodel: pd.DataFrame,
         grade_tonnage.at[grade, 'tonnage'] = temp[ton_col].sum()
         grade_tonnage.at[grade, 'grade_to_plot'] = np.average(temp[grade_col], weights=temp[ton_col])
 
+    with plt.style.context('Solarize_Light2'):
+        fig = plt.figure()
+        ax1 = fig.add_subplot()
+        ax2 = ax1.twinx()
 
-    fig = plt.figure()
-    ax1 = fig.add_subplot()
-    ax2 = ax1.twinx()
-
-    # the ax keyword sets the axis that the data frame plots to
-    grade_tonnage.plot(ax=ax1, style='.-', y='tonnage', legend=False, color='blue')
-    grade_tonnage.plot(ax=ax2, style='.-', y='grade_to_plot', legend=False, color='red')
-    ax1.set_ylabel(f'{ton_col} Tonnage above COG', color='blue')
-    ax2.set_ylabel(f'Average {grade_col} Grade above COG (%)', color='red')
-    ax1.set_xlabel(f'{grade_col} COG (%)')
-    plt.title('Grade-Tonnage Curve')
-    plt.savefig('grade_tonnage_plot.png', format='png')
+        # the ax keyword sets the axis that the data frame plots to
+        grade_tonnage.plot(ax=ax1, style='x-', y='tonnage', legend=False,)
+        grade_tonnage.plot(ax=ax2, style='x-', y='grade_to_plot', legend=False,)
+        ax1.set_ylabel(f'{ton_col} Tonnage above COG',)
+        ax2.set_ylabel(f'Average {grade_col} Grade above COG (%)',)
+        ax1.set_xlabel(f'{grade_col} COG (%)')
+        plt.title('Grade-Tonnage Curve')
+        plt.savefig('grade_tonnage_plot.png', format='png')
 
 
 
