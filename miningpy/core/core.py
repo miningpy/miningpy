@@ -1819,7 +1819,9 @@ def grade_tonnage_plot( blockmodel: pd.DataFrame,
                         grade_col: str,
                         ton_col: str,
                         cog_grades: List = None,
-                        cog_grade_bins: int = None):
+                        cog_grade_bins: int = None,
+                        plot_path: str = None,
+                        table_path: str = None):
 
     """
     Plot Grade-Tonnage curve and save image. Grade-Tonnage curves are a visual representation of the impact of cut-off grades on
@@ -1837,6 +1839,11 @@ def grade_tonnage_plot( blockmodel: pd.DataFrame,
         list of cut off grades to plot
     cog_grade_bins: {optional} int, default 10
         number of cut off grades to plot between min and max grade
+    plot_path: str
+        path to save plot .png
+    table_path: str
+        path to export table to .xlsx
+
 
     Returns
     -------
@@ -1862,7 +1869,7 @@ def grade_tonnage_plot( blockmodel: pd.DataFrame,
     # construct df to plot
     grade_tonnage = pd.DataFrame(cog_grades, columns=[grade_col])
     grade_tonnage['tonnage'] = 0.0
-    grade_tonnage['grade_to_plot'] = 0.0
+    grade_tonnage['grade'] = 0.0
 
     grade_tonnage = grade_tonnage.set_index(grade_col)
 
@@ -1870,24 +1877,30 @@ def grade_tonnage_plot( blockmodel: pd.DataFrame,
         mask = blockmodel[grade_col] >= grade
         temp = blockmodel[mask].copy()
         grade_tonnage.at[grade, 'tonnage'] = temp[ton_col].sum()
-        grade_tonnage.at[grade, 'grade_to_plot'] = np.average(temp[grade_col], weights=temp[ton_col])
+        grade_tonnage.at[grade, 'grade'] = np.average(temp[grade_col], weights=temp[ton_col])
 
-    with plt.style.context('seaborn-white'):
-        fig = plt.figure()
-        ax1 = fig.add_subplot()
-        ax2 = ax1.twinx()
+    if plot_path is not None:
+        with plt.style.context('seaborn-white'):
+            fig = plt.figure()
+            ax1 = fig.add_subplot()
+            ax2 = ax1.twinx()
 
-        # the ax keyword sets the axis that the data frame plots to
-        grade_tonnage.plot(ax=ax1, style='1-', y='tonnage', legend=False, color='midnightblue')
-        grade_tonnage.plot(ax=ax2, style='+-', y='grade_to_plot', legend=False, color='sienna')
-        ax1.set_ylabel(f'{ton_col} Tonnage above COG', color='midnightblue')
-        ax2.set_ylabel(f'Average {grade_col} Grade above COG (%)', color='sienna')
-        ax1.set_xlabel(f'{grade_col} COG (%)')
-        plt.title('Grade-Tonnage Curve')
-        plt.savefig('grade_tonnage_plot.png', format='png', dpi=330)
+            # the ax keyword sets the axis that the data frame plots to
+            grade_tonnage.plot(ax=ax1, style='1-', y='tonnage', legend=False, color='midnightblue')
+            grade_tonnage.plot(ax=ax2, style='+-', y='grade_to_plot', legend=False, color='sienna')
+            ax1.set_ylabel(f'{ton_col} Tonnage above COG', color='midnightblue')
+            ax2.set_ylabel(f'Average {grade_col} Grade above COG (%)', color='sienna')
+            ax1.set_xlabel(f'{grade_col} COG (%)')
+            plt.title('Grade-Tonnage Curve')
 
+            if plot_path[-4:] != '.png':
+                plot_path = plot_path + '.png'
+                plt.savefig(plot_path, format='png', dpi=330)
+            else:
+                plt.savefig(plot_path, format='png', dpi=330)
 
-
+    if table_path is not None:
+        grade_tonnage.to_excel(table_path, sheet_name='grade_tonnage_table')
 
 
 def extend_pandas():
