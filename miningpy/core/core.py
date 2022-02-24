@@ -1824,9 +1824,10 @@ def grade_tonnage_plot( blockmodel: pd.DataFrame,
                         table_path: str = None):
 
     """
-    Plot Grade-Tonnage curve and save image. Grade-Tonnage curves are a visual representation of the impact of cut-off
+    Create and export Grade-Tonnage table with option to save grade tonnage plot as a .png
+    curve and save image. Grade-Tonnage curves are a visual representation of the impact of cut-off
     grades on mineral reserves. Grades to plot can be specified, else grades to plot will be generated based on the
-    range of grades in the model
+    range of grades in the model.
 
     Parameters
     ----------
