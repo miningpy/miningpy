@@ -6,5 +6,5 @@ import miningpy
 url = "https://drive.google.com/uc?export=download&id=1SOrYhqiu5Tg8Zjb7be4fUWhbFDTU1sEk"
 data = pd.read_csv(url, compression='zip')
 
-data.grade_tonnage_plot(grade_col='value', ton_col='rock_tonnes', table_path='grade_tonnage_plot.xlsx')
+data.grade_tonnage_plot(grade_col='value', ton_col='rock_tonnes', table_path='grade_tonnage_plot.xlsx', plot_path='grade_t')
 

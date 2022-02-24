@@ -1861,10 +1861,10 @@ def grade_tonnage_plot( blockmodel: pd.DataFrame,
     # create COGs to plot
     if cog_grades is None:
         if cog_grade_points is None:
-            cog_grade_bins = 10
-        if cog_grade_points < 1:
+            cog_grade_points = 10
+        if cog_grade_points is not None and cog_grade_points < 1:
             warnings.warn("number of cut off grades to plot must be a positive integer, using default")
-            cog_grade_bins = 10
+            cog_grade_points = 10
 
         cog_grades = np.linspace(min_grade, max_grade, num=cog_grade_points)
 
@@ -1892,7 +1892,7 @@ def grade_tonnage_plot( blockmodel: pd.DataFrame,
 
             # the ax keyword sets the axis that the data frame plots to
             grade_tonnage.plot(ax=ax1, style='1-', y='tonnage', legend=False, color='midnightblue')
-            grade_tonnage.plot(ax=ax2, style='+-', y='grade_to_plot', legend=False, color='sienna')
+            grade_tonnage.plot(ax=ax2, style='+-', y='grade', legend=False, color='sienna')
             ax1.set_ylabel(f'{ton_col} Tonnage above COG', color='midnightblue')
             ax2.set_ylabel(f'Average {grade_col} Grade above COG (%)', color='sienna')
             ax1.set_xlabel(f'{grade_col} COG (%)')
