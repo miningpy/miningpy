@@ -1815,6 +1815,39 @@ def index_1Dto3D(blockmodel: pd.DataFrame,
         return blockmodel
 
 
+def grade_tonnage(blockmodel: pd.DataFrame,
+                 grade_col: str,
+                 ton_col: str,
+                 origin: str,
+                 cog_grades: List = None,
+                 cog_grade_bins: int = None):
+
+    """
+    plot Grade-Tonnage curve. Grade-Tonnage curves are a visual representation of the impact of cut-off grades on
+    mineral reserves.
+
+    Parameters
+    ----------
+    blockmodel: pd.DataFrame
+        pandas dataframe of block model
+    grade_col: str
+        name of grade to plot, typically 'ore' grade
+    ton_col: str
+        name of tonnage column in the model
+    cog_grades: {optional} ints, floats
+        list of cut off grades to plot
+    cog_grade_bins: {optional} int
+        number of cut off grades to plot between min and max grade
+
+    Returns
+    -------
+    matplotlib.pyplot
+        Grade-Tonnage plot
+    """
+    a = 1
+
+
+
 def extend_pandas():
     """
     Extends pandas' PandasObject (Series,
