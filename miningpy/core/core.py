@@ -1818,7 +1818,6 @@ def index_1Dto3D(blockmodel: pd.DataFrame,
 def grade_tonnage_plot( blockmodel: pd.DataFrame,
                         grade_col: str,
                         ton_col: str,
-                        origin: str,
                         cog_grades: List = None,
                         cog_grade_bins: int = None):
 
@@ -1898,3 +1897,4 @@ def extend_pandas():
     PandasObject.index_3Dto1D = index_3Dto1D
     PandasObject.index_1Dto3D = index_1Dto3D
     PandasObject.check_regular_extents = check_regular_extents
+    PandasObject.grade_tonnage_plot = grade_tonnage_plot
