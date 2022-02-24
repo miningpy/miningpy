@@ -3,8 +3,9 @@ import pandas as pd
 import miningpy
 
 # test data
-url = "https://drive.google.com/uc?export=download&id=1SOrYhqiu5Tg8Zjb7be4fUWhbFDTU1sEk"
+url = "https://drive.google.com/uc?export=download&id=1RWuGs5Sf54FLPyDM1K-fK0a7Im9apW0t"
 data = pd.read_csv(url, compression='zip')
 
-data.grade_tonnage_plot(grade_col='value', ton_col='rock_tonnes', table_path='grade_tonnage_plot.xlsx', plot_path='grade_t')
+data.grade_tonnage_plot(grade_col='cu', ton_col='tonn', table_path='grade_tonnage_plot.xlsx',
+                        plot_path='grade_t.png', show_plot=True)
 

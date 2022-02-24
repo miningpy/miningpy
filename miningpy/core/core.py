@@ -1821,7 +1821,8 @@ def grade_tonnage_plot( blockmodel: pd.DataFrame,
                         cog_grades: List = None,
                         cog_grade_points: int = None,
                         plot_path: str = None,
-                        table_path: str = None):
+                        table_path: str = None,
+                        show_plot: bool = False):
 
     """
     Create and export Grade-Tonnage table with option to save grade tonnage plot as a .png
@@ -1841,10 +1842,12 @@ def grade_tonnage_plot( blockmodel: pd.DataFrame,
         list of cut off grades to plot
     cog_grade_points: {optional} int, default 10
         number of cut off grades to plot between min and max grade
-    plot_path: str
+    plot_path: {optional} str
         path to save plot .png
-    table_path: str
-        path to export table to .xlsx
+    table_path: {optional} str
+        path to export table to excel (.xlsx)
+    show_plot: {optional} bool
+        if running in interactive console, show plot, default False
 
 
     Returns
@@ -1894,8 +1897,8 @@ def grade_tonnage_plot( blockmodel: pd.DataFrame,
             grade_tonnage.plot(ax=ax1, style='1-', y='tonnage', legend=False, color='midnightblue')
             grade_tonnage.plot(ax=ax2, style='+-', y='grade', legend=False, color='sienna')
             ax1.set_ylabel(f'{ton_col} Tonnage above COG', color='midnightblue')
-            ax2.set_ylabel(f'Average {grade_col} Grade above COG (%)', color='sienna')
-            ax1.set_xlabel(f'{grade_col} COG (%)')
+            ax2.set_ylabel(f'Average {grade_col} Grade above COG', color='sienna')
+            ax1.set_xlabel(f'{grade_col} COG')
             plt.title('Grade-Tonnage Curve')
 
             if plot_path[-4:] != '.png':
@@ -1903,6 +1906,9 @@ def grade_tonnage_plot( blockmodel: pd.DataFrame,
                 plt.savefig(plot_path, format='png', dpi=330)
             else:
                 plt.savefig(plot_path, format='png', dpi=330)
+
+    if show_plot is False:
+        plt.close(fig)
 
     # write table to excel
     if table_path is not None:
