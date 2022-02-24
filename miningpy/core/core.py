@@ -1815,12 +1815,12 @@ def index_1Dto3D(blockmodel: pd.DataFrame,
         return blockmodel
 
 
-def grade_tonnage(blockmodel: pd.DataFrame,
-                 grade_col: str,
-                 ton_col: str,
-                 origin: str,
-                 cog_grades: List = None,
-                 cog_grade_bins: int = None):
+def grade_tonnage_plot( blockmodel: pd.DataFrame,
+                        grade_col: str,
+                        ton_col: str,
+                        origin: str,
+                        cog_grades: List = None,
+                        cog_grade_bins: int = None):
 
     """
     plot Grade-Tonnage curve. Grade-Tonnage curves are a visual representation of the impact of cut-off grades on
@@ -1836,7 +1836,7 @@ def grade_tonnage(blockmodel: pd.DataFrame,
         name of tonnage column in the model
     cog_grades: {optional} ints, floats
         list of cut off grades to plot
-    cog_grade_bins: {optional} int
+    cog_grade_bins: {optional} int, default 10
         number of cut off grades to plot between min and max grade
 
     Returns
@@ -1849,6 +1849,29 @@ def grade_tonnage(blockmodel: pd.DataFrame,
     min_grade = blockmodel[grade_col].min()
     if min_grade < 0:
         warnings.warn(f"min grade in {grade_col} is less than 0")
+
+    # create COGs to plot
+    if cog_grades is None:
+        if cog_grade_bins is None:
+            cog_grade_bins = 10
+        if cog_grade_bins < 1:
+            warnings.warn("number of cut off grades to plot must be a positive integer, using default")
+            cog_grade_bins = 10
+
+        cog_grades = np.linspace(min_grade, max_grade, num=cog_grade_bins)
+
+    # construct df to plot
+    grade_tonnage = pd.DataFrame(cog_grades, columns=[grade_col])
+    grade_tonnage['tonnage'] = 0.0
+    grade_tonnage['grade_to_plot'] = 0.0
+
+    grade_tonnage = grade_tonnage.set_index(grade_col)
+
+    for grade in cog_grades:
+        mask = blockmodel[grade_col] >= grade
+        temp = blockmodel[mask].copy()
+        grade_tonnage.at[grade, 'tonnage'] = temp[ton_col].sum()
+        grade_tonnage.at[grade, 'grade_to_plot'] = np.average(temp[grade_col], weights=temp[ton_col])
 
 
 
