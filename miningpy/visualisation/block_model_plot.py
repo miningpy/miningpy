@@ -81,7 +81,6 @@ def plot3D(blockmodel:      pd.DataFrame,
     # check for duplicate blocks and return warning
     dup_check = blockmodel.duplicated(subset=[xyz_cols[0], xyz_cols[1], xyz_cols[2]])
     xyz_cols = list(xyz_cols)
-    dup_check = list(blockmodel.duplicated(subset=xyz_cols).unique())
 
     if dup_check.sum() > 0:
         warnings.warn("There are duplicate blocks in dataframe, dropping duplicates except for the first occurrence.")
