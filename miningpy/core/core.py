@@ -17,7 +17,7 @@ from typing import Union, List, Tuple
 import datetime
 import warnings
 import itertools
-
+import matplotlib.pyplot as plt
 
 def ijk(blockmodel: pd.DataFrame,
         method: str = 'ijk',
@@ -1040,8 +1040,8 @@ def geometric_reblock(blockmodel: pd.DataFrame,
 >>> max_cols=max_cols,
 >>> )
 
->>>reblock.plot3D(dims=(2, 2, 1), xyz_cols=('x', 'y', 'z'), col='value', widget='section')  # reblocked plot
->>>data.plot3D(dims=(1, 1, 1), xyz_cols=('x', 'y', 'z'), col='value', widget='section')  # original plot
+>>> reblock.plot3D(dims=(2, 2, 1), xyz_cols=('x', 'y', 'z'), col='value', widget='section')  # reblocked plot
+>>> data.plot3D(dims=(1, 1, 1), xyz_cols=('x', 'y', 'z'), col='value', widget='section')  # original plot
 
     """
     # check reblocking multiplier for super and subblock in same function
@@ -1815,6 +1815,106 @@ def index_1Dto3D(blockmodel: pd.DataFrame,
         return blockmodel
 
 
+def grade_tonnage_plot( blockmodel: pd.DataFrame,
+                        grade_col: str,
+                        ton_col: str,
+                        cog_grades: List = None,
+                        cog_grade_points: int = None,
+                        plot_path: str = None,
+                        table_path: str = None,
+                        show_plot: bool = False):
+
+    """
+    Create and export Grade-Tonnage table with option to save grade tonnage plot as a .png
+    curve and save image. Grade-Tonnage curves are a visual representation of the impact of cut-off
+    grades on mineral reserves. Grades to plot can be specified, else grades to plot will be generated based on the
+    range of grades in the model.
+
+    Parameters
+    ----------
+    blockmodel: pd.DataFrame
+        pandas dataframe of block model
+    grade_col: str
+        name of grade to plot, typically 'ore' grade
+    ton_col: str
+        name of tonnage column in the model
+    cog_grades: {optional} ints, floats
+        list of cut off grades to plot
+    cog_grade_points: {optional} int, default 10
+        number of cut off grades to plot between min and max grade
+    plot_path: {optional} str
+        path to save plot .png
+    table_path: {optional} str
+        path to export table to excel (.xlsx)
+    show_plot: {optional} bool
+        if running in interactive console, show plot, default False
+
+
+    Returns
+    -------
+    matplotlib.pyplot
+        Grade-Tonnage plot
+    """
+    # obtain range of grade to plot
+    max_grade = blockmodel[grade_col].max()
+    min_grade = blockmodel[grade_col].min()
+    if min_grade < 0:
+        warnings.warn(f"min grade in {grade_col} is less than 0")
+
+    # create COGs to plot
+    if cog_grades is None:
+        if cog_grade_points is None:
+            cog_grade_points = 10
+        if cog_grade_points is not None and cog_grade_points < 1:
+            warnings.warn("number of cut off grades to plot must be a positive integer, using default")
+            cog_grade_points = 10
+
+        cog_grades = np.linspace(min_grade, max_grade, num=cog_grade_points)
+
+    # construct df to plot
+    grade_tonnage = pd.DataFrame(cog_grades, columns=[grade_col])
+    grade_tonnage['tonnage'] = 0.0
+    grade_tonnage['grade'] = 0.0
+
+    grade_tonnage = grade_tonnage.set_index(grade_col)
+
+    for grade in cog_grades:
+        mask = blockmodel[grade_col] >= grade
+        temp = blockmodel[mask].copy()
+        grade_tonnage.at[grade, 'tonnage'] = temp[ton_col].sum()
+        grade_tonnage.at[grade, 'grade'] = np.average(temp[grade_col], weights=temp[ton_col])
+
+    del temp
+
+    # plot
+    if plot_path is not None:
+        with plt.style.context('seaborn-white'):
+            fig = plt.figure()
+            ax1 = fig.add_subplot()
+            ax2 = ax1.twinx()
+
+            # the ax keyword sets the axis that the data frame plots to
+            grade_tonnage.plot(ax=ax1, style='1-', y='tonnage', legend=False, color='midnightblue')
+            grade_tonnage.plot(ax=ax2, style='+-', y='grade', legend=False, color='sienna')
+            ax1.set_ylabel(f'{ton_col} Tonnage above COG', color='midnightblue')
+            ax2.set_ylabel(f'Average {grade_col} Grade above COG', color='sienna')
+            ax1.set_xlabel(f'{grade_col} COG')
+            plt.title('Grade-Tonnage Curve')
+
+            if plot_path[-4:] != '.png':
+                plot_path = plot_path + '.png'
+                plt.savefig(plot_path, format='png', dpi=330)
+            else:
+                plt.savefig(plot_path, format='png', dpi=330)
+
+    if show_plot is False:
+        plt.close(fig)
+
+    # write table to excel
+    if table_path is not None:
+        grade_tonnage.to_excel(table_path, sheet_name='grade_tonnage_table')
+
+
 def extend_pandas():
     """
     Extends pandas' PandasObject (Series,
@@ -1837,3 +1937,4 @@ def extend_pandas():
     PandasObject.index_3Dto1D = index_3Dto1D
     PandasObject.index_1Dto3D = index_1Dto3D
     PandasObject.check_regular_extents = check_regular_extents
+    PandasObject.grade_tonnage_plot = grade_tonnage_plot

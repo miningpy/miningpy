@@ -8,6 +8,7 @@ from typing import Union, Tuple
 import vtk
 import secrets
 import warnings
+from pyvistaqt import BackgroundPlotter
 
 def plot3D(blockmodel:      pd.DataFrame,
            xyz_cols:        Tuple[str, str, str] = ('x', 'y', 'z'),
@@ -17,6 +18,7 @@ def plot3D(blockmodel:      pd.DataFrame,
            widget:          str = None,
            min_max:         Tuple[Union[int, float], Union[int, float]] = None,
            legend_colour:   str = 'bwr',
+           window_size:     Tuple[Union[int], Union[int]] = None,
            show_edges:      bool = True,
            show_grid:       bool = True,
            shadows:         bool = True,
@@ -31,7 +33,7 @@ def plot3D(blockmodel:      pd.DataFrame,
     xyz_cols: tuple of strings, default ('x', 'y', 'z')
         names of x,y,z columns in model
     col: str
-        attribute column to plot (i.e. tonnage, grade, etc)
+        attribute column to plot (e.g., tonnage, grade, etc)
     dims: tuple of floats or ints
         x,y,z dimension of regular parent blocks
     rotation: tuple of floats or ints, default (0, 0, 0)
@@ -41,12 +43,14 @@ def plot3D(blockmodel:      pd.DataFrame,
     min_max: tuple of floats or ints
         minimum and maximum to colour by
         values above/below these values will just be coloured the max/min colours
-    legend_colour: str, default 'bwr'
+    legend_colour: {optional} str, default 'bwr'
         set the legend colour scale. can be any matplotlib cmap colour spectrum.
 
         see: https://matplotlib.org/3.1.1/gallery/color/colormap_reference.html
 
         see: https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html
+    window_size: {optional} tuple of ints, default (1920, 1080)
+        size of plot window in pixels
     show_edges: bool, default True
         whether to show the edges of blocks or not.
     show_grid: bool, default True
@@ -55,19 +59,31 @@ def plot3D(blockmodel:      pd.DataFrame,
         whether to model shadows with a light source from the users perspective.
         if False, it is like the block model has been lit up with lights from all angles.
     show_plot: bool, default True
-        whether to open active window or just return pyvista.Plotter object
+        whether to open active window or just return pyvistaqt.plotting.BackgroundPlotter object
         to .show() later.
 
     Returns
     -------
-    pyvista.Plotter object & active window of block model 3D plot
+    pyvistaqt.plotting.BackgroundPlotter object & active window of block model 3D plot
     """
 
+    # check col data to plot is int or float data - not string or bool
+    data_types = blockmodel.dtypes
+    _dtype = str(data_types[col])
+
+    if _dtype[0:3] != 'int' and \
+       _dtype[0:5] != 'float' and \
+       _dtype != 'object' and \
+       _dtype != 'string' and \
+       _dtype != 'bool':
+        raise Exception(f'MiningPy ERROR - column to plot: {col} must be one of Pandas dtypes: int, float, object, string, boolean.')
+
     # check for duplicate blocks and return warning
+    dup_check = blockmodel.duplicated(subset=[xyz_cols[0], xyz_cols[1], xyz_cols[2]])
     xyz_cols = list(xyz_cols)
     dup_check = list(blockmodel.duplicated(subset=xyz_cols).unique())
 
-    if len(dup_check) > 0:
+    if dup_check.sum() > 0:
         warnings.warn("There are duplicate blocks in dataframe, dropping duplicates except for the first occurrence.")
         blockmodel = blockmodel.drop_duplicates(subset=xyz_cols, keep='first')
 
@@ -127,7 +143,6 @@ def plot3D(blockmodel:      pd.DataFrame,
         if col not in xyz_cols:
             cols.append(col)
         block_model = blockmodel[cols].copy()
-
 
     # Create the spatial reference
     grid = pv.UniformGrid()
@@ -205,7 +220,11 @@ def plot3D(blockmodel:      pd.DataFrame,
     # set theme
     pv.set_plot_theme("ParaView")  # just changes colour scheme
 
-    plot = pv.Plotter(notebook=False, title="Block Model 3D Plot")
+    if window_size is None:
+        window_size = (1920, 1080)
+
+    # background plotter
+    plot = BackgroundPlotter(title="MiningPy 3D Plot", window_size=window_size)
 
     # legend settings
     if _dtype[0:5] == 'float':
@@ -301,7 +320,8 @@ def plot3D(blockmodel:      pd.DataFrame,
                   font_size=6)
 
     if show_plot:
-        plot.show(full_screen=True)
+        # plot.show(full_screen=True)
+        plot.show()
         return plot  # pv.Plotter
 
     if not show_plot:

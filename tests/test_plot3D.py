@@ -69,7 +69,8 @@ def test_plot3D_3():
         dims=(5, 5, 5),
         col='ton',
         show_plot=False,
-        widget=None
+        widget='section',
+        window_size=(3000, 2000),
     )
     # assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter)
 
@@ -96,8 +97,4 @@ def test_plot3D_4():
         show_plot=True,
         widget=None
     )
-    # assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter)
-test_plot3D_4()
-
-data = pd.DataFrame(testdata4)
-data_conv = data.convert_dtypes()
+    assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter)
