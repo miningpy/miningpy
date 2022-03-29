@@ -80,10 +80,12 @@ def plot3D(blockmodel:      pd.DataFrame,
 
     # check for duplicate blocks and return warning
     dup_check = blockmodel.duplicated(subset=[xyz_cols[0], xyz_cols[1], xyz_cols[2]])
+    xyz_cols = list(xyz_cols)
+    dup_check = list(blockmodel.duplicated(subset=xyz_cols).unique())
 
     if dup_check.sum() > 0:
         warnings.warn("There are duplicate blocks in dataframe, dropping duplicates except for the first occurrence.")
-        blockmodel = blockmodel.drop_duplicates(subset=[xyz_cols[0], xyz_cols[1], xyz_cols[2]], keep='first')
+        blockmodel = blockmodel.drop_duplicates(subset=xyz_cols, keep='first')
 
     # check widget choice is allowed
     _widgets = ['slider',
@@ -110,12 +112,37 @@ def plot3D(blockmodel:      pd.DataFrame,
         else:
             raise Exception('Rotation is limited to between -180 and +180 degrees')
 
-    # make copy of required columns
-    xyz_cols = list(xyz_cols)
-    cols = list(xyz_cols)
-    if col not in xyz_cols:
-        cols.append(col)
-    block_model = blockmodel[cols].copy()
+    # check col data to plot is int or float non pandas dtype
+    data_types = blockmodel.dtypes
+    _dtype = str(data_types[col])
+
+    # pandas dtypes such as Int8Dtype which support pd.na are not supported in Plot3D
+    if _dtype[0:3] != 'int' and \
+       _dtype[0:5] != 'float':
+
+        print('converting dtypes')  # testing only
+
+        # if not int or float, take copy of dataframe and explicitly define dtype
+        block_model = blockmodel[[xyz_cols[0], xyz_cols[1], xyz_cols[2], col]]
+
+        # split by np.numbers
+        selection_numbers = block_model.select_dtypes(include=[np.number])
+        selection_strings = block_model.select_dtypes(exclude=[np.number])
+
+        # create new dataframes using python dtypes
+        data_numbers_pd = pd.DataFrame(selection_numbers, dtype=float)
+        data_strings_pd = pd.DataFrame(selection_strings, dtype=str)
+
+        # concat together
+        block_model = pd.concat([data_numbers_pd, data_strings_pd], axis=1)
+        del selection_numbers, selection_strings, data_numbers_pd, data_strings_pd
+
+    else:
+        # make copy of required columns
+        cols = list(xyz_cols)
+        if col not in xyz_cols:
+            cols.append(col)
+        block_model = blockmodel[cols].copy()
 
     # Create the spatial reference
     grid = pv.UniformGrid()
@@ -477,7 +504,7 @@ def add_slider_num(dtype, plot, mesh, style, show_edges, scalars, scalar_bar_arg
     plot.threshold_meshes.append(threshold_mesh)
 
     def callback_float(value, widget):
-        alg.SetLowerThreshold(value)
+        alg.ThresholdByUpper(value)
         alg.Update()
         threshold_mesh.shallow_copy(alg.GetOutput())
 
@@ -485,7 +512,7 @@ def add_slider_num(dtype, plot, mesh, style, show_edges, scalars, scalar_bar_arg
         _rounded_value = int(round(float(value), 0))
         widget.GetRepresentation().SetValue(_rounded_value)
 
-        alg.SetLowerThreshold(_rounded_value)
+        alg.ThresholdByUpper(_rounded_value)
         alg.Update()
         threshold_mesh.shallow_copy(alg.GetOutput())
 
