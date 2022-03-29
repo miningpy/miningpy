@@ -39,7 +39,7 @@ testdata2 = {
 }
 
 
-def test_plot3D_2():
+def test_plot3d_2():
     # test blocks2vtk
     data = pd.DataFrame(testdata2)
     plot = data.plot3D(
