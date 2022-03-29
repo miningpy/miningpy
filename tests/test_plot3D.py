@@ -72,7 +72,7 @@ def test_plot3D_3():
         widget='section',
         window_size=(3000, 2000),
     )
-    # assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter)
+    assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter)
 
 # test data with Pandas dtypes
 testdata4 = {
@@ -94,7 +94,7 @@ def test_plot3D_4():
         xyz_cols=('x', 'y', 'z'),
         dims=(5, 5, 5),
         col='messy_field',
-        show_plot=True,
+        show_plot=False,
         widget=None
     )
     assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter)
