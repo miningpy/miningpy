@@ -1,22 +1,29 @@
 # testing grade tonnage plot miningpy->core->grade_tonnage_plot function
 import pandas as pd
 import miningpy
-import tempfile
 
 # test data
-url = "https://drive.google.com/uc?export=download&id=1RWuGs5Sf54FLPyDM1K-fK0a7Im9apW0t"
+testdata1 = {
+    'tonnage': [50, 100, 50, 100, 50, 100, 50, 100],
+    'cu': [5.0, 10.0, 25.0, 50.0, 5.0, 10.0, 25.0, 50.0],
+    'rocktype': ['ox', 'ox', 'sulph', 'sulph', 'ox', 'ox', 'sulph', 'sulph']
+}
 
-# make temp directories
-def test_grade_tonnage_1(tmp_path):
+# result
+resultdata1 = {
+    'cog': [2.5, 12.5, 50],
+    'tonnage': [600.0, 300.0, 200.0],
+    'avg_grade': [25.0, ((125 / 300) * 100), 50.0],
+}
 
-    table_path = tmp_path / "mydir/table.xlsx"
-    table_path.parent.mkdir()  # create a directory "mydir" in temp folder
+cog_grades = [2.5, 12.5, 50]
 
-    plot_path = tmp_path / "mydir/plot.png"
-    plot_path.parent.mkdir()  # create a directory "mydir" in temp folder
 
-    data = pd.read_csv(url, compression='zip')
-    data.grade_tonnage_plot(grade_col='cu', ton_col='tonn', table_path=table_path, plot_path=plot_path, show_plot=False)
+# write test
+def test_grade_tonnage_1():
+    data = pd.DataFrame(testdata1)
+    output = data.grade_tonnage_plot(grade_col='cu', ton_col='tonnage', cog_grades=cog_grades, show_plot=True)
+    result = pd.DataFrame(resultdata1)
 
-    assert table_path.exists(), "grade tonnage table path error"
-    assert plot_path.exists(), "grade tonnage plot path error"
+    check = (output.sum() - result.sum()).sum()
+    assert check.sum() < 0.0001, "grade tonnage table not the same"
