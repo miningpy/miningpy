@@ -1815,14 +1815,13 @@ def index_1Dto3D(blockmodel: pd.DataFrame,
         return blockmodel
 
 
-def grade_tonnage_plot( blockmodel: pd.DataFrame,
-                        grade_col: str,
-                        ton_col: str,
-                        cog_grades: List = None,
-                        cog_grade_points: int = None,
-                        plot_path: str = None,
-                        show_plot: bool = False):
-
+def grade_tonnage_plot(blockmodel: pd.DataFrame,
+                       grade_col: str,
+                       ton_col: str,
+                       cog_grades: List = None,
+                       cog_grade_points: int = None,
+                       plot_path: str = None,
+                       show_plot: bool = False):
     """
     Create and return grade-tonnage table and optional export plot as a .png
     and save image. Grade-Tonnage curves are a visual representation of the impact of cut-off
@@ -1887,7 +1886,7 @@ def grade_tonnage_plot( blockmodel: pd.DataFrame,
 
     # remove grade_col from index
     grade_tonnage = grade_tonnage.reset_index()
-    grade_tonnage = grade_tonnage.rename(columns={grade_col:'cog'})
+    grade_tonnage = grade_tonnage.rename(columns={grade_col: 'cog'})
 
     # plot
     if plot_path is not None:
@@ -1914,6 +1913,7 @@ def grade_tonnage_plot( blockmodel: pd.DataFrame,
         plt.close(fig)
 
     return grade_tonnage
+
 
 def extend_pandas():
     """
