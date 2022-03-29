@@ -321,11 +321,12 @@ def plot3D(blockmodel:      pd.DataFrame,
 
     if show_plot:
         # plot.show(full_screen=True)
-        plot.show()
-        return plot  # pv.Plotter
+        plot.app.exec()
+        return plot  # pyvistaqt.BackgroundPlotter
 
     if not show_plot:
-        return plot  # pv.Plotter
+        plot.close()  # dont want to show plot
+        return plot  # pyvistaqt.BackgroundPlotter
 
 
 def add_section_num(widget, plot, mesh, style, show_edges, scalars, scalar_bar_args,
