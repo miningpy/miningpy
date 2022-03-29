@@ -1821,12 +1821,11 @@ def grade_tonnage_plot( blockmodel: pd.DataFrame,
                         cog_grades: List = None,
                         cog_grade_points: int = None,
                         plot_path: str = None,
-                        table_path: str = None,
                         show_plot: bool = False):
 
     """
-    Create and export Grade-Tonnage table with option to save grade tonnage plot as a .png
-    curve and save image. Grade-Tonnage curves are a visual representation of the impact of cut-off
+    Create and return grade-tonnage table and optional export plot as a .png
+    and save image. Grade-Tonnage curves are a visual representation of the impact of cut-off
     grades on mineral reserves. Grades to plot can be specified, else grades to plot will be generated based on the
     range of grades in the model.
 
@@ -1844,8 +1843,6 @@ def grade_tonnage_plot( blockmodel: pd.DataFrame,
         number of cut off grades to plot between min and max grade
     plot_path: {optional} str
         path to save plot .png
-    table_path: {optional} str
-        path to export table to excel (.xlsx)
     show_plot: {optional} bool
         if running in interactive console, show plot, default False
 
@@ -1910,10 +1907,7 @@ def grade_tonnage_plot( blockmodel: pd.DataFrame,
     if show_plot is False:
         plt.close(fig)
 
-    # write table to excel
-    if table_path is not None:
-        grade_tonnage.to_excel(table_path, sheet_name='grade_tonnage_table')
-
+    return grade_tonnage
 
 def extend_pandas():
     """
