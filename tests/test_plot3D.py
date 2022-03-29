@@ -81,7 +81,8 @@ testdata4 = {
     'z': [5, 5, 5],
     'ton': [50.1, 100, 50],
     'pitname': ['pit1', 'pit2', 'pit3'],
-    'messy_field': [1, 1.0, '1']
+    'messy_field': [1, 1.0, '1'],
+    'bool': [True, False, True]
 }
 
 def test_plot3D_4():
@@ -94,7 +95,7 @@ def test_plot3D_4():
         xyz_cols=('x', 'y', 'z'),
         dims=(5, 5, 5),
         col='messy_field',
-        show_plot=True,
+        show_plot=False,
         widget=None
     )
     assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter)
