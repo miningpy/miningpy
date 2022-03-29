@@ -320,7 +320,6 @@ def plot3D(blockmodel:      pd.DataFrame,
                   font_size=6)
 
     if show_plot:
-        # plot.show(full_screen=True)
         plot.app.exec()
         return plot  # pyvistaqt.BackgroundPlotter
 
