@@ -10,6 +10,7 @@ import secrets
 import warnings
 from pyvistaqt import BackgroundPlotter
 
+
 def plot3D(blockmodel:      pd.DataFrame,
            xyz_cols:        Tuple[str, str, str] = ('x', 'y', 'z'),
            col:             str = None,
@@ -335,14 +336,22 @@ def add_section_num(widget, plot, mesh, style, show_edges, scalars, scalar_bar_a
     normal = (-1, 0, 0)  # default
     implicit = True  # default
 
-    if 'free' in params: implicit = False
-    if 'box' in params:  implicit = True
-    if '-x' in params:   normal = (-1, 0, 0)
-    if '+x' in params:   normal = (1, 0, 0)
-    if '-y' in params:   normal = (0, -1, 0)
-    if '+y' in params:   normal = (0, 1, 0)
-    if '-z' in params:   normal = (0, 0, -1)
-    if '+z' in params:   normal = (0, 0, 1)
+    if 'free' in params:
+        implicit = False
+    if 'box' in params:
+        implicit = True
+    if '-x' in params:
+        normal = (-1, 0, 0)
+    if '+x' in params:
+        normal = (1, 0, 0)
+    if '-y' in params:
+        normal = (0, -1, 0)
+    if '+y' in params:
+        normal = (0, 1, 0)
+    if '-z' in params:
+        normal = (0, 0, -1)
+    if '+z' in params:
+        normal = (0, 0, 1)
 
     # add section
     name = mesh.memory_address
@@ -399,14 +408,22 @@ def add_section_string(widget, plot, mesh, style, show_edges, scalars, scalar_ba
     normal = (-1, 0, 0)  # default
     implicit = True  # default
 
-    if 'free' in params: implicit = False
-    if 'box' in params:  implicit = True
-    if '-x' in params:   normal = (-1, 0, 0)
-    if '+x' in params:   normal = (1, 0, 0)
-    if '-y' in params:   normal = (0, -1, 0)
-    if '+y' in params:   normal = (0, 1, 0)
-    if '-z' in params:   normal = (0, 0, -1)
-    if '+z' in params:   normal = (0, 0, 1)
+    if 'free' in params:
+        implicit = False
+    if 'box' in params:
+        implicit = True
+    if '-x' in params:
+        normal = (-1, 0, 0)
+    if '+x' in params:
+        normal = (1, 0, 0)
+    if '-y' in params:
+        normal = (0, -1, 0)
+    if '+y' in params:
+        normal = (0, 1, 0)
+    if '-z' in params:
+        normal = (0, 0, -1)
+    if '+z' in params:
+        normal = (0, 0, 1)
 
     # add section
     name = mesh.memory_address

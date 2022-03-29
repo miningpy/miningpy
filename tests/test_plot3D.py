@@ -16,7 +16,7 @@ testdata1 = {
 }
 
 
-def test_plot3D_1():
+def test_plot3d_1():
     # test blocks2vtk
     # all params specified
     data = pd.DataFrame(testdata1)
@@ -61,7 +61,7 @@ testdata3 = {
 }
 
 
-def test_plot3D_3():
+def test_plot3d_3():
     # all params specified
     data = pd.DataFrame(testdata3)
     plot = data.plot3D(
@@ -74,6 +74,7 @@ def test_plot3D_3():
     )
     # assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter)
 
+
 # test data with Pandas dtypes
 testdata4 = {
     'x': [5, 5, 15],
@@ -85,7 +86,8 @@ testdata4 = {
     'bool': [True, False, True]
 }
 
-def test_plot3D_4():
+
+def test_plot3d_4():
     # all params specified
     data = pd.DataFrame(testdata4)
     data_conv = data.convert_dtypes()  # Pandas dtypes aren't supported by Plot3D
