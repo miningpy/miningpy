@@ -1849,6 +1849,8 @@ def grade_tonnage_plot( blockmodel: pd.DataFrame,
 
     Returns
     -------
+    pandas.DataFrame
+        dataframe of grade-tonnage
     matplotlib.pyplot
         Grade-Tonnage plot
     """
@@ -1871,7 +1873,7 @@ def grade_tonnage_plot( blockmodel: pd.DataFrame,
     # construct df to plot
     grade_tonnage = pd.DataFrame(cog_grades, columns=[grade_col])
     grade_tonnage['tonnage'] = 0.0
-    grade_tonnage['grade'] = 0.0
+    grade_tonnage['avg_grade'] = 0.0
 
     grade_tonnage = grade_tonnage.set_index(grade_col)
 
@@ -1879,9 +1881,13 @@ def grade_tonnage_plot( blockmodel: pd.DataFrame,
         mask = blockmodel[grade_col] >= grade
         temp = blockmodel[mask].copy()
         grade_tonnage.at[grade, 'tonnage'] = temp[ton_col].sum()
-        grade_tonnage.at[grade, 'grade'] = np.average(temp[grade_col], weights=temp[ton_col])
+        grade_tonnage.at[grade, 'avg_grade'] = np.average(temp[grade_col], weights=temp[ton_col])
 
     del temp
+
+    # remove grade_col from index
+    grade_tonnage = grade_tonnage.reset_index()
+    grade_tonnage = grade_tonnage.rename(columns={grade_col:'cog'})
 
     # plot
     if plot_path is not None:
