@@ -53,18 +53,21 @@ cog_grade_points = 3
 def test_grade_tonnage_2():
     data = pd.DataFrame(testdata2)
 
-    # make temp jpg
-    plot_path= tempfile.NamedTemporaryFile(mode="wb", delete=False)
+    # make temp jpg, delete=False to test png
+    plot_path = tempfile.NamedTemporaryFile(mode="wb", delete=False)
 
     output = data.grade_tonnage_plot(grade_col='cu', ton_col='tonnage', cog_grade_points=cog_grade_points,
-                                     show_plot=True, plot_path=plot_path.name)
+                                     show_plot=False, plot_path=plot_path.name)
     result = pd.DataFrame(resultdata2)
 
-    # check result
+    # check result of grade tonnage table
     check = (output.sum() - result.sum()).sum()
     assert check.sum() < 0.0001, "grade tonnage table not the same"
 
     # check plot
     path = plot_path.name + '.png'
-    xx= imghdr.what(path, h=None)
+    assert imghdr.what(path, h=None) == 'png', 'grade tonnage plot error'
+
+    # close temporary file
+    plot_path.close()
 
