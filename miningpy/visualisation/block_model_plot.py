@@ -121,8 +121,6 @@ def plot3D(blockmodel:      pd.DataFrame,
     if _dtype[0:3] != 'int' and \
        _dtype[0:5] != 'float':
 
-        print('converting dtypes')  # testing only
-
         # if not int or float, take copy of dataframe and explicitly define dtype
         block_model = blockmodel[[xyz_cols[0], xyz_cols[1], xyz_cols[2], col]]
 
