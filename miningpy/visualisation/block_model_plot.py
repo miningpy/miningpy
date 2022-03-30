@@ -10,6 +10,7 @@ import secrets
 import warnings
 from pyvistaqt import BackgroundPlotter
 
+
 def plot3D(blockmodel:      pd.DataFrame,
            xyz_cols:        Tuple[str, str, str] = ('x', 'y', 'z'),
            col:             str = None,
@@ -81,7 +82,6 @@ def plot3D(blockmodel:      pd.DataFrame,
     # check for duplicate blocks and return warning
     dup_check = blockmodel.duplicated(subset=[xyz_cols[0], xyz_cols[1], xyz_cols[2]])
     xyz_cols = list(xyz_cols)
-    dup_check = list(blockmodel.duplicated(subset=xyz_cols).unique())
 
     if dup_check.sum() > 0:
         warnings.warn("There are duplicate blocks in dataframe, dropping duplicates except for the first occurrence.")
@@ -320,12 +320,12 @@ def plot3D(blockmodel:      pd.DataFrame,
                   font_size=6)
 
     if show_plot:
-        # plot.show(full_screen=True)
-        plot.show()
-        return plot  # pv.Plotter
+        plot.app.exec()
+        return plot  # pyvistaqt.BackgroundPlotter
 
     if not show_plot:
-        return plot  # pv.Plotter
+        plot.close()  # dont want to show plot
+        return plot  # pyvistaqt.BackgroundPlotter
 
 
 def add_section_num(widget, plot, mesh, style, show_edges, scalars, scalar_bar_args,
@@ -336,14 +336,22 @@ def add_section_num(widget, plot, mesh, style, show_edges, scalars, scalar_bar_a
     normal = (-1, 0, 0)  # default
     implicit = True  # default
 
-    if 'free' in params: implicit = False
-    if 'box' in params:  implicit = True
-    if '-x' in params:   normal = (-1, 0, 0)
-    if '+x' in params:   normal = (1, 0, 0)
-    if '-y' in params:   normal = (0, -1, 0)
-    if '+y' in params:   normal = (0, 1, 0)
-    if '-z' in params:   normal = (0, 0, -1)
-    if '+z' in params:   normal = (0, 0, 1)
+    if 'free' in params:
+        implicit = False
+    if 'box' in params:
+        implicit = True
+    if '-x' in params:
+        normal = (-1, 0, 0)
+    if '+x' in params:
+        normal = (1, 0, 0)
+    if '-y' in params:
+        normal = (0, -1, 0)
+    if '+y' in params:
+        normal = (0, 1, 0)
+    if '-z' in params:
+        normal = (0, 0, -1)
+    if '+z' in params:
+        normal = (0, 0, 1)
 
     # add section
     name = mesh.memory_address
@@ -400,14 +408,22 @@ def add_section_string(widget, plot, mesh, style, show_edges, scalars, scalar_ba
     normal = (-1, 0, 0)  # default
     implicit = True  # default
 
-    if 'free' in params: implicit = False
-    if 'box' in params:  implicit = True
-    if '-x' in params:   normal = (-1, 0, 0)
-    if '+x' in params:   normal = (1, 0, 0)
-    if '-y' in params:   normal = (0, -1, 0)
-    if '+y' in params:   normal = (0, 1, 0)
-    if '-z' in params:   normal = (0, 0, -1)
-    if '+z' in params:   normal = (0, 0, 1)
+    if 'free' in params:
+        implicit = False
+    if 'box' in params:
+        implicit = True
+    if '-x' in params:
+        normal = (-1, 0, 0)
+    if '+x' in params:
+        normal = (1, 0, 0)
+    if '-y' in params:
+        normal = (0, -1, 0)
+    if '+y' in params:
+        normal = (0, 1, 0)
+    if '-z' in params:
+        normal = (0, 0, -1)
+    if '+z' in params:
+        normal = (0, 0, 1)
 
     # add section
     name = mesh.memory_address
