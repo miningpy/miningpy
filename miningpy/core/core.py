@@ -1815,18 +1815,16 @@ def index_1Dto3D(blockmodel: pd.DataFrame,
         return blockmodel
 
 
-def grade_tonnage_plot( blockmodel: pd.DataFrame,
-                        grade_col: str,
-                        ton_col: str,
-                        cog_grades: List = None,
-                        cog_grade_points: int = None,
-                        plot_path: str = None,
-                        table_path: str = None,
-                        show_plot: bool = False):
-
+def grade_tonnage_plot(blockmodel: pd.DataFrame,
+                       grade_col: str,
+                       ton_col: str,
+                       cog_grades: List = None,
+                       cog_grade_points: int = None,
+                       plot_path: str = None,
+                       show_plot: bool = False):
     """
-    Create and export Grade-Tonnage table with option to save grade tonnage plot as a .png
-    curve and save image. Grade-Tonnage curves are a visual representation of the impact of cut-off
+    Create and return grade-tonnage table and optional export plot as a .png
+    and save image. Grade-Tonnage curves are a visual representation of the impact of cut-off
     grades on mineral reserves. Grades to plot can be specified, else grades to plot will be generated based on the
     range of grades in the model.
 
@@ -1844,14 +1842,14 @@ def grade_tonnage_plot( blockmodel: pd.DataFrame,
         number of cut off grades to plot between min and max grade
     plot_path: {optional} str
         path to save plot .png
-    table_path: {optional} str
-        path to export table to excel (.xlsx)
     show_plot: {optional} bool
         if running in interactive console, show plot, default False
 
 
     Returns
     -------
+    pandas.DataFrame
+        dataframe of grade-tonnage
     matplotlib.pyplot
         Grade-Tonnage plot
     """
@@ -1874,7 +1872,7 @@ def grade_tonnage_plot( blockmodel: pd.DataFrame,
     # construct df to plot
     grade_tonnage = pd.DataFrame(cog_grades, columns=[grade_col])
     grade_tonnage['tonnage'] = 0.0
-    grade_tonnage['grade'] = 0.0
+    grade_tonnage['avg_grade'] = 0.0
 
     grade_tonnage = grade_tonnage.set_index(grade_col)
 
@@ -1882,9 +1880,13 @@ def grade_tonnage_plot( blockmodel: pd.DataFrame,
         mask = blockmodel[grade_col] >= grade
         temp = blockmodel[mask].copy()
         grade_tonnage.at[grade, 'tonnage'] = temp[ton_col].sum()
-        grade_tonnage.at[grade, 'grade'] = np.average(temp[grade_col], weights=temp[ton_col])
+        grade_tonnage.at[grade, 'avg_grade'] = np.average(temp[grade_col], weights=temp[ton_col])
 
     del temp
+
+    # remove grade_col from index
+    grade_tonnage = grade_tonnage.reset_index()
+    grade_tonnage = grade_tonnage.rename(columns={grade_col: 'cog'})
 
     # plot
     if plot_path is not None:
@@ -1895,7 +1897,7 @@ def grade_tonnage_plot( blockmodel: pd.DataFrame,
 
             # the ax keyword sets the axis that the data frame plots to
             grade_tonnage.plot(ax=ax1, style='1-', y='tonnage', legend=False, color='midnightblue')
-            grade_tonnage.plot(ax=ax2, style='+-', y='grade', legend=False, color='sienna')
+            grade_tonnage.plot(ax=ax2, style='+-', y='avg_grade', legend=False, color='sienna')
             ax1.set_ylabel(f'{ton_col} Tonnage above COG', color='midnightblue')
             ax2.set_ylabel(f'Average {grade_col} Grade above COG', color='sienna')
             ax1.set_xlabel(f'{grade_col} COG')
@@ -1910,9 +1912,7 @@ def grade_tonnage_plot( blockmodel: pd.DataFrame,
     if show_plot is False:
         plt.close(fig)
 
-    # write table to excel
-    if table_path is not None:
-        grade_tonnage.to_excel(table_path, sheet_name='grade_tonnage_table')
+    return grade_tonnage
 
 
 def extend_pandas():

@@ -72,7 +72,7 @@ def test_plot3d_3():
         widget='section',
         window_size=(3000, 2000),
     )
-    # assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter)
+    assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter)
 
 
 # test data with Pandas dtypes
