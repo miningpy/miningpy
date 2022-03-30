@@ -41,19 +41,20 @@ testdata2 = {
 
 # result
 resultdata2 = {
-    'cog': [0, 27.5, 50],
-    'tonnage': [600.0, 300.0, 200.0],
-    'avg_grade': [25.0, ((125 / 300) * 100), 50.0],
+    'cog': [5.0, 27.5, 50],
+    'tonnage': [600.0, 200.0, 200.0],
+    'avg_grade': [25.0, 50.0, 50.0]
 }
 
 cog_grade_points = 3
+
 
 # test with image
 def test_grade_tonnage_2():
     data = pd.DataFrame(testdata2)
 
     # make temp jpg
-    plot_path= tempfile.NamedTemporaryFile(mode="wb")
+    plot_path= tempfile.NamedTemporaryFile(mode="wb", delete=False)
 
     output = data.grade_tonnage_plot(grade_col='cu', ton_col='tonnage', cog_grade_points=cog_grade_points,
                                      show_plot=True, plot_path=plot_path.name)
@@ -62,3 +63,8 @@ def test_grade_tonnage_2():
     # check result
     check = (output.sum() - result.sum()).sum()
     assert check.sum() < 0.0001, "grade tonnage table not the same"
+
+    # check plot
+    path = plot_path.name + '.png'
+    xx= imghdr.what(path, h=None)
+
