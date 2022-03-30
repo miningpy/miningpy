@@ -78,3 +78,8 @@ index_1Dto3D
 ------------
 
 .. autofunction:: index_1Dto3D
+
+grade_tonnage_plot
+------------
+
+.. autofunction:: grade_tonnage_plot
