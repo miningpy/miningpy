@@ -86,12 +86,13 @@ testdata4 = {
     'ton': [50.1, 100, 50],
     'pitname': ['pit1', 'pit2', 'pit3'],
     'messy_field': [1, 1.0, '1'],
-    'bool': [True, False, True]
+    'bool': [True, False, True],
+    'nan': [1, 2, np.nan]
 }
 
 
 def test_plot3d_4():
-    list_of_fields = ['pitname', 'messy_field', 'bool', 'ton']  # these will all be converted to pandas dtypes
+    list_of_fields = ['pitname', 'messy_field', 'bool', 'ton', 'nan']  # these will all be converted to pandas dtypes
     data = pd.DataFrame(testdata4)
     data = data.convert_dtypes()  # Pandas dtypes aren't supported by Plot3D
     # https://pandas.pydata.org/pandas-docs/stable/user_guide/gotchas.html#nan-integer-na-values-and-na-type-promotions
@@ -109,7 +110,7 @@ def test_plot3d_4():
 
 # test data with standard dtypes
 def test_plot3d_5():
-    list_of_fields = ['pitname', 'messy_field', 'bool', 'ton']  # these will NOT be converted to pandas dtypes
+    list_of_fields = ['pitname', 'messy_field', 'bool', 'ton', 'nan']  # these will NOT be converted to pandas dtypes
     data = pd.DataFrame(testdata4)
 
     for col in list_of_fields:
