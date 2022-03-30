@@ -52,7 +52,7 @@ def test_plot3d_2():
     assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter)
 
 
-# test data with slider widget
+# test data with widgets
 testdata3 = {
     'x': [5, 5, 15],
     'y': [5, 15, 25],
@@ -60,19 +60,22 @@ testdata3 = {
     'ton': [50.1, 100, 50],
 }
 
+widget_list = ['section', 'slider']
+
 
 def test_plot3d_3():
     # all params specified
     data = pd.DataFrame(testdata3)
-    plot = data.plot3D(
-        xyz_cols=('x', 'y', 'z'),
-        dims=(5, 5, 5),
-        col='ton',
-        show_plot=False,
-        widget='section',
-        window_size=(3000, 2000),
-    )
-    assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter)
+    for widget in widget_list:
+        plot = data.plot3D(
+            xyz_cols=('x', 'y', 'z'),
+            dims=(5, 5, 5),
+            col='ton',
+            show_plot=False,
+            widget=widget,
+            window_size=None,
+        )
+        assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter), f'error with plot3D {widget} widget'
 
 
 # test data with Pandas dtypes
@@ -83,21 +86,38 @@ testdata4 = {
     'ton': [50.1, 100, 50],
     'pitname': ['pit1', 'pit2', 'pit3'],
     'messy_field': [1, 1.0, '1'],
-    'bool': [True, False, True]
+    'bool': [True, False, True],
+    'nan': [1, 2, np.nan]
 }
 
 
 def test_plot3d_4():
-    # all params specified
+    list_of_fields = ['pitname', 'messy_field', 'bool', 'ton', 'nan']  # these will all be converted to pandas dtypes
     data = pd.DataFrame(testdata4)
-    data_conv = data.convert_dtypes()  # Pandas dtypes aren't supported by Plot3D
+    data = data.convert_dtypes()  # Pandas dtypes aren't supported by Plot3D
     # https://pandas.pydata.org/pandas-docs/stable/user_guide/gotchas.html#nan-integer-na-values-and-na-type-promotions
 
-    plot = data.plot3D(
-        xyz_cols=('x', 'y', 'z'),
-        dims=(5, 5, 5),
-        col='messy_field',
-        show_plot=False,
-        widget=None
-    )
-    assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter)
+    for col in list_of_fields:
+        plot = data.plot3D(
+            xyz_cols=('x', 'y', 'z'),
+            dims=(5, 5, 5),
+            col=col,
+            show_plot=False,
+            widget=None
+        )
+        assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter), 'pandas dtype error'
+
+
+# test data with standard dtypes
+def test_plot3d_5():
+    list_of_fields = ['pitname', 'messy_field', 'bool', 'ton', 'nan']  # these will NOT be converted to pandas dtypes
+    data = pd.DataFrame(testdata4)
+
+    for col in list_of_fields:
+        plot = data.plot3D(
+            xyz_cols=('x', 'y', 'z'),
+            dims=(5, 5, 5),
+            col=col,
+            show_plot=False
+        )
+        assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter)

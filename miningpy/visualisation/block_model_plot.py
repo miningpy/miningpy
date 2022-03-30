@@ -69,6 +69,7 @@ def plot3D(blockmodel:      pd.DataFrame,
     """
 
     # check col data to plot is int or float data - not string or bool
+    """
     data_types = blockmodel.dtypes
     _dtype = str(data_types[col])
 
@@ -78,7 +79,7 @@ def plot3D(blockmodel:      pd.DataFrame,
        _dtype != 'string' and \
        _dtype != 'bool':
         raise Exception(f'MiningPy ERROR - column to plot: {col} must be one of Pandas dtypes: int, float, object, string, boolean.')
-
+    """
     # check for duplicate blocks and return warning
     dup_check = blockmodel.duplicated(subset=[xyz_cols[0], xyz_cols[1], xyz_cols[2]])
     xyz_cols = list(xyz_cols)
@@ -119,8 +120,6 @@ def plot3D(blockmodel:      pd.DataFrame,
     # pandas dtypes such as Int8Dtype which support pd.na are not supported in Plot3D
     if _dtype[0:3] != 'int' and \
        _dtype[0:5] != 'float':
-
-        print('converting dtypes')  # testing only
 
         # if not int or float, take copy of dataframe and explicitly define dtype
         block_model = blockmodel[[xyz_cols[0], xyz_cols[1], xyz_cols[2], col]]
