@@ -104,7 +104,7 @@ def test_plot3d_4():
             show_plot=False,
             widget=None
         )
-        assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter)
+        assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter), 'pandas dtype error'
 
 
 # test data with standard dtypes
