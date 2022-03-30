@@ -89,21 +89,34 @@ testdata4 = {
     'bool': [True, False, True]
 }
 
-list_of_fields = ['pitname', 'messy_field', 'bool', 'ton']  # these will all be converted to pandas dtypes
 
 def test_plot3d_4():
-
+    list_of_fields = ['pitname', 'messy_field', 'bool', 'ton']  # these will all be converted to pandas dtypes
     data = pd.DataFrame(testdata4)
     data = data.convert_dtypes()  # Pandas dtypes aren't supported by Plot3D
     # https://pandas.pydata.org/pandas-docs/stable/user_guide/gotchas.html#nan-integer-na-values-and-na-type-promotions
 
     for col in list_of_fields:
-        print('plotting: ', col)
         plot = data.plot3D(
             xyz_cols=('x', 'y', 'z'),
             dims=(5, 5, 5),
             col=col,
             show_plot=False,
             widget=None
+        )
+        assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter)
+
+
+# test data with standard dtypes
+def test_plot3d_5():
+    list_of_fields = ['pitname', 'messy_field', 'bool', 'ton']  # these will NOT be converted to pandas dtypes
+    data = pd.DataFrame(testdata4)
+
+    for col in list_of_fields:
+        plot = data.plot3D(
+            xyz_cols=('x', 'y', 'z'),
+            dims=(5, 5, 5),
+            col=col,
+            show_plot=False
         )
         assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter)
