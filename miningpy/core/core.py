@@ -1897,7 +1897,7 @@ def grade_tonnage_plot(blockmodel: pd.DataFrame,
 
             # the ax keyword sets the axis that the data frame plots to
             grade_tonnage.plot(ax=ax1, style='1-', y='tonnage', legend=False, color='midnightblue')
-            grade_tonnage.plot(ax=ax2, style='+-', y='grade', legend=False, color='sienna')
+            grade_tonnage.plot(ax=ax2, style='+-', y='avg_grade', legend=False, color='sienna')
             ax1.set_ylabel(f'{ton_col} Tonnage above COG', color='midnightblue')
             ax2.set_ylabel(f'Average {grade_col} Grade above COG', color='sienna')
             ax1.set_xlabel(f'{grade_col} COG')
