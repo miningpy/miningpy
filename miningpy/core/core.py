@@ -1889,7 +1889,7 @@ def grade_tonnage_plot(blockmodel: pd.DataFrame,
     grade_tonnage = grade_tonnage.rename(columns={grade_col: 'cog'})
 
     # plot
-    if plot_path is not None:
+    if show_plot is True or plot_path is not None:
         with plt.style.context('seaborn-white'):
             fig = plt.figure()
             ax1 = fig.add_subplot()
@@ -1909,7 +1909,7 @@ def grade_tonnage_plot(blockmodel: pd.DataFrame,
             else:
                 plt.savefig(plot_path, format='png', dpi=330)
 
-    if show_plot is False:
+    if show_plot is False and plot_path is not None:
         plt.close(fig)
 
     return grade_tonnage
