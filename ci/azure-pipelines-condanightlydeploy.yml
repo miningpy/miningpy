@@ -22,10 +22,6 @@ jobs:
       vmImage: 'windows-latest'
     strategy:
       matrix:
-        Python37:
-          python.version: '3.7'
-        Python38:
-          python.version: '3.8'
         Python39:
           python.version: '3.9'
 
@@ -59,7 +55,7 @@ jobs:
 
     - script: |
         conda config --set anaconda_upload yes
-        conda-build conda.recipe.nightly
+        conda-build conda.recipe.nightly --channel conda-forge --python $(python.version)
       displayName: Conda-Build Recipe & Test
       env:
         DEPLOY_TIME: $(time)
