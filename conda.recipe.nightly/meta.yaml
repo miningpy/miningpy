@@ -28,6 +28,7 @@ requirements:
     - python
     - pyvista >=0.32
     - pyvistaqt
+    - pyqt
     - vtk >=8.0
     - matplotlib-base
 

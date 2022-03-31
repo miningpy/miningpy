@@ -223,7 +223,10 @@ def plot3D(blockmodel:      pd.DataFrame,
         window_size = (1920, 1080)
 
     # background plotter
-    plot = BackgroundPlotter(title="MiningPy 3D Plot", window_size=window_size)
+    if show_plot:
+        plot = BackgroundPlotter(title="MiningPy 3D Plot", window_size=window_size)
+    else:
+        plot = BackgroundPlotter(title="MiningPy 3D Plot", window_size=window_size, show=False)
 
     # legend settings
     if _dtype[0:5] == 'float':
@@ -321,9 +324,7 @@ def plot3D(blockmodel:      pd.DataFrame,
     if show_plot:
         plot.app.exec()
         return plot  # pyvistaqt.BackgroundPlotter
-
-    if not show_plot:
-        plot.close()  # dont want to show plot
+    else:
         return plot  # pyvistaqt.BackgroundPlotter
 
 

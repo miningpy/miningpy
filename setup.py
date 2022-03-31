@@ -4,14 +4,16 @@ import sys
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-install_requires = ['ezdxf>=0.13.1',
-                    'pandas>=1.0',
-                    'numpy>=1.19.0',
-                    'pyvista>=0.32',
-                    'pyvistaqt',
-                    'vtk>=8.0',
-                    'matplotlib'
-                    ]
+install_requires = [
+    'ezdxf>=0.13.1',
+    'pandas>=1.0',
+    'numpy>=1.19.0',
+    'pyvista>=0.32',
+    'pyvistaqt',
+    'pyqt5',
+    'vtk>=8.0',
+    'matplotlib'
+]
 
 with open('miningpy/VERSION') as version_file:
     ver = version_file.read().strip()
