@@ -1,5 +1,8 @@
 trigger: none
 
+variables:
+  AZURE_PIPELINE: yes
+
 schedules:
 - cron: "0 7 * * *"
   displayName: Daily build

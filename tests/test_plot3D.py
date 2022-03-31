@@ -6,6 +6,7 @@ import pyvista as pv
 import pyvistaqt
 from pyvistaqt import BackgroundPlotter
 import numpy as np
+import os
 
 # test data
 testdata1 = {
@@ -19,6 +20,8 @@ testdata1 = {
 def test_plot3d_1():
     # test blocks2vtk
     # all params specified
+    if "AZURE_PIPELINE" in os.environ:
+        pytest.skip('test not runnable on Azure')
     data = pd.DataFrame(testdata1)
     plot = data.plot3D(
         xyz_cols=('x', 'y', 'z'),
@@ -41,6 +44,8 @@ testdata2 = {
 
 def test_plot3d_2():
     # test blocks2vtk
+    if "AZURE_PIPELINE" in os.environ:
+        pytest.skip('test not runnable on Azure')
     data = pd.DataFrame(testdata2)
     plot = data.plot3D(
         xyz_cols=('x', 'y', 'z'),
@@ -65,6 +70,8 @@ widget_list = ['section', 'slider']
 
 def test_plot3d_3():
     # all params specified
+    if "AZURE_PIPELINE" in os.environ:
+        pytest.skip('test not runnable on Azure')
     data = pd.DataFrame(testdata3)
     for widget in widget_list:
         plot = data.plot3D(
@@ -92,6 +99,8 @@ testdata4 = {
 
 
 def test_plot3d_4():
+    if "AZURE_PIPELINE" in os.environ:
+        pytest.skip('test not runnable on Azure')
     list_of_fields = ['pitname', 'messy_field', 'bool', 'ton', 'nan']  # these will all be converted to pandas dtypes
     data = pd.DataFrame(testdata4)
     data = data.convert_dtypes()  # Pandas dtypes aren't supported by Plot3D
@@ -110,6 +119,8 @@ def test_plot3d_4():
 
 # test data with standard dtypes
 def test_plot3d_5():
+    if "AZURE_PIPELINE" in os.environ:
+        pytest.skip('test not runnable on Azure')
     list_of_fields = ['pitname', 'messy_field', 'bool', 'ton', 'nan']  # these will NOT be converted to pandas dtypes
     data = pd.DataFrame(testdata4)
 

@@ -6,6 +6,9 @@ trigger: none
 # no PR triggers
 pr: none
 
+variables:
+  AZURE_PIPELINE: yes
+
 schedules:
 - cron: "0 9 * * *"
   displayName: Daily build
