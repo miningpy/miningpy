@@ -16,7 +16,6 @@ build:
   always_include_files:
     - miningpy/VERSION
     - miningpy/visualisation/ParaViewGlance.html
-  noarch: python
 
 requirements:
   host:
