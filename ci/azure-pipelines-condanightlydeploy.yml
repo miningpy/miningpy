@@ -59,7 +59,7 @@ jobs:
 
     - script: |
         conda config --set anaconda_upload yes
-        conda-build conda.recipe.nightly --channel conda-forge --python $(python.version)
+        conda-build conda.recipe.nightly
       displayName: Conda-Build Recipe & Test
       env:
         DEPLOY_TIME: $(time)
