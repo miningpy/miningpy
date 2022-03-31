@@ -27,6 +27,7 @@ requirements:
     - numpy >=1.19.0
     - python
     - pyvista >=0.32
+    - pyvistaqt
     - vtk >=8.0
     - matplotlib-base
 
