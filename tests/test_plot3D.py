@@ -2,9 +2,7 @@
 import pandas as pd
 import pytest
 import miningpy
-import pyvista as pv
 import pyvistaqt
-from pyvistaqt import BackgroundPlotter
 import numpy as np
 import os
 
@@ -107,14 +105,22 @@ def test_plot3d_4():
     # https://pandas.pydata.org/pandas-docs/stable/user_guide/gotchas.html#nan-integer-na-values-and-na-type-promotions
 
     for col in list_of_fields:
-        plot = data.plot3D(
-            xyz_cols=('x', 'y', 'z'),
-            dims=(5, 5, 5),
-            col=col,
-            show_plot=False,
-            widget=None
-        )
-        assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter), 'pandas dtype error'
+        if col == 'nan':  # this should fail with dtype pd.NA
+            with pytest.raises(Exception):
+                data.plot3D(
+                    xyz_cols=('x', 'y', 'z'),
+                    dims=(5, 5, 5),
+                    col=col,
+                    show_plot=False
+                )
+        else:
+            plot = data.plot3D(
+                xyz_cols=('x', 'y', 'z'),
+                dims=(5, 5, 5),
+                col=col,
+                show_plot=False
+            )
+            assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter), 'pandas dtype error'
 
 
 # test data with standard dtypes
@@ -132,3 +138,107 @@ def test_plot3d_5():
             show_plot=False
         )
         assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter)
+
+
+# test data
+testdata6 = {
+    'x': [5, 5, 15],
+    'y': [5, 15, 25],
+    'z': [5, 5, 5],
+    'pit': ['pit1', 'pit2', 'pit3'],
+}
+
+
+def test_plot3d_6():
+    # test blocks2vtk
+    # all params specified
+    if "AZURE_PIPELINE" in os.environ:
+        pytest.skip('test not runnable on Azure')
+    data = pd.DataFrame(testdata6)
+    plot = data.plot3D(
+        xyz_cols=('x', 'y', 'z'),
+        dims=(5, 5, 5),
+        col='pit',
+        show_plot=False
+    )
+
+    assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter)
+
+
+# test data
+testdata7 = {
+    'x': [5, 5, 15],
+    'y': [5, 15, 25],
+    'z': [5, 5, 5],
+    'pit': ['pit1', 'pit2', 'pit3'],
+}
+
+
+def test_plot3d_7():
+    # test blocks2vtk
+    # all params specified
+    if "AZURE_PIPELINE" in os.environ:
+        pytest.skip('test not runnable on Azure')
+    data = pd.DataFrame(testdata7)
+    plot = data.plot3D(
+        xyz_cols=('x', 'y', 'z'),
+        dims=(5, 5, 5),
+        col='pit',
+        widget='slider',
+        show_plot=False
+    )
+
+    assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter)
+
+
+# test data
+testdata8 = {
+    'x': [5, 5, 15],
+    'y': [5, 15, 25],
+    'z': [5, 5, 5],
+    'pit': ['pit1', 'pit2', 'pit3'],
+}
+
+
+def test_plot3d_8():
+    # test blocks2vtk
+    # all params specified
+    if "AZURE_PIPELINE" in os.environ:
+        pytest.skip('test not runnable on Azure')
+    data = pd.DataFrame(testdata8)
+    plot = data.plot3D(
+        xyz_cols=('x', 'y', 'z'),
+        dims=(5, 5, 5),
+        col='pit',
+        widget='section',
+        show_plot=False
+    )
+
+    assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter)
+
+
+# test data
+testdata9 = {
+    'x': [5, 5, 15],
+    'y': [5, 15, 25],
+    'z': [5, 5, 5],
+    'mask': [True, False, True],
+}
+
+
+def test_plot3d_9():
+    # test blocks2vtk
+    # all params specified
+    if "AZURE_PIPELINE" in os.environ:
+        pytest.skip('test not runnable on Azure')
+    data = pd.DataFrame(testdata9)
+    plot = data.plot3D(
+        xyz_cols=('x', 'y', 'z'),
+        dims=(5, 5, 5),
+        col='mask',
+        show_plot=False
+    )
+
+    assert isinstance(plot, pyvistaqt.plotting.BackgroundPlotter)
+
+

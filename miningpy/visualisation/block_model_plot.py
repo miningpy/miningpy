@@ -113,35 +113,36 @@ def plot3D(blockmodel:      pd.DataFrame,
         else:
             raise Exception('Rotation is limited to between -180 and +180 degrees')
 
-    # check col data to plot is int or float non pandas dtype
-    data_types = blockmodel.dtypes
-    _dtype = str(data_types[col])
+    # make copy of required columns
+    cols = list(xyz_cols)
+    if col not in xyz_cols:
+        cols.append(col)
+    block_model = blockmodel[cols].copy()
+
+    # fix data types in dataframe if required
+    numpy_dtypes = ['int64', 'int32', 'float64', 'bool', 'object']
+    np_pd_dtypes = {
+        'Int64': int,
+        'Int32': int,
+        'Float64': float,
+        'boolean': bool,
+        'string': np.object
+    }
 
     # pandas dtypes such as Int8Dtype which support pd.na are not supported in Plot3D
-    if _dtype[0:3] != 'int' and \
-       _dtype[0:5] != 'float':
+    data_types = block_model.dtypes
+    for colTypeFix in block_model.columns:
+        _dtype = str(data_types[colTypeFix])
 
-        # if not int or float, take copy of dataframe and explicitly define dtype
-        block_model = blockmodel[[xyz_cols[0], xyz_cols[1], xyz_cols[2], col]]
+        if _dtype in np_pd_dtypes.keys():  # pandas dtype
+            # check for pd.NA (pandas version of NaN)
+            if block_model[colTypeFix].isna().sum() > 0:
+                raise Exception(f'col {col} cannot handle pd.NA data type')
+            # convert pandas dtypes to python dtypes
+            block_model[colTypeFix] = block_model[colTypeFix].astype(np_pd_dtypes[_dtype])
 
-        # split by np.numbers
-        selection_numbers = block_model.select_dtypes(include=[np.number])
-        selection_strings = block_model.select_dtypes(exclude=[np.number])
-
-        # create new dataframes using python dtypes
-        data_numbers_pd = pd.DataFrame(selection_numbers, dtype=float)
-        data_strings_pd = pd.DataFrame(selection_strings, dtype=str)
-
-        # concat together
-        block_model = pd.concat([data_numbers_pd, data_strings_pd], axis=1)
-        del selection_numbers, selection_strings, data_numbers_pd, data_strings_pd
-
-    else:
-        # make copy of required columns
-        cols = list(xyz_cols)
-        if col not in xyz_cols:
-            cols.append(col)
-        block_model = blockmodel[cols].copy()
+        if _dtype not in numpy_dtypes and _dtype not in np_pd_dtypes.keys():
+            raise Exception(f'col {col} data type not supported')
 
     # Create the spatial reference
     grid = pv.UniformGrid()
@@ -566,7 +567,7 @@ def add_slider_string(plot, mesh, style, show_edges, scalars, scalar_bar_args,
 
     name = mesh.memory_address
 
-    arr, field = get_array(mesh, scalars, preference='cell',)
+    arr = get_array(mesh=mesh, name=scalars, err=True)
 
     data = set(mesh.cell_data[scalars])
     data = list(sorted(data))
@@ -592,7 +593,7 @@ def add_slider_string(plot, mesh, style, show_edges, scalars, scalar_bar_args,
 
     alg = vtk.vtkThreshold()
     alg.SetInputDataObject(mesh)
-    alg.SetInputArrayToProcess(0, 0, 0, field.value, scalars+'_int')  # args: (idx, port, connection, field, name)
+    alg.SetInputArrayToProcess(0, 0, 0, 1, scalars+'_int')  # args: (idx, port, connection, field, name)
     alg.SetUseContinuousCellRange(False)
 
     if not hasattr(plot, "threshold_meshes"):
