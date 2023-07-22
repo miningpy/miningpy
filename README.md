@@ -6,7 +6,7 @@ Version:        0.6.3
 
 Documentation:  https://miningpy.readthedocs.io/en/latest/
 
-Repository:     https://bitbucket.org/incitron/miningpy
+Repository:     https://github.com/miningpy/miningpy
 
 Stable Release:
 
@@ -121,7 +121,7 @@ Auto-generated documentation is hosted at [Read The Docs](https://miningpy.readt
 You may also build the documentation yourself:
 
 ```bash
-git clone https://bitbucket.org/incitron/miningpy/miningpy.git
+git clone https://github.com/miningpy/miningpy.git
 cd miningpy/docs
 make html
 ```

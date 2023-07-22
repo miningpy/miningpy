@@ -6,11 +6,11 @@ concern, feature request, or desire to contribute.
 
 ## Cloning the Source Repository
 
-You can clone the source repository from `https://bitbucket.org/incitron/miningpy`
+You can clone the source repository from `https://github.com/miningpy/miningpy`
 and install the latest version by running:
 
 ```bash
-git clone https://bitbucket.org/incitron/miningpy/miningpy.git
+git clone https://github.com/miningpy/miningpy.git
 cd miningpy
 python -m pip install .
 ```
@@ -18,7 +18,7 @@ python -m pip install .
 
 ## Issue Tracking
 
-The bitbucket repository [issues page](https://bitbucket.org/incitron/miningpy/issues) is used 
+The repository [issues page](https://github.com/miningpy/miningpy/issues) is used 
 to track issues, suggest features, ask questions, etc. When creating an issue, please tag it using
 the correct *component* so that the developers can track it. The components setup for the repository include:
 
@@ -36,7 +36,7 @@ the correct *component* so that the developers can track it. The components setu
 ### Reporting Bugs
 
 If you stumble across any bugs, crashes, or concerning quirks while using code
-distributed here, please report it on the [issues page](https://bitbucket.org/incitron/miningpy/issues)
+distributed here, please report it on the [issues page](https://github.com/miningpy/miningpy/issues)
 with an appropriate component so we can promptly address it.
 When reporting an issue, please be overly descriptive so that we may reproduce
 it. Whenever possible, please provide tracebacks, screenshots, and sample files
@@ -46,7 +46,7 @@ to help us address the issue.
 ### Feature Requests
 
 We encourage users to submit ideas for improvements to MiningPy code base!
-Please create an issue on the [issues page](https://bitbucket.org/incitron/miningpy/issues)
+Please create an issue on the [issues page](https://github.com/miningpy/miningpy/issues)
 with a *feature* component to suggest an improvement.
 Please use a descriptive title and provide ample background information to help
 the community implement that functionality. For example, if you would like a
@@ -91,9 +91,9 @@ There are two important copyright guidelines:
    stackoverflow) or commercial use is prohibited. Those can undermine
    the license of the whole projects.
    
-### Contributing to MiningPy through Bitbucket
+### Contributing to MiningPy
 
-To submit new code to MiningPy, first fork the [MiningPy Bitbucket Repo](https://bitbucket.org/incitron/miningpy) 
+To submit new code to MiningPy, first fork the [MiningPy Repo](https://github.com/miningpy/miningpy) 
 and then clone the forked repository to your computer. Then, create a new branch based on the
 [Branch Naming Conventions Section](#branch-naming-conventions) in your local repository.
 
@@ -150,7 +150,7 @@ If all tests pass, you should be good to make a pull request.
 #### Creating a New Pull Request
 
 Once you have tested your branch locally, create a pull request on
-[MiningPy Bitbucket](https://bitbucket.org/incitron/miningpy) while merging to
+[MiningPy](https://github.com/miningpy/miningpy) while merging to
 master.
 
 To ensure someone else reviews your code, at least one other member of

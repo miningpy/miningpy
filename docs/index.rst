@@ -20,7 +20,7 @@ Version: |release|
 
 Documentation: https://miningpy.readthedocs.io/en/latest/
 
-Repository: https://bitbucket.org/incitron/miningpy
+Repository: https://github.com/miningpy/miningpy
 
 Stable Release:
 
@@ -155,7 +155,7 @@ You may also build the documentation yourself:
 
 .. code-block:: batch
 
-   git clone https://bitbucket.org/incitron/miningpy/miningpy.git
+   git clone https://github.com/miningpy/miningpy.git
    cd miningpy/docs
    make html
 
