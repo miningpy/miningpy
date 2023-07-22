@@ -1,0 +1,64 @@
+name: unit-tests
+on:
+  push:
+  schedule:
+  - cron: "0 0 * * *"
+jobs:
+  WindowsPip:
+    strategy:
+      matrix:
+        python.version:
+        - 3.7
+        - 3.8
+        - 3.9
+    runs-on: windows-latest
+    steps:
+    - name: Check out Repository
+      uses: actions/checkout@v3
+    - name: Setup Python ${{ matrix.python.version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python.version }}
+    - name: Install MiningPy
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+        python -m pip install .
+    - name: Install PyTest
+      run: python -m pip install pytest
+    - name: Run Tests
+      run: python -m pytest
+  WindowsAnaconda:
+    strategy:
+      matrix:
+        python.version:
+        - 3.7
+        - 3.8
+        - 3.9
+    runs-on: windows-latest
+    steps:
+    - name: Check out Repository
+      uses: actions/checkout@v3
+    - name: Add conda to PATH
+      run: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
+      shell: powershell
+    - name: Update conda & conda-build
+      run: |
+        conda update conda
+        conda install conda-build
+        conda update conda-build
+    - name: Create Anaconda environment & Install packages
+      run: conda create --yes --quiet --name baseAnaconda python=${{ matrix.python.version }} anaconda
+    - name: Purge Conda Build Dir
+      run: conda build purge-all
+    - name: Install MiningPy
+      run: |
+        call activate baseAnaconda
+        python -m pip install .
+    - name: Install PyTest
+      run: |
+        call activate baseAnaconda
+        conda install pytest
+    - name: Run Tests
+      run: |
+        call activate baseAnaconda
+        python -m pytest
