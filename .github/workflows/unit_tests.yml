@@ -39,9 +39,12 @@ jobs:
     steps:
     - name: Check out Repository
       uses: actions/checkout@v3
-    - name: Add conda to PATH
-      run: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
-      shell: powershell
+    - name: Setup Conda
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        miniconda-version: "latest"
+        auto-update-conda: true
+        python-version: ${{ matrix.python-version }}
     - name: Update conda & conda-build
       run: |
         conda update conda
@@ -53,13 +56,13 @@ jobs:
       run: conda build purge-all
     - name: Install MiningPy
       run: |
-        call activate baseAnaconda
+        conda activate baseAnaconda
         python -m pip install .
     - name: Install PyTest
       run: |
-        call activate baseAnaconda
+        conda activate baseAnaconda
         conda install pytest
     - name: Run Tests
       run: |
-        call activate baseAnaconda
+        conda activate baseAnaconda
         python -m pytest
