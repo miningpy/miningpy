@@ -13,14 +13,6 @@ Stable Release:
 - https://anaconda.org/miningpy/miningpy
 - https://pypi.org/project/miningpy/
 
-Nightly Release: Version Format: `version.version.version.yyyyMMddHHmm`
-
-- https://anaconda.org/miningpy_nightly/miningpy
-- https://test.pypi.org/project/miningpy/
-
-Testing Pipelines (Azure DevOps): https://dev.azure.com/Iain123/MiningPy
-
-
 ## About
 MiningPy is intended to help mining engineers harness the full power of the Python ecosystem to solve routine mine planning problems.
 This package includes tools to help with:
@@ -133,13 +125,9 @@ The documention can then be found in `miningpy/docs/_build/html/index.html`.
 
 ### Platforms
 
-MiningPy is only tested on Microsoft Windows 10.
+MiningPy is only tested on Microsoft Windows 11.
 
 ### Testing
-
-The package is built and tested nightly using environments based on [Virtualenv](https://virtualenv.pypa.io/) and [Conda](https://docs.conda.io) (with the current base Anaconda packages).
-
-[Azure DevOps](https://dev.azure.com/Iain123/MiningPy) hosts and runs and the testing pipelines.
 
 MiningPy is tested to be fully tested with the following versions of Python:
 
@@ -153,15 +141,12 @@ Offical testing and support has been removed for the following versions of Pytho
 
 VTK is a dependency of MiningPy and there are known issues with the current Linux version of VTK published on [PyPi](https://pypi.org/project/vtk/).
 
-The package is also automatically deployed nightly to [TestPyPi](https://test.pypi.org/project/miningpy/), to ensure that official package releases are stable.
-The versioning format used on TestPyPi is: `version.version.version.yyyyMMddHHmm`.
-
 ## API Reference
 
 
 ## Author
 
-The creator of MiningPy is a mining engineer consultant that primarly works in long-term strategic mine planning.
+The creator of MiningPy is a mining engineer consultant that primarily works in long-term strategic mine planning.
 
 
 ## Contributing
