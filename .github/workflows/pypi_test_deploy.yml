@@ -39,11 +39,14 @@ jobs:
     - name: Print current time
       run: |
         echo "time: ${{ steps.current-time.outputs.formattedTime }}"
-    - name: Build/Check Project
+    - name: ENV variable - LIB VERSION
       run: |
         $version = Get-Content -Path miningpy/VERSION -TotalCount 1
         echo "VERSION=$version" >> $GITHUB_ENV
-        python setup.py sdist bdist_wheel --testversion $VERSION.${{ steps.current-time.outputs.formattedTime }}
+        echo "version: $VERSION"
+    - name: Build/Check Project
+      run: |
+        python setup.py sdist bdist_wheel --testversion $env:MY_VARIABLE.${{ steps.current-time.outputs.formattedTime }}
         twine check dist/*
     - name: Deploy Project
       run: twine upload --repository testpypi dist/*
