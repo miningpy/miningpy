@@ -42,12 +42,14 @@ jobs:
     - name: Get library version
       run: |
         $version = Get-Content -Path miningpy/VERSION -TotalCount 1
-        echo "VERSION=$version" >> $GITHUB_ENV
       env:
         VERSION: $version
+    - name: Print library version
+      run: |
+        echo "version: ${{ VERSION }}"
     - name: Build/Check Project
       run: |
-        python setup.py sdist bdist_wheel --testversion $env:VERSION.${{ steps.current-time.outputs.formattedTime }}
+        python setup.py sdist bdist_wheel --testversion ${{ VERSION }}.${{ steps.current-time.outputs.formattedTime }}
         twine check dist/*
     - name: Deploy Project
       run: twine upload --repository testpypi dist/*
