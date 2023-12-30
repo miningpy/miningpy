@@ -17,6 +17,8 @@ jobs:
       matrix:
         python-version: ["3.10"]
     runs-on: windows-latest
+    env:
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
     steps:
     - name: Check out Repository
       uses: actions/checkout@v3
@@ -31,7 +33,7 @@ jobs:
         pip install wheel
     - name: ENV variable - TIME
       run: |
-        $currentDateTime = Get-Date -Format "yyyy-MM-dd"
+        $currentDateTime = Get-Date -Format "yyyyMMddHHmm"
         Write-Host "::set-env name=$TIME::$currentDateTime"
         echo "time: $TIME"
     - name: ENV variable - LIB VERSION
