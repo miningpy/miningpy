@@ -185,6 +185,7 @@ testdata8 = {
     'pit': ['pit1', 'pit2', 'pit3'],
 }
 
+
 def test_plot3d_8():
     # test blocks2vtk
     # all params specified
