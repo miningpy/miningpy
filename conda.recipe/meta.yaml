@@ -22,14 +22,14 @@ requirements:
     - pip
     - python
   run:
-    - ezdxf >=0.13.1
-    - pandas >=1.0
-    - numpy >=1.19.0
+    - ezdxf >=1.0
+    - pandas >=2.1
+    - numpy >=1.26
     - python
-    - pyvista >=0.32,!=0.35.2
-    - pyqt
+    - pyvista >=0.43
+    - pyqt5
     - pyvistaqt
-    - vtk >=8.0
+    - vtk >=9.2
     - matplotlib-base
 
 test:
