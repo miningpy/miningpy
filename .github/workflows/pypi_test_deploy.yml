@@ -42,7 +42,8 @@ jobs:
     - name: Build/Check Project
       run: |
         $version = Get-Content -Path miningpy/VERSION -TotalCount 1
-        python setup.py sdist bdist_wheel --testversion $version.${{ steps.current-time.outputs.formattedTime }}
+        echo "VERSION=$version" >> $GITHUB_ENV
+        python setup.py sdist bdist_wheel --testversion $VERSION.${{ steps.current-time.outputs.formattedTime }}
         twine check dist/*
     - name: Deploy Project
       run: twine upload --repository testpypi dist/*
