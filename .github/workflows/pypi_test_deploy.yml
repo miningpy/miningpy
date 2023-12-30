@@ -40,16 +40,19 @@ jobs:
       run: |
         echo "time: ${{ steps.current-time.outputs.formattedTime }}"
     - name: Get library version
-      run: |
-        $version = Get-Content -Path miningpy/VERSION -TotalCount 1
-      env:
-        VERSION: $version
+      # id must be specified to retrieve the output of the step
+      id: version-step
+      uses: michmich112/extract-version@main
+      with:
+        # specify here the path to your version file (e.g. package.json, pom.xml...)
+        version-file: miningpy/VERSION
+        schema: major.minor.build
     - name: Print library version
       run: |
-        echo "version: ${{ VERSION }}"
+        echo "version: ${{ steps.version-step.outputs.version }}"
     - name: Build/Check Project
       run: |
-        python setup.py sdist bdist_wheel --testversion ${{ VERSION }}.${{ steps.current-time.outputs.formattedTime }}
+        python setup.py sdist bdist_wheel --testversion ${{ steps.version-step.outputs.version }}.${{ steps.current-time.outputs.formattedTime }}
         twine check dist/*
     - name: Deploy Project
       run: twine upload --repository testpypi dist/*
