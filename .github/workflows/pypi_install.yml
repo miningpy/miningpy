@@ -1,0 +1,33 @@
+# test installing MiningPy using pip from pypi
+
+name: pypi-install
+on:
+  workflow_dispatch:
+  push:
+    branches:
+    - none
+  pull_request:
+    branches:
+    - none
+  schedule:
+  - cron: '0 7 * * *'
+jobs:
+  PyPi_Install:
+    strategy:
+      matrix:
+        python-version: ['3.8', '3.9', '3.10']
+    runs-on: windows-latest
+    steps:
+    - name: Check out Repository
+      uses: actions/checkout@v3
+    - name: Setup Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install Nightly MiningPy
+      run: pip install miningpy
+    - name: Import miningpy
+      run: |
+        import miningpy
+      shell: python
+
