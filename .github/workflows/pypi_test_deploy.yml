@@ -34,7 +34,7 @@ jobs:
     - name: ENV variable - TIME
       run: |
         $currentDateTime = Get-Date -Format "yyyyMMddHHmm"
-        Write-Host "::set-env name=$TIME::$currentDateTime"
+        Write-Host "::set-env name=TIME::$currentDateTime"
         echo "time: $TIME"
     - name: ENV variable - LIB VERSION
       run: |
