@@ -1,6 +1,7 @@
 # Python package
 # Test deploying package to PyPi
 
+name: pypi-test-deploy
 on:
   workflow_dispatch:
   push:
