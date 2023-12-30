@@ -39,11 +39,12 @@ jobs:
     - name: Print current time
       run: |
         echo "time: ${{ steps.current-time.outputs.formattedTime }}"
-    - name: ENV variable - LIB VERSION
+    - name: Get library version
       run: |
         $version = Get-Content -Path miningpy/VERSION -TotalCount 1
         echo "VERSION=$version" >> $GITHUB_ENV
-        echo "version: $VERSION"
+      env:
+        VERSION: $version
     - name: Build/Check Project
       run: |
         python setup.py sdist bdist_wheel --testversion $env:VERSION.${{ steps.current-time.outputs.formattedTime }}
