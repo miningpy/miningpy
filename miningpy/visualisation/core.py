@@ -202,7 +202,7 @@ def blocks2vtk(blockmodel:  pd.DataFrame,
 
     # asign scalar
     for i in range(nvar):
-        if var[i].dtype == np.object:
+        if var[i].dtype == object:
             vtk_array = vtk.vtkStringArray()
             for idx in var[i]:
                 vtk_array.InsertNextValue(str(idx))

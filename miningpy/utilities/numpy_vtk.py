@@ -59,7 +59,7 @@ def get_vtk_array_type(np_array_type):
                np.float64: vtk.VTK_DOUBLE,
                np.complex64: vtk.VTK_FLOAT,
                np.complex128: vtk.VTK_DOUBLE,
-               np.object: vtk.VTK_STRING}
+               object: vtk.VTK_STRING}
     for key, vtk_type in _np_vtk.items():
         if np_array_type == key or \
            np.issubdtype(np_array_type, key) or \
@@ -71,7 +71,7 @@ def get_vtk_array_type(np_array_type):
 
 def get_vtk_to_np_typemap():
     """Returns the VTK array type to np array type mapping."""
-    _vtk_np = {vtk.VTK_BIT: np.bool,
+    _vtk_np = {vtk.VTK_BIT: bool,
                vtk.VTK_CHAR: np.int8,
                vtk.VTK_UNSIGNED_CHAR: np.uint8,
                vtk.VTK_SHORT: np.int16,
@@ -85,7 +85,7 @@ def get_vtk_to_np_typemap():
                vtk.VTK_ID_TYPE: ID_TYPE_CODE,
                vtk.VTK_FLOAT: np.float32,
                vtk.VTK_DOUBLE: np.float64,
-               vtk.VTK_STRING: np.object}
+               vtk.VTK_STRING: object}
     return _vtk_np
 
 

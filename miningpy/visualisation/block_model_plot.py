@@ -126,7 +126,7 @@ def plot3D(blockmodel:      pd.DataFrame,
         'Int32': int,
         'Float64': float,
         'boolean': bool,
-        'string': np.object
+        'string': object
     }
 
     # pandas dtypes such as Int8Dtype which support pd.na are not supported in Plot3D
@@ -145,7 +145,7 @@ def plot3D(blockmodel:      pd.DataFrame,
             raise Exception(f'col {col} data type not supported')
 
     # Create the spatial reference
-    grid = pv.UniformGrid()
+    grid = pv.ImageData()
 
     x_orig = block_model[xyz_cols[0]].min() - (0.5 * dims[0])
     y_orig = block_model[xyz_cols[1]].min() - (0.5 * dims[1])
@@ -546,7 +546,6 @@ def add_slider_num(dtype, plot, mesh, style, show_edges, scalars, scalar_bar_arg
                                pointa=(0.25, 0.92),
                                pointb=(0.75, 0.92),
                                value=clim[0],
-                               event_type='always',
                                pass_widget=True)
 
     actor = plot.add_mesh(mesh=threshold_mesh,
@@ -621,7 +620,6 @@ def add_slider_string(plot, mesh, style, show_edges, scalars, scalar_bar_args,
                                            pointa=(0.25, 0.92),
                                            pointb=(0.75, 0.92),
                                            color=None,
-                                           event_type='always',
                                            pass_widget=True)
 
     slider_rep = slider_widget.GetRepresentation()

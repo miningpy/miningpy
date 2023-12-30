@@ -15,12 +15,8 @@ list_of_reblocking_multis = [(2, 2, 5),         # superblock
                              (1, 1, 1),         # the same
                              (1, 2, 1),         # superblock starting with 1
                              (1.0, 0.5, 1),     # subblock starting with 1 as float
-                             #(0.5, 2, 1),       # break subblock first, super second
-                             #(1, 0.5, 2),       # break subblock second, super third
-                             #(1, 2, 0.5),       # break super second, subblock third
-                             #(0.75, 1, 1),      # break multiplier not being multiple
-                             #(1, 1.221, 1)      # break multiplier not being multiple
 ]
+
 
 def test_geo_reblock():
     # listing attributes to carry through (n.b. dropping ID column)

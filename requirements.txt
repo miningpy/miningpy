@@ -1,8 +1,8 @@
-ezdxf>=0.13.1
-pandas>=1.0
-numpy>=1.19.0
-pyvista>=0.32
-vtk>=9.0
+ezdxf>=1.0
+pandas>=2.1
+numpy>=1.26
+pyvista>=0.43
+vtk>=9.2
 matplotlib
 numpydoc
 sphinx

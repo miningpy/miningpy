@@ -5,13 +5,13 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 install_requires = [
-    'ezdxf>=0.13.1',
-    'pandas>=1.0',
-    'numpy>=1.19.0',
-    'pyvista>=0.32',
+    'ezdxf>=1.0',
+    'pandas>=2.1',
+    'numpy>=1.26',
+    'pyvista>=0.43',
     'pyvistaqt',
     'pyqt5',
-    'vtk>=8.0',
+    'vtk>=9.2',
     'matplotlib'
 ]
 

@@ -1400,7 +1400,7 @@ def block_dims(blockmodel: pd.DataFrame,
         mask = group['xdim'] > 0
         xdim = group.loc[mask, 'xdim'].copy()  # series
         # take the mode (most common dimension)
-        xdim_array = xdim_array.append(xdim.mode(), ignore_index=True)
+        xdim_array = pd.concat([xdim_array, xdim.mode()], ignore_index=True)
 
     # take the mode (most common dimension) from all groups
     xdim = xdim_array.mode().max()
@@ -1417,7 +1417,7 @@ def block_dims(blockmodel: pd.DataFrame,
         mask = group['ydim'] > 0
         ydim = group.loc[mask, 'ydim'].copy()  # series
         # take the mode (most common dimension)
-        ydim_array = ydim_array.append(ydim.mode(), ignore_index=True)
+        ydim_array = pd.concat([ydim_array, ydim.mode()], ignore_index=True)
 
     # take the mode (most common dimension) from all groups
     ydim = ydim_array.mode().max()
@@ -1434,7 +1434,7 @@ def block_dims(blockmodel: pd.DataFrame,
         mask = group['zdim'] > 0
         zdim = group.loc[mask, 'zdim'].copy()  # series
         # take the mode (most common dimension)
-        zdim_array = zdim_array.append(zdim.mode(), ignore_index=True)
+        zdim_array = pd.concat([zdim_array, zdim.mode()], ignore_index=True)
 
     # take the mode (most common dimension) from all groups
     zdim = zdim_array.mode().max()
@@ -1890,7 +1890,7 @@ def grade_tonnage_plot(blockmodel: pd.DataFrame,
 
     # plot
     if show_plot is True or plot_path is not None:
-        with plt.style.context('seaborn-white'):
+        with plt.style.context('seaborn-v0_8-white'):
             fig = plt.figure()
             ax1 = fig.add_subplot()
             ax2 = ax1.twinx()
@@ -1905,9 +1905,9 @@ def grade_tonnage_plot(blockmodel: pd.DataFrame,
 
             if plot_path[-4:] != '.png':
                 plot_path = plot_path + '.png'
-                plt.savefig(plot_path, format='png', dpi=330)
+                plt.savefig(plot_path, format='png', dpi=1200)
             else:
-                plt.savefig(plot_path, format='png', dpi=330)
+                plt.savefig(plot_path, format='png', dpi=1200)
 
     if show_plot is False and plot_path is not None:
         plt.close(fig)
