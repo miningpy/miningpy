@@ -12,8 +12,7 @@ jobs:
   WindowsBuildCondaRecipe:
     strategy:
       matrix:
-        python.version:
-        - "3.9"
+        python-version: ["3.10"]
     runs-on: windows-latest
     steps:
     - name: Check out Repository
@@ -29,4 +28,4 @@ jobs:
     - name: Purge Conda Build Dir
       run: conda build purge-all
     - name: Conda-Build Recipe & Test
-      run: conda-build conda.recipe --no-anaconda-upload --channel conda-forge --python ${{ matrix.python.version }}
+      run: conda-build conda.recipe --no-anaconda-upload --channel conda-forge --python ${{ matrix.python-version }}
