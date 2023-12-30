@@ -9,13 +9,15 @@ jobs:
     strategy:
       matrix:
         python.version:
-        - 3.7
         - 3.8
         - 3.9
+        - 3.10
     runs-on: windows-latest
     steps:
     - name: Check out Repository
       uses: actions/checkout@v3
+    - name: Setup headless display
+      uses: pyvista/setup-headless-display-action@v2
     - name: Setup Python ${{ matrix.python.version }}
       uses: actions/setup-python@v4
       with:
@@ -32,13 +34,15 @@ jobs:
     strategy:
       matrix:
         python.version:
-        - 3.7
         - 3.8
         - 3.9
+        - 3.10
     runs-on: windows-latest
     steps:
     - name: Check out Repository
       uses: actions/checkout@v3
+    - name: Setup headless display
+      uses: pyvista/setup-headless-display-action@v2
     - name: Setup Conda
       uses: conda-incubator/setup-miniconda@v2
       with:

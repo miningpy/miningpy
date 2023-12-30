@@ -323,9 +323,11 @@ def plot3D(blockmodel:      pd.DataFrame,
                   font_size=6)
 
     if show_plot:
+        plot.Finalize()
         plot.app.exec()
         return plot  # pyvistaqt.BackgroundPlotter
     else:
+        plot.Finalize()
         return plot  # pyvistaqt.BackgroundPlotter
 
 
@@ -511,9 +513,10 @@ def add_slider_num(dtype, plot, mesh, style, show_edges, scalars, scalar_bar_arg
     plot.add_mesh(mesh.outline(), name=name + "outline", opacity=0.0)
 
     alg = vtk.vtkThreshold()
-    alg.SetInputDataObject(mesh)
+    alg.SetInputData(mesh)
     alg.SetInputArrayToProcess(0, 0, 0, field.value, scalars)  # args: (idx, port, connection, field, name)
     alg.SetUseContinuousCellRange(False)
+    alg.Update()
 
     if not hasattr(plot, "threshold_meshes"):
         plot.threshold_meshes = []
@@ -528,7 +531,6 @@ def add_slider_num(dtype, plot, mesh, style, show_edges, scalars, scalar_bar_arg
     def callback_int(value, widget):
         _rounded_value = int(round(float(value), 0))
         widget.GetRepresentation().SetValue(_rounded_value)
-
         alg.SetLowerThreshold(_rounded_value)
         alg.Update()
         threshold_mesh.shallow_copy(alg.GetOutput())
@@ -591,9 +593,10 @@ def add_slider_string(plot, mesh, style, show_edges, scalars, scalar_bar_args,
     mesh.cell_data[scalars+'_int'] = strings
 
     alg = vtk.vtkThreshold()
-    alg.SetInputDataObject(mesh)
-    alg.SetInputArrayToProcess(0, 0, 0, 1, scalars+'_int')  # args: (idx, port, connection, field, name)
+    alg.SetInputData(mesh)
+    alg.SetInputArrayToProcess(0, 0, 0, vtk.vtkDataObject.FIELD_ASSOCIATION_CELLS, scalars+'_int')
     alg.SetUseContinuousCellRange(False)
+    alg.Update()
 
     if not hasattr(plot, "threshold_meshes"):
         plot.threshold_meshes = []
@@ -610,7 +613,7 @@ def add_slider_string(plot, mesh, style, show_edges, scalars, scalar_bar_args,
     def callback(value, widget):
         _rounded_value = int(round(float(value), 0))
         widget.GetRepresentation().SetValue(_rounded_value)
-        alg.ThresholdByUpper(_rounded_value)
+        alg.SetLowerThreshold(_rounded_value)
         alg.Update()
         threshold_mesh.shallow_copy(alg.GetOutput())
 
@@ -634,7 +637,6 @@ def add_slider_string(plot, mesh, style, show_edges, scalars, scalar_bar_args,
         slider_rep.SetTitleText(data[idx])
 
     slider_widget.AddObserver(vtk.vtkCommand.InteractionEvent, title_callback)
-
     title_callback(slider_widget, None)
 
     actor = plot.add_mesh(mesh=threshold_mesh,
