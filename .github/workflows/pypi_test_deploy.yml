@@ -36,8 +36,8 @@ jobs:
         pip install wheel
     - name: Build/Check Project
       run: |
-        set /p version=<miningpy/VERSION
-        python setup.py sdist bdist_wheel --testversion %version%.${{ env.TIME }}
+        set /p VERSION=<miningpy/VERSION
+        python setup.py sdist bdist_wheel --testversion ${{ env.VERSION }}.${{ env.TIME }}
         twine check dist/*
     - name: Deploy Project
       run: twine upload --repository testpypi dist/*

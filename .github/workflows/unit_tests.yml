@@ -2,6 +2,11 @@ name: unit-tests
 on:
   workflow_dispatch:
   push:
+    branches:
+    - none
+  pull_request:
+    branches:
+    - none
   schedule:
   - cron: "0 0 * * *"
 jobs:
