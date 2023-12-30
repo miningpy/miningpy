@@ -1,6 +1,6 @@
 # import libraries
 import pyvista as pv
-from pyvista.utilities import generate_plane, get_array
+from pyvista.core.utilities import generate_plane, get_array
 import pandas as pd
 from pandas.core.base import PandasObject
 import numpy as np

@@ -31,4 +31,3 @@ jobs:
         import miningpy
       shell: python
 
-  
