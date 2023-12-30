@@ -6,6 +6,8 @@ import pyvistaqt
 import numpy as np
 import os
 
+IN_GITHUB_ACTIONS = os.getenv("GITHUB_ACTIONS") == "true"
+
 # test data
 testdata1 = {
     'x': [5, 5, 15],
@@ -15,6 +17,7 @@ testdata1 = {
 }
 
 
+@pytest.mark.skipif(IN_GITHUB_ACTIONS, reason="Test doesn't work in Github Actions.")
 def test_plot3d_1():
     # test blocks2vtk
     # all params specified
@@ -38,6 +41,7 @@ testdata2 = {
 }
 
 
+@pytest.mark.skipif(IN_GITHUB_ACTIONS, reason="Test doesn't work in Github Actions.")
 def test_plot3d_2():
     # test blocks2vtk
     data = pd.DataFrame(testdata2)
@@ -62,6 +66,7 @@ testdata3 = {
 widget_list = ['section', 'slider']
 
 
+@pytest.mark.skipif(IN_GITHUB_ACTIONS, reason="Test doesn't work in Github Actions.")
 def test_plot3d_3():
     # all params specified
     data = pd.DataFrame(testdata3)
@@ -90,6 +95,7 @@ testdata4 = {
 }
 
 
+@pytest.mark.skipif(IN_GITHUB_ACTIONS, reason="Test doesn't work in Github Actions.")
 def test_plot3d_4():
     list_of_fields = ['pitname', 'messy_field', 'bool', 'ton', 'nan']  # these will all be converted to pandas dtypes
     data = pd.DataFrame(testdata4)
@@ -116,6 +122,7 @@ def test_plot3d_4():
 
 
 # test data with standard dtypes
+@pytest.mark.skipif(IN_GITHUB_ACTIONS, reason="Test doesn't work in Github Actions.")
 def test_plot3d_5():
     list_of_fields = ['pitname', 'messy_field', 'bool', 'ton', 'nan']  # these will NOT be converted to pandas dtypes
     data = pd.DataFrame(testdata4)
@@ -139,6 +146,7 @@ testdata6 = {
 }
 
 
+@pytest.mark.skipif(IN_GITHUB_ACTIONS, reason="Test doesn't work in Github Actions.")
 def test_plot3d_6():
     # test blocks2vtk
     # all params specified
@@ -162,6 +170,7 @@ testdata7 = {
 }
 
 
+@pytest.mark.skipif(IN_GITHUB_ACTIONS, reason="Test doesn't work in Github Actions.")
 def test_plot3d_7():
     # test blocks2vtk
     # all params specified
@@ -186,6 +195,7 @@ testdata8 = {
 }
 
 
+@pytest.mark.skipif(IN_GITHUB_ACTIONS, reason="Test doesn't work in Github Actions.")
 def test_plot3d_8():
     # test blocks2vtk
     # all params specified
@@ -210,6 +220,7 @@ testdata9 = {
 }
 
 
+@pytest.mark.skipif(IN_GITHUB_ACTIONS, reason="Test doesn't work in Github Actions.")
 def test_plot3d_9():
     # test blocks2vtk
     # all params specified
