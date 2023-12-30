@@ -33,7 +33,7 @@ jobs:
         pip install wheel
     - name: ENV variable - TIME
       run: |
-        run: echo "NOW=$(date +'%Y%m%d%H%M')" >> $GITHUB_ENV
+        echo "NOW=$(date +'%Y%m%d%H%M')" >> $GITHUB_ENV
         echo "time: $TIME"
     - name: ENV variable - LIB VERSION
       run: |
