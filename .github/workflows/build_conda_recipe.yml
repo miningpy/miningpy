@@ -1,5 +1,6 @@
 # Azure devops pipeline to test building MiningPy using conda-build from the conda-recipe
 
+name: build-conda-recipe
 on:
   workflow_dispatch:
   push:
