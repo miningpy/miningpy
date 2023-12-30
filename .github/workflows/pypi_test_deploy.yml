@@ -46,7 +46,7 @@ jobs:
         echo "version: $VERSION"
     - name: Build/Check Project
       run: |
-        python setup.py sdist bdist_wheel --testversion $env:MY_VARIABLE.${{ steps.current-time.outputs.formattedTime }}
+        python setup.py sdist bdist_wheel --testversion $env:VERSION.${{ steps.current-time.outputs.formattedTime }}
         twine check dist/*
     - name: Deploy Project
       run: twine upload --repository testpypi dist/*
