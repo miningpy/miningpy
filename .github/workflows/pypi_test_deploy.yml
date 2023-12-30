@@ -36,6 +36,7 @@ jobs:
       id: current-time
       with:
         format: YYYYMMDDHHmm
+    - name: Print current time
       run: |
         echo "time: ${{ steps.current-time.outputs.formattedTime }}"
     - name: ENV variable - LIB VERSION
