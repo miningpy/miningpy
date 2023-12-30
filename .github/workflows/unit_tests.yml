@@ -13,18 +13,15 @@ jobs:
   WindowsPip:
     strategy:
       matrix:
-        python.version:
-        - '3.8'
-        - '3.9'
-        - '3.10'
+        python-version: ['3.8', '3.9', '3.10']
     runs-on: windows-latest
     steps:
     - name: Check out Repository
       uses: actions/checkout@v3
-    - name: Setup Python ${{ matrix.python.version }}
+    - name: Setup Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
-        python-version: ${{ matrix.python.version }}
+        python-version: ${{ matrix.python-version }}
     - name: Install MiningPy
       run: |
         python -m pip install --upgrade pip setuptools wheel
