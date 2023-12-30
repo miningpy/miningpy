@@ -32,12 +32,12 @@ jobs:
     - name: ENV variable - TIME
       run: |
         echo "::set-env name=TIME::$(Get-Date -Format "yyyy-MM-dd")" >> $GITHUB_ENV
-        echo "time: ${{ env.TIME }}"
+        echo "time: $TIME"
     - name: ENV variable - LIB VERSION
       run: |
         $version = Get-Content -Path miningpy/VERSION -TotalCount 1
-        echo "Version read from file: $version"
         echo "VERSION=$version" >> $GITHUB_ENV
+        echo "version: VERSION"
     - name: Build/Check Project
       run: |
         python setup.py sdist bdist_wheel --testversion ${{ env.VERSION }}.${{ env.TIME }}
