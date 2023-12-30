@@ -2,7 +2,7 @@
 
 ![](docs/_static/miningpy_logo.png)
 
-Version:        0.6.3
+Version:        0.6.4
 
 Documentation:  https://miningpy.readthedocs.io/en/latest/
 
