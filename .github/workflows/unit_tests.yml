@@ -13,7 +13,7 @@ jobs:
   WindowsPip:
     strategy:
       matrix:
-        python-version: ['3.8', '3.9', '3.10']
+        python-version: ['3.9', '3.10', '3.11']
     runs-on: windows-latest
     steps:
     - name: Check out Repository
@@ -33,10 +33,7 @@ jobs:
   WindowsAnaconda:
     strategy:
       matrix:
-        python.version:
-        - '3.8'
-        - '3.9'
-        - '3.10'
+        python-version: ['3.9', '3.10', '3.11']
     runs-on: windows-latest
     steps:
     - name: Check out Repository
@@ -53,7 +50,7 @@ jobs:
         conda install conda-build
         conda update conda-build
     - name: Create Anaconda environment & Install packages
-      run: conda create --yes --quiet --name baseAnaconda python=${{ matrix.python.version }} anaconda
+      run: conda create --yes --quiet --name baseAnaconda python=${{ matrix.python-version }} anaconda
     - name: Purge Conda Build Dir
       run: conda build purge-all
     - name: Install MiningPy
