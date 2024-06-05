@@ -57,10 +57,10 @@ def test_plot3d_2():
 
 # test data with widgets
 testdata3 = {
-    'x': [5, 5, 15],
-    'y': [5, 15, 25],
-    'z': [5, 5, 5],
-    'ton': [50.1, 100, 50],
+    'x': [5, 5, 15, 10],
+    'y': [5, 15, 25, 10],
+    'z': [5, 5, 5, 5],
+    'ton': [55, 100, 60.5, 75],
 }
 
 widget_list = ['section', 'slider']
@@ -75,7 +75,7 @@ def test_plot3d_3():
             xyz_cols=('x', 'y', 'z'),
             dims=(5, 5, 5),
             col='ton',
-            show_plot=False,
+            show_plot=True,
             widget=widget,
             window_size=None,
         )

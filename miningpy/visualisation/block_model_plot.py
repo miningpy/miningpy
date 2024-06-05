@@ -383,13 +383,18 @@ def add_section_num(widget, plot, mesh, style, show_edges, scalars, scalar_bar_a
         alg.Update()  # Perform the Cut
         plane_clipped_mesh.shallow_copy(alg.GetOutput())
 
-    plane = plot.add_plane_widget(callback=callback, bounds=mesh.bounds,
-                                  factor=1.25, normal=normal,
-                                  color=None, tubing=False,
+    plane = plot.add_plane_widget(callback=callback,
+                                  bounds=mesh.bounds,
+                                  factor=1.25,
+                                  normal=normal,
+                                  color=None,
+                                  tubing=False,
                                   assign_to_axis=None,
                                   origin_translation=True,
                                   outline_translation=False,
-                                  implicit=implicit, origin=mesh.center)
+                                  implicit=implicit,
+                                  origin=mesh.center,
+                                  interaction_event='always')
 
     actor = plot.add_mesh(plane_clipped_mesh,
                           style=style,
@@ -473,13 +478,18 @@ def add_section_string(widget, plot, mesh, style, show_edges, scalars, scalar_ba
         alg.Update()  # Perform the Cut
         plane_clipped_mesh.shallow_copy(alg.GetOutput())
 
-    plane = plot.add_plane_widget(callback=callback, bounds=mesh.bounds,
-                                  factor=1.25, normal=normal,
-                                  color=None, tubing=False,
+    plane = plot.add_plane_widget(callback=callback,
+                                  bounds=mesh.bounds,
+                                  factor=1.25,
+                                  normal=normal,
+                                  color=None,
+                                  tubing=False,
                                   assign_to_axis=None,
                                   origin_translation=True,
                                   outline_translation=False,
-                                  implicit=implicit, origin=mesh.center)
+                                  implicit=implicit,
+                                  origin=mesh.center,
+                                  interaction_event='always')
 
     actor = plot.add_mesh(plane_clipped_mesh,
                           style=style,
@@ -548,7 +558,8 @@ def add_slider_num(dtype, plot, mesh, style, show_edges, scalars, scalar_bar_arg
                                pointa=(0.25, 0.92),
                                pointb=(0.75, 0.92),
                                value=clim[0],
-                               pass_widget=True)
+                               pass_widget=True,
+                               interaction_event='always')
 
     actor = plot.add_mesh(mesh=threshold_mesh,
                           scalars=scalars,
@@ -623,7 +634,8 @@ def add_slider_string(plot, mesh, style, show_edges, scalars, scalar_bar_args,
                                            pointa=(0.25, 0.92),
                                            pointb=(0.75, 0.92),
                                            color=None,
-                                           pass_widget=True)
+                                           pass_widget=True,
+                                           interaction_event='always')
 
     slider_rep = slider_widget.GetRepresentation()
     slider_rep.ShowSliderLabelOff()
